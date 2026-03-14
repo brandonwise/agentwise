@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "remote-api": {
+      "url": "http://api.example.com:8080/mcp",
+      "transport": "sse"
+    },
+    "secure-api": {
+      "url": "https://secure.example.com/mcp",
+      "transport": "sse",
+      "env": {
+        "AUTH_TOKEN": "Bearer my-secret-token"
+      }
+    }
+  }
+}

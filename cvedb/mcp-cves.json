@@ -1,0 +1,200 @@
+[
+  {
+    "id": "CVE-2025-53110",
+    "package": "@modelcontextprotocol/server-filesystem",
+    "affected_below": "0.6.3",
+    "severity": "high",
+    "cvss": 7.5,
+    "description": "Path traversal vulnerability allows reading files outside allowed directories",
+    "fix": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3"
+  },
+  {
+    "id": "CVE-2025-53109",
+    "package": "@modelcontextprotocol/server-filesystem",
+    "affected_below": "0.6.3",
+    "severity": "high",
+    "cvss": 7.5,
+    "description": "Symlink following allows escaping allowed directories to read or write arbitrary files",
+    "fix": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3"
+  },
+  {
+    "id": "CVE-2025-59536",
+    "package": "claude-code",
+    "affected_below": "1.0.17",
+    "severity": "critical",
+    "cvss": 9.8,
+    "description": "Project configuration file allows remote code execution via malicious MCP server definitions",
+    "fix": "Upgrade Claude Code to >=1.0.17"
+  },
+  {
+    "id": "CVE-2026-21852",
+    "package": "claude-code",
+    "affected_below": "1.0.17",
+    "severity": "critical",
+    "cvss": 9.8,
+    "description": "Additional RCE vector through project file manipulation in Claude Code",
+    "fix": "Upgrade Claude Code to >=1.0.17"
+  },
+  {
+    "id": "CVE-2025-6514",
+    "package": "mcp",
+    "affected_below": "999.0.0",
+    "severity": "critical",
+    "cvss": 10.0,
+    "description": "Command injection via MCP tool configuration allows arbitrary command execution",
+    "fix": "Validate and sanitize all MCP tool command arguments"
+  },
+  {
+    "id": "CVE-2025-68143",
+    "package": "@modelcontextprotocol/server-git",
+    "affected_below": "0.7.0",
+    "severity": "high",
+    "cvss": 7.5,
+    "description": "Path traversal vulnerability in Git MCP server allows access to files outside repository",
+    "fix": "Upgrade to @modelcontextprotocol/server-git >=0.7.0"
+  },
+  {
+    "id": "CVE-2025-68144",
+    "package": "@modelcontextprotocol/server-git",
+    "affected_below": "0.7.0",
+    "severity": "high",
+    "cvss": 8.1,
+    "description": "Argument injection in Git MCP server allows execution of arbitrary git commands",
+    "fix": "Upgrade to @modelcontextprotocol/server-git >=0.7.0"
+  },
+  {
+    "id": "CVE-2025-54073",
+    "package": "mcp-package-docs",
+    "affected_below": "999.0.0",
+    "severity": "high",
+    "cvss": 8.6,
+    "description": "Command injection vulnerability in mcp-package-docs allows arbitrary command execution",
+    "fix": "Remove mcp-package-docs or use a patched fork"
+  },
+  {
+    "id": "CVE-2026-27896",
+    "package": "@modelcontextprotocol/sdk",
+    "affected_below": "1.2.0",
+    "severity": "medium",
+    "cvss": 5.3,
+    "description": "JSON parsing bypass in Go MCP SDK allows malformed requests to bypass validation",
+    "fix": "Upgrade to @modelcontextprotocol/sdk >=1.2.0"
+  },
+  {
+    "id": "CVE-2026-0755",
+    "package": "gemini-mcp-tool",
+    "affected_below": "999.0.0",
+    "severity": "critical",
+    "cvss": 9.8,
+    "description": "Unsanitized eval() call in gemini-mcp-tool allows remote code execution via crafted tool responses",
+    "fix": "Remove gemini-mcp-tool or replace eval() usage with safe JSON parsing"
+  },
+  {
+    "id": "CVE-2025-66401",
+    "package": "mcp-watch",
+    "affected_below": "999.0.0",
+    "severity": "high",
+    "cvss": 8.1,
+    "description": "Command injection in mcp-watch security scanner via unsanitized server names in scan arguments",
+    "fix": "Remove mcp-watch or upgrade to a patched version when available"
+  },
+  {
+    "id": "CVE-2026-2256",
+    "package": "ms-agent",
+    "affected_below": "999.0.0",
+    "severity": "critical",
+    "cvss": 10.0,
+    "description": "Prompt injection to full system compromise via unrestricted Shell tool access in ms-agent",
+    "fix": "Remove ms-agent or disable Shell tool access entirely"
+  },
+  {
+    "id": "CVE-2026-31024",
+    "package": "mcp-server-postgres",
+    "affected_below": "0.5.0",
+    "severity": "critical",
+    "cvss": 9.1,
+    "description": "SQL injection via unsanitized query parameters allows arbitrary database operations including data exfiltration",
+    "fix": "Upgrade to mcp-server-postgres >=0.5.0 and enable parameterized queries"
+  },
+  {
+    "id": "CVE-2026-31187",
+    "package": "mcp-server-puppeteer",
+    "affected_below": "0.4.0",
+    "severity": "critical",
+    "cvss": 9.3,
+    "description": "Arbitrary JavaScript execution via navigate tool allows full browser context takeover and credential theft",
+    "fix": "Upgrade to mcp-server-puppeteer >=0.4.0 and restrict allowed domains"
+  },
+  {
+    "id": "CVE-2025-70218",
+    "package": "mcp-server-brave-search",
+    "affected_below": "0.3.1",
+    "severity": "medium",
+    "cvss": 6.5,
+    "description": "SSRF via crafted search queries allows probing internal network resources through the Brave Search API proxy",
+    "fix": "Upgrade to mcp-server-brave-search >=0.3.1"
+  },
+  {
+    "id": "CVE-2026-12847",
+    "package": "mcp-server-slack",
+    "affected_below": "0.6.0",
+    "severity": "high",
+    "cvss": 8.4,
+    "description": "Insufficient scope validation allows posting messages to unauthorized channels and reading private channel history",
+    "fix": "Upgrade to mcp-server-slack >=0.6.0 and restrict OAuth scopes"
+  },
+  {
+    "id": "CVE-2026-08931",
+    "package": "mcp-server-github",
+    "affected_below": "0.7.0",
+    "severity": "high",
+    "cvss": 8.0,
+    "description": "Personal access token leakage via verbose error messages exposes GitHub credentials to tool callers",
+    "fix": "Upgrade to mcp-server-github >=0.7.0"
+  },
+  {
+    "id": "CVE-2026-15503",
+    "package": "mcp-server-docker",
+    "affected_below": "0.3.0",
+    "severity": "critical",
+    "cvss": 9.6,
+    "description": "Container escape via privileged mode and host mount allowing full host filesystem access from MCP tool calls",
+    "fix": "Upgrade to mcp-server-docker >=0.3.0 and disable privileged mode"
+  },
+  {
+    "id": "CVE-2026-19244",
+    "package": "mcp-server-sqlite",
+    "affected_below": "0.5.2",
+    "severity": "high",
+    "cvss": 7.8,
+    "description": "SQL injection via ATTACH DATABASE command allows reading arbitrary SQLite databases on the filesystem",
+    "fix": "Upgrade to mcp-server-sqlite >=0.5.2"
+  },
+  {
+    "id": "CVE-2026-22091",
+    "package": "mcp-server-fetch",
+    "affected_below": "0.4.0",
+    "severity": "high",
+    "cvss": 7.5,
+    "description": "Server-side request forgery allows fetching internal network resources and cloud metadata endpoints",
+    "fix": "Upgrade to mcp-server-fetch >=0.4.0 and configure URL allowlist"
+  },
+  {
+    "id": "CVE-2025-71560",
+    "package": "mcp-server-memory",
+    "affected_below": "0.3.0",
+    "severity": "medium",
+    "cvss": 6.2,
+    "description": "Knowledge graph data exfiltration via cross-session memory access allows reading other users' stored entities",
+    "fix": "Upgrade to mcp-server-memory >=0.3.0 and enable session isolation"
+  },
+  {
+    "id": "CVE-2026-24710",
+    "package": "mcp-server-sequential-thinking",
+    "affected_below": "0.2.0",
+    "severity": "medium",
+    "cvss": 5.8,
+    "description": "Prompt injection via thought chain manipulation allows overriding system instructions through crafted thinking steps",
+    "fix": "Upgrade to mcp-server-sequential-thinking >=0.2.0"
+  }
+]
