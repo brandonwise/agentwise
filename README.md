@@ -268,9 +268,12 @@ The `--fail-on` flag exits with code 1 when findings at or above the specified s
 ## Output Formats
 
 ```bash
-agentwise scan .                    # Colorized terminal output (default)
-agentwise scan . --format json      # JSON for scripting and pipelines
-agentwise scan . --format sarif     # SARIF for GitHub Code Scanning
+agentwise scan .                                        # Colorized terminal output (default)
+agentwise scan . --format json                          # JSON for scripting and pipelines
+agentwise scan . --format sarif                         # SARIF for GitHub Code Scanning
+agentwise scan . --format html --output report.html     # Dark-themed HTML report
+agentwise scan . --format markdown                      # Markdown for PRs/Notion/Confluence
+agentwise badge --format svg --output badge.svg         # Shields.io-style SVG badge
 ```
 
 ## Scoring
