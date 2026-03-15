@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "markdownify": {
+      "command": "node",
+      "args": [
+        "/home/username/markdownify-mcp/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "UV_PATH": "/home/username/.local/bin/uv",
+        "PYTHONPATH": "/home/username/markdownify-mcp/.venv/lib/python3.11/site-packages",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "PATH": "/home/username/.local/bin:/home/username/markdownify-mcp/.venv/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "UV_HTTP_TIMEOUT": "300",
+        "UV_CONCURRENT_DOWNLOADS": "2",
+        "UV_CACHE_DIR": "/home/username/.cache/uv",
+        "VIRTUAL_ENV": "/home/username/markdownify-mcp/.venv",
+        "PYTHONFAULTHANDLER": "1",
+        "NODE_OPTIONS": "--max-old-space-size=2048"
+      },
+      "usagePolicy": {
+        "priority": "low",
+        "prompt": "Use markdownify for converting content into markdown format. Ideal for documentation or formatting tasks. Ensure content accuracy during conversion.",
+        "useCases": [
+          "documentation",
+          "content formatting"
+        ],
+        "constraints": "Verify output for correctness, especially with complex HTML structures."
+      }
+    }
+  }
+}

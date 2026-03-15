@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "simple-character-counter": {
+      "command": "python",
+      "args": [
+        "/Users/electron/workspace/Nanocentury AI/NIO-MCPs/supersimpleMCP/server.py"
+      ]
+    }
+  }
+}

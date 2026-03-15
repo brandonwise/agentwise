@@ -1,0 +1,148 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Use fetch for retrieving online content or API data. Ensure requests are secure and respect rate limits. Cache results when appropriate to reduce redundant calls.",
+        "useCases": [
+          "data retrieval",
+          "API interaction"
+        ],
+        "constraints": "Respect API rate limits and terms. Secure sensitive data in requests."
+      }
+    },
+    "github-mcp-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_github_personal_access_token_here"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use for all GitHub interactions including repository management, issue tracking, and pull requests. Ensure token security and confirm user intent for repository modifications.",
+        "useCases": [
+          "repository management",
+          "issue tracking",
+          "collaboration"
+        ],
+        "constraints": "Protect personal access token. Confirm destructive actions with user."
+      }
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "your_brave_api_key_here"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Use brave-search for web and local searches to gather information or answer user queries. Prioritize for factual data or recent information. Use domain filters to refine results when applicable.",
+        "useCases": [
+          "information gathering",
+          "research",
+          "local business search"
+        ],
+        "constraints": "Secure API key. Use sparingly for non-critical queries to manage API usage."
+      },
+      "recommendation": "Added to enhance search capabilities with a focus on privacy-preserving search results. Complements fetch by offering structured search data."
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\Users\\angel\\Projects",
+        "C:\\Users\\angel\\Desktop",
+        "C:\\Users\\angel\\OneDrive\\Documentos\\.universidad\\.2025\\s2\\redes\\proyecto1-redes"
+      ]
+    },
+    "git-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cyanheads/git-mcp-server"
+      ]
+    },
+    "ultimate-mcp-hub": {
+      "command": "python",
+      "args": [
+        "c:\\Users\\W3jde\\PROJECTS\\MCP\\ultimate-mcp-system\\mcp_hub_server.py"
+      ],
+      "env": {
+        "N8N_API_URL": "https://n8n-533751401713.us-central1.run.app/api/v1",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjRiMmI3Ny03ZmQ0LTQyNDAtOThiMi0xMDgyMjdhNzU0ZTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY0NDIzNTg1fQ.ZN3w3hwHQJDsYMiVIacuh6Ogc9PvNkOKevBYhYchABM"
+      }
+    },
+    "cashflow-forecast": {
+      "command": "python",
+      "args": [
+        "cashflow_mcp_server.py"
+      ],
+      "cwd": "C:\\Users\\ivoss\\Downloads\\Projetos\\cashflow-mcp"
+    },
+    "selenium": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@angiejones/mcp-selenium"
+      ]
+    },
+    "browserbase-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Usuario\\Downloads\\fotolibros_argentina\\fotolibros-argentina-v2\\mcp-server-browserbase\\cli.js",
+        "--local"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "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",
+        "CHROME_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+      }
+    },
+    "git": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--mount",
+        "type=bind,src=/Users/username/Desktop,dst=/projects/Desktop",
+        "--mount",
+        "type=bind,src=/path/to/other/allowed/dir,dst=/projects/other/allowed/dir,ro",
+        "--mount",
+        "type=bind,src=/path/to/file.txt,dst=/projects/path/to/file.txt",
+        "mcp/git"
+      ]
+    },
+    "git-4-11": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/<path to mcp-servers>/mcp-servers/src/git",
+        "run",
+        "mcp-server-git"
+      ]
+    },
+    "everything": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "aiwebsearcher": {
+      "command": "uvx",
+      "args": [
+        "aiwebsearcher@0.1.2"
+      ]
+    }
+  }
+}

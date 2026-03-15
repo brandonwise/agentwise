@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "sentimentscope": {
+      "command": "C:\\Users\\Riva\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+      "args": [
+        "C:\\Users\\Riva\\Desktop\\sentimentscope-mcp\\mcp_server.py"
+      ]
+    }
+  }
+}

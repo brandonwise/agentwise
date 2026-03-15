@@ -1,0 +1,293 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/home/username"
+      ],
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use this server for all file system operations including reading, writing, and managing files or directories. Ensure operations are restricted to allowed paths to prevent unauthorized access. Always validate file paths for security before execution.",
+        "useCases": [
+          "file management",
+          "project setup",
+          "codebase exploration"
+        ],
+        "constraints": "Do not access system directories like /etc or /sys unless explicitly authorized by the user."
+      }
+    },
+    "enhanced-demo": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/mcp-server-demo",
+        "src/mcp_server_demo.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/home/username/mcp-server-demo/src",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "This server is for demonstration purposes. Utilize it to showcase MCP server capabilities or test new integrations in a sandboxed environment. Avoid using for production tasks.",
+        "useCases": [
+          "testing",
+          "demo"
+        ],
+        "constraints": "Limit usage to non-critical operations. Do not store sensitive data."
+      }
+    },
+    "ast-grep": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/ast-grep-mcp",
+        "main.py"
+      ],
+      "env": {
+        "PATH": "/home/username/.cargo/bin:/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Leverage ast-grep for advanced code analysis and structural search across codebases. Use for refactoring, finding patterns, or ensuring code quality. Provide detailed queries to maximize search precision.",
+        "useCases": [
+          "code refactoring",
+          "pattern matching",
+          "quality assurance"
+        ],
+        "constraints": "Avoid overuse on very large codebases to prevent performance issues. Use specific filters to narrow search scope."
+      }
+    },
+    "Context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "12000"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Utilize Context7 for maintaining conversational context over long interactions. Ensure context is preserved for complex tasks requiring historical data or multi-step reasoning.",
+        "useCases": [
+          "long conversations",
+          "complex task tracking"
+        ],
+        "constraints": "Monitor token usage to avoid exceeding limits. Summarize context when possible to optimize performance."
+      }
+    },
+    "git-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://gitmcp.io/docs"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "GITMCP_CACHE_TTL": "7200",
+        "GITMCP_MAX_TOKENS": "24000",
+        "GITMCP_CONCURRENT_REQUESTS": "3",
+        "GITMCP_RATE_LIMIT": "100",
+        "GITMCP_TIMEOUT": "30000",
+        "GITMCP_RETRY_ATTEMPTS": "3",
+        "NODE_OPTIONS": "--max-old-space-size=2048"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use git-mcp for all git operations including cloning, committing, branching, and merging. Ensure commands are safe and non-destructive unless explicitly confirmed by the user. Provide detailed commit messages for clarity.",
+        "useCases": [
+          "version control",
+          "repository management"
+        ],
+        "constraints": "Do not execute destructive commands like force push or repository deletion without user confirmation."
+      }
+    },
+    "claude-prompts": {
+      "command": "node",
+      "args": [
+        "/home/username/claude-prompts-mcp/server/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Access this server for predefined prompts tailored for Claude interactions. Select prompts based on task complexity and required output format. Customize prompts if necessary to fit specific user needs.",
+        "useCases": [
+          "prompt engineering",
+          "task-specific guidance"
+        ],
+        "constraints": "Ensure prompts are relevant to the task. Avoid generic or overly broad prompts."
+      }
+    },
+    "mcp-server-docker": {
+      "command": "/home/username/.local/bin/uvx",
+      "args": [
+        "mcp-server-docker"
+      ],
+      "env": {
+        "PATH": "/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "DOCKER_HOST": "unix:///var/run/docker.sock"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use for managing Docker containers and images. Ensure Docker operations are aligned with project requirements. Confirm user intent before initiating builds or deployments to avoid resource waste.",
+        "useCases": [
+          "container management",
+          "deployment"
+        ],
+        "constraints": "Limit operations to project-specific containers. Avoid system-wide Docker changes."
+      }
+    },
+    "cognee": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/cognee-mcp",
+        "main.py"
+      ],
+      "env": {
+        "ENV": "local",
+        "TOKENIZERS_PARALLELISM": "false",
+        "LLM_API_KEY": "your_openai_api_key_here",
+        "GRAPH_DATABASE_PROVIDER": "networkx",
+        "VECTOR_DB_PROVIDER": "lancedb",
+        "DB_PROVIDER": "sqlite",
+        "DB_NAME": "cognee_db",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "PATH": "/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "UV_HTTP_TIMEOUT": "300",
+        "UV_CONCURRENT_DOWNLOADS": "2",
+        "UV_CACHE_DIR": "/home/username/.cache/uv",
+        "PYTHONFAULTHANDLER": "1",
+        "PYTHONOPTIMIZE": "1"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Leverage cognee for cognitive computing tasks such as knowledge graph management and semantic analysis. Use when deep understanding or data correlation is required. Ensure API key security during operations.",
+        "useCases": [
+          "knowledge management",
+          "data analysis"
+        ],
+        "constraints": "Protect API keys and sensitive data. Limit to tasks requiring advanced cognition."
+      }
+    },
+    "markdownify": {
+      "command": "node",
+      "args": [
+        "/home/username/markdownify-mcp/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "UV_PATH": "/home/username/.local/bin/uv",
+        "PYTHONPATH": "/home/username/markdownify-mcp/.venv/lib/python3.11/site-packages",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "PATH": "/home/username/.local/bin:/home/username/markdownify-mcp/.venv/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "UV_HTTP_TIMEOUT": "300",
+        "UV_CONCURRENT_DOWNLOADS": "2",
+        "UV_CACHE_DIR": "/home/username/.cache/uv",
+        "VIRTUAL_ENV": "/home/username/markdownify-mcp/.venv",
+        "PYTHONFAULTHANDLER": "1",
+        "NODE_OPTIONS": "--max-old-space-size=2048"
+      },
+      "usagePolicy": {
+        "priority": "low",
+        "prompt": "Use markdownify for converting content into markdown format. Ideal for documentation or formatting tasks. Ensure content accuracy during conversion.",
+        "useCases": [
+          "documentation",
+          "content formatting"
+        ],
+        "constraints": "Verify output for correctness, especially with complex HTML structures."
+      }
+    },
+    "deebo": {
+      "command": "node",
+      "args": [
+        "--experimental-specifier-resolution=node",
+        "--experimental-modules",
+        "--max-old-space-size=4096",
+        "/home/username/deebo-prototype/build/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "USE_MEMORY_BANK": "true",
+        "MOTHER_HOST": "openrouter",
+        "MOTHER_MODEL": "anthropic/claude-3.5-sonnet",
+        "SCENARIO_HOST": "openrouter",
+        "SCENARIO_MODEL": "deepseek/deepseek-chat",
+        "OPENROUTER_API_KEY": "your_openrouter_api_key_here",
+        "MEMORY_BANK_PATH": "/home/username/.deebo/memory-bank",
+        "SESSION_TIMEOUT": "1800000",
+        "MAX_CONCURRENT_SESSIONS": "3",
+        "ALLOWED_PATHS": "/home/username",
+        "RESTRICTED_PATHS": "/etc,/sys,/proc,/dev",
+        "DEBUG": "deebo:*",
+        "LOG_LEVEL": "info",
+        "PATH": "/home/username/.cargo/bin:/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Deebo is for experimental AI interactions using different models. Use for testing alternative AI responses or complex scenario analysis. Ensure memory bank usage for continuity.",
+        "useCases": [
+          "AI experimentation",
+          "scenario testing"
+        ],
+        "constraints": "Secure API keys. Limit session concurrency to avoid overloading."
+      }
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use puppeteer for browser automation tasks like web scraping or testing web applications. Ensure scripts are safe and respect website terms of service.",
+        "useCases": [
+          "web automation",
+          "testing",
+          "data scraping"
+        ],
+        "constraints": "Avoid actions that could violate privacy or terms of service. Use minimal resources."
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Leverage sequential-thinking for complex problem-solving requiring step-by-step analysis. Use for tasks where intermediate conclusions need reevaluation. Adjust thought count dynamically based on problem depth.",
+        "useCases": [
+          "problem solving",
+          "hypothesis testing"
+        ],
+        "constraints": "Ensure thought process remains focused. Avoid overcomplicating simple tasks."
+      }
+    }
+  }
+}

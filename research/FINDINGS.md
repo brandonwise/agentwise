@@ -1,0 +1,135 @@
+# WS-2 Findings: 50+ Real MCP Config Scan
+## Scope
+Scanned real-world MCP server configurations collected from public GitHub config files, official `@modelcontextprotocol` READMEs, and community tutorial docs.
+- External source-derived configs: **61** (single-server normalized files)
+- Combined test configs (derived from above): **4**
+- Total config files scanned by agentwise: **65**
+- Total server entries scanned: **109**
+- Aggregate live scan score: **0/100 (F)**  
+  _(single aggregate score across all findings in one run)_
+
+## Findings by Severity
+- Critical: **0**
+- High: **13**
+- Medium: **117**
+- Low: **0**
+- Total findings: **130**
+
+## Most Common Issues (Top 5 Rules Triggered)
+- **AW-007**: 109 findings
+- **AW-002**: 9 findings
+- **AW-009**: 6 findings
+- **AW-005**: 2 findings
+- **AW-004**: 2 findings
+
+## Required Risk Metrics
+- % of servers with no auth on remote endpoints (AW-001): **0.00%** (0/109)
+- % with hardcoded secrets (AW-004): **1.83%** (2/109)
+- % with unrestricted filesystem access (AW-002): **8.26%** (9/109)
+- % with shell/exec access (AW-003): **0.00%** (0/109)
+- % with known CVEs (AW-006): **0.00%** (0/109)
+
+## Average Security Score
+- Average per-config score: **89.00/100** across 65 configs (computed by scanning each config individually with agentwise)
+- Best config score: **95/100 (A)** — `research/configs/sources/community-tuto-054-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json`
+- Worst config score: **5/100 (F)** — `research/configs/combined/combined-batch-04.mcp.json`
+
+## Notable Findings
+- **Universal allowlist gap**: AW-007 triggered on every scanned server entry (109/109), indicating missing or incomplete tool allowlists across real-world configs.
+- **Real hardcoded credential exposure observed**: an OpenRouter/OpenAI-style key pattern was detected in a public config (`browserbase-local`).
+- **Insecure transport still appears in the wild**: HTTP (non-TLS) endpoint usage was detected (`service-desk-plus`).
+- **Filesystem over-permissioning remains common**: multiple filesystem servers lacked `allowedDirectories`, expanding potential blast radius.
+- **Network-capable servers often unrestricted**: fetch/browser automation servers were able to access arbitrary domains.
+
+### Notable Finding Samples
+| Rule | Severity | Server | Config file | Title |
+|---|---|---|---|---|
+| AW-009 | Medium | `fetch` | `research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json` | Unrestricted network access |
+| AW-002 | High | `filesystem` | `research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json` | Filesystem server without allowedDirectories |
+| AW-002 | High | `filesystem` | `research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json` | Filesystem server without allowedDirectories |
+| AW-005 | High | `service-desk-plus` | `research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json` | Insecure HTTP URL in args |
+| AW-002 | High | `filesystem` | `research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json` | Filesystem server without allowedDirectories |
+| AW-009 | Medium | `puppeteer` | `research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json` | Unrestricted network access |
+| AW-002 | High | `filesystem` | `research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json` | Filesystem server without allowedDirectories |
+| AW-002 | High | `filesystem` | `research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json` | Filesystem server without allowedDirectories |
+| AW-004 | High | `browserbase-local` | `research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json` | OpenAI API key in env var |
+| AW-009 | Medium | `browserbase-local` | `research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json` | Unrestricted network access |
+| AW-008 | Medium | `github-mcp-server` | `research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json` | Write-capable tools without restriction |
+| AW-005 | High | `service-desk-plus` | `research/configs/combined/combined-batch-01.mcp.json` | Insecure HTTP URL in args |
+
+## Source Attribution (All Collected External Configs)
+| # | Local file | Server | Source type | Source URL |
+|---:|---|---|---|---|
+| 1 | `research/configs/sources/github-config-001-sendaifun-solana-mcp-agent-kit.mcp.json` | `agent-kit` | github-config | https://github.com/sendaifun/solana-mcp/blob/096c2336e07f2a38f262cc9b7341d9795d5a364a/claude_desktop_config.json |
+| 2 | `research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json` | `service-desk-plus` | github-config | https://github.com/PTTG-IT/SDP-MCP/blob/77aebc1744eb19b73fb0f99588615c8578e66296/claude_desktop_config.json |
+| 3 | `research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json` | `filesystem` | github-config | https://github.com/MarsAeon/idea/blob/afa7446cc94bc5bff4ff8240046b8dd3dc1aae79/claude_desktop_config.json |
+| 4 | `research/configs/sources/github-config-004-marsaeon-idea-memory.mcp.json` | `memory` | github-config | https://github.com/MarsAeon/idea/blob/afa7446cc94bc5bff4ff8240046b8dd3dc1aae79/claude_desktop_config.json |
+| 5 | `research/configs/sources/github-config-005-marsaeon-idea-git.mcp.json` | `git` | github-config | https://github.com/MarsAeon/idea/blob/afa7446cc94bc5bff4ff8240046b8dd3dc1aae79/claude_desktop_config.json |
+| 6 | `research/configs/sources/github-config-006-marsaeon-idea-time.mcp.json` | `time` | github-config | https://github.com/MarsAeon/idea/blob/afa7446cc94bc5bff4ff8240046b8dd3dc1aae79/claude_desktop_config.json |
+| 7 | `research/configs/sources/github-config-007-luo-gary-bytebuddies-guess.mcp.json` | `guess` | github-config | https://github.com/luo-gary/ByteBuddies/blob/86960dc72c9644007b805020b039627ea061e703/old/claude_desktop_config.json |
+| 8 | `research/configs/sources/github-config-008-paul-sizon-zetachain-mcp-zetachain-mcp.mcp.json` | `zetachain-mcp` | github-config | https://github.com/Paul-Sizon/zetachain-mcp/blob/0b846acde760d1d3359cdc883983b14c9812d1c8/claude_desktop_config.json |
+| 9 | `research/configs/sources/github-config-009-stevengeller-youtube-transcrib-youtube-transcriber-enhanced.mcp.json` | `youtube-transcriber-enhanced` | github-config | https://github.com/StevenGeller/youtube-transcriber-mcp/blob/dd0c8f59520544a5e8c0561313fc64622ce708f9/claude_desktop_config.json |
+| 10 | `research/configs/sources/github-config-010-angrysky56-ast-mcp-server-astanalyzer.mcp.json` | `AstAnalyzer` | github-config | https://github.com/angrysky56/ast-mcp-server/blob/f7edf10eda9c96c89e40b49161aa072430746e12/claude_desktop_config.json |
+| 11 | `research/configs/sources/github-config-011-repr0bated-op-dbus-staging-operation-dbus.mcp.json` | `operation-dbus` | github-config | https://github.com/repr0bated/op-dbus-staging/blob/41e7268faa57bca149a3874f41a1596856d444ac/docs/claude_desktop_config.json |
+| 12 | `research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json` | `filesystem` | github-config | https://github.com/repr0bated/op-dbus-staging/blob/41e7268faa57bca149a3874f41a1596856d444ac/docs/claude_desktop_config.json |
+| 13 | `research/configs/sources/github-config-013-repr0bated-op-dbus-staging-memory.mcp.json` | `memory` | github-config | https://github.com/repr0bated/op-dbus-staging/blob/41e7268faa57bca149a3874f41a1596856d444ac/docs/claude_desktop_config.json |
+| 14 | `research/configs/sources/github-config-014-tdiderich-runzero-scripts-runzero-mcp.mcp.json` | `runZero MCP` | github-config | https://github.com/tdiderich/runZero-scripts/blob/ee26624b1ba07356597a7e1d979333a88693b02d/mcp/claude_desktop_config.json |
+| 15 | `research/configs/sources/github-config-015-tahubu-ai-tahubusf-tahubusf.mcp.json` | `TahubuSF` | github-config | https://github.com/Tahubu-AI/TahubuSF/blob/6af8204bef4dc07d55cadd842ed0a594ff6d0d04/claude_desktop_config.json |
+| 16 | `research/configs/sources/github-config-016-mortalreminderpt-whiteboard-ap-whiteboard-app.mcp.json` | `whiteboard_app` | github-config | https://github.com/mortalreminderpt/whiteboard-app-mcp/blob/e05b940b1f56951ad64e6ee742f6de089fca04a2/claude_desktop_config.json |
+| 17 | `research/configs/sources/github-config-017-nanocentury-ai-supersimplemcp-simple-character-counter.mcp.json` | `simple-character-counter` | github-config | https://github.com/nanocentury-ai/supersimpleMCP/blob/46f823069eb63280f577d87ff233ceff6c92c814/claude_desktop_config.json |
+| 18 | `research/configs/sources/github-config-018-rivadeus-mis453-midterm-mcp-sentimentscope.mcp.json` | `sentimentscope` | github-config | https://github.com/Rivadeus/MIS453-Midterm-MCP/blob/674799cdb69bbea58d1839f2c9e6462568d30683/claude_desktop_config.json |
+| 19 | `research/configs/sources/github-config-019-avniproject-avni-impl-bundles-google-drive.mcp.json` | `google-drive` | github-config | https://github.com/avniproject/avni-impl-bundles/blob/57fffbb71a80d022f67d4990975af4babc902960/.mcp/claude_desktop_config.json |
+| 20 | `research/configs/sources/github-config-020-dodhon-message-analysis-mcp-imessage-analysis.mcp.json` | `imessage-analysis` | github-config | https://github.com/Dodhon/message-analysis-mcp/blob/10e2ce7185235b3436876d00a30c0c6856d014a7/claude_desktop_config.json |
+| 21 | `research/configs/sources/github-config-021-vist233-ai-web-searcher-aiwebsearcher.mcp.json` | `aiwebsearcher` | github-config | https://github.com/Vist233/AI-Web-Searcher/blob/5dfe625eab92d8ddd007bfec62ca8337b162640a/claude_desktop_config.json |
+| 22 | `research/configs/sources/github-config-022-shivkumarsah-infragpt-mcp-infra-monitor.mcp.json` | `infra-monitor` | github-config | https://github.com/shivkumarsah/InfraGPT-MCP/blob/66d78558566de220e95a9579978f89d49216a51b/claude_desktop_config.json |
+| 23 | `research/configs/sources/github-config-023-pedrohsguimaraes-nuvem-shop-mc-tiendanube.mcp.json` | `tiendanube` | github-config | https://github.com/PedroHSGuimaraes/nuvem-shop-mcp-server/blob/c7fba53709b5e95b28f8058b810b886bbb8cd9da/claude_desktop_config.json |
+| 24 | `research/configs/sources/github-config-024-liueic-pubchem-mcp-server-pubchem-chemical-safety.mcp.json` | `pubchem-chemical-safety` | github-config | https://github.com/liueic/PubChem-MCP-Server/blob/48ca1f56703a46d45c3bb5e6092246749888cfc7/claude_desktop_config.json |
+| 25 | `research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json` | `filesystem` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 26 | `research/configs/sources/github-config-026-kolyslav-enhanced-mcp-config-enhanced-demo.mcp.json` | `enhanced-demo` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 27 | `research/configs/sources/github-config-027-kolyslav-enhanced-mcp-config-ast-grep.mcp.json` | `ast-grep` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 28 | `research/configs/sources/github-config-028-kolyslav-enhanced-mcp-config-context7.mcp.json` | `Context7` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 29 | `research/configs/sources/github-config-029-kolyslav-enhanced-mcp-config-git-mcp.mcp.json` | `git-mcp` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 30 | `research/configs/sources/github-config-030-kolyslav-enhanced-mcp-config-claude-prompts.mcp.json` | `claude-prompts` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 31 | `research/configs/sources/github-config-031-kolyslav-enhanced-mcp-config-mcp-server-docker.mcp.json` | `mcp-server-docker` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 32 | `research/configs/sources/github-config-032-kolyslav-enhanced-mcp-config-cognee.mcp.json` | `cognee` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 33 | `research/configs/sources/github-config-033-kolyslav-enhanced-mcp-config-markdownify.mcp.json` | `markdownify` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 34 | `research/configs/sources/github-config-034-kolyslav-enhanced-mcp-config-deebo.mcp.json` | `deebo` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 35 | `research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json` | `puppeteer` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 36 | `research/configs/sources/github-config-036-kolyslav-enhanced-mcp-config-sequential-thinking.mcp.json` | `sequential-thinking` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 37 | `research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json` | `fetch` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 38 | `research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json` | `github-mcp-server` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 39 | `research/configs/sources/github-config-039-kolyslav-enhanced-mcp-config-brave-search.mcp.json` | `brave-search` | github-config | https://github.com/KoLyslaV/enhanced-mcp-config/blob/30d61521e1281328d1530db85c9cccb33f4866ea/claude_desktop_config.json |
+| 40 | `research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json` | `filesystem` | github-config | https://github.com/angelargd8/proyecto1-redes/blob/8abcf5d0f49348d1c3aef105baf0b4f817597c45/config/claude_desktop_config.json |
+| 41 | `research/configs/sources/github-config-041-angelargd8-proyecto1-redes-git-local.mcp.json` | `git-local` | github-config | https://github.com/angelargd8/proyecto1-redes/blob/8abcf5d0f49348d1c3aef105baf0b4f817597c45/config/claude_desktop_config.json |
+| 42 | `research/configs/sources/github-config-042-w3jdev-ultimate-mcp-system-ultimate-mcp-hub.mcp.json` | `ultimate-mcp-hub` | github-config | https://github.com/W3JDev/ultimate-mcp-system/blob/33366661eb0656b34d9b30e3b86f6b55b00910b9/config/claude_desktop_config.json |
+| 43 | `research/configs/sources/github-config-043-ivossos-newcashflow-agent-cashflow-forecast.mcp.json` | `cashflow-forecast` | github-config | https://github.com/ivossos/newcashflow-agent/blob/4ca0281d3ccd4365b62925c2aef9c0f74b5edcf3/claude_desktop_config.json |
+| 44 | `research/configs/sources/github-config-044-aswinthulasir-mcp-selenium-selenium.mcp.json` | `selenium` | github-config | https://github.com/aswinthulasir/mcp-selenium/blob/6f7e6ff726091f295a00c0d8e5f8449f907d8976/claude_desktop_config.json |
+| 45 | `research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json` | `browserbase-local` | github-config | https://github.com/Jony2176/Fotolibros-Argentina-/blob/70794519a5562c976a96bc67706b2a3f835b1da7/claude_desktop_config.json |
+| 46 | `research/configs/sources/official-readm-046-modelcontextprotocol-servers-git.mcp.json` | `git` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/git/README.md |
+| 47 | `research/configs/sources/official-readm-047-modelcontextprotocol-servers-git.mcp.json` | `git` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/git/README.md |
+| 48 | `research/configs/sources/official-readm-048-modelcontextprotocol-servers-everything.mcp.json` | `everything` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/everything/README.md |
+| 49 | `research/configs/sources/official-readm-049-modelcontextprotocol-servers-memory.mcp.json` | `memory` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/memory/README.md |
+| 50 | `research/configs/sources/official-readm-050-modelcontextprotocol-servers-memory.mcp.json` | `memory` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/memory/README.md |
+| 51 | `research/configs/sources/official-readm-051-modelcontextprotocol-servers-sequential-thinking.mcp.json` | `sequential-thinking` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/sequentialthinking/README.md |
+| 52 | `research/configs/sources/official-readm-052-modelcontextprotocol-servers-sequentialthinking.mcp.json` | `sequentialthinking` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/sequentialthinking/README.md |
+| 53 | `research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json` | `filesystem` | official-readme | https://github.com/modelcontextprotocol/servers/blob/a97aba19eb218bedd37ae19c27893ee6659f1555/src/filesystem/README.md |
+| 54 | `research/configs/sources/community-tuto-054-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json` | `fastmcp-tutorial` | community-tutorial | https://github.com/zazencodes/zazencodes-season-2/blob/21b36bd98de51efd58aeceaafd0588f3961f00c3/src/fastmcp-tutorial/README.md |
+| 55 | `research/configs/sources/community-tuto-055-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json` | `fastmcp-tutorial` | community-tutorial | https://github.com/zazencodes/zazencodes-season-2/blob/21b36bd98de51efd58aeceaafd0588f3961f00c3/src/fastmcp-tutorial/README.md |
+| 56 | `research/configs/sources/community-tuto-056-jddunn-tenets-tenets.mcp.json` | `tenets` | community-tutorial | https://github.com/jddunn/tenets/blob/1740ce4ad0b1b73cc61dabff95f146c563f33060/docs/tutorial.md |
+| 57 | `research/configs/sources/community-tuto-057-claude-php-claude-php-agent-claude-php-agent.mcp.json` | `claude-php-agent` | community-tutorial | https://github.com/claude-php/claude-php-agent/blob/a8045cad6f224d16d13eeb9f1e9a38dc5fc34bb1/docs/tutorials/MCPServer_Tutorial.md |
+| 58 | `research/configs/sources/community-tuto-058-claude-php-claude-php-agent-agent-search.mcp.json` | `agent-search` | community-tutorial | https://github.com/claude-php/claude-php-agent/blob/a8045cad6f224d16d13eeb9f1e9a38dc5fc34bb1/docs/tutorials/MCPServer_Tutorial.md |
+| 59 | `research/configs/sources/community-tuto-059-claude-php-claude-php-agent-production-agents.mcp.json` | `production-agents` | community-tutorial | https://github.com/claude-php/claude-php-agent/blob/a8045cad6f224d16d13eeb9f1e9a38dc5fc34bb1/docs/tutorials/MCPServer_Tutorial.md |
+| 60 | `research/configs/sources/community-tuto-060-claude-php-claude-php-agent-dev-agents.mcp.json` | `dev-agents` | community-tutorial | https://github.com/claude-php/claude-php-agent/blob/a8045cad6f224d16d13eeb9f1e9a38dc5fc34bb1/docs/tutorials/MCPServer_Tutorial.md |
+| 61 | `research/configs/sources/community-tuto-061-ghassenabida-djinson-mcp-laravel-app.mcp.json` | `laravel-app` | community-tutorial | https://github.com/GhassenAbida/djinson_mcp/blob/e8cf8e75e997d0134041ff2d03867f7ad9a9edfd/docs/TUTORIAL.md |
+
+## Combined Test Config Attribution
+The following combined configs were generated from the externally sourced configs above (no fabricated server definitions):
+- `research/configs/combined/combined-batch-01.mcp.json` — 12 server entries (derived set)
+- `research/configs/combined/combined-batch-02.mcp.json` — 12 server entries (derived set)
+- `research/configs/combined/combined-batch-03.mcp.json` — 12 server entries (derived set)
+- `research/configs/combined/combined-batch-04.mcp.json` — 12 server entries (derived set)
+
+## Method Notes
+- Live scan command used: `cargo run -- scan research/configs/ --live --format json > research/scan-results.json`
+- Terminal report command used: `cargo run -- scan research/configs/ --live > research/scan-results-terminal.txt`
+- For percentage metrics, denominator is `servers_scanned` from the live aggregate run.

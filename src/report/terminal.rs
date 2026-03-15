@@ -1,3 +1,4 @@
+use crate::discover::DiscoveredConfig;
 use crate::rules::{Finding, Severity};
 use crate::scanner::{OsvStats, ScanResult};
 use owo_colors::OwoColorize;
@@ -262,6 +263,100 @@ fn render_score(result: &ScanResult) -> String {
     format!("{}\n{}\n{}\n", top, mid, bot)
 }
 
+/// Render a discovery report in terminal format.
+pub fn render_discover(configs: &[DiscoveredConfig]) -> String {
+    let mut out = String::new();
+
+    out.push('\n');
+    out.push_str(&render_header());
+    out.push('\n');
+
+    let existing: Vec<&DiscoveredConfig> = configs.iter().filter(|c| c.exists).collect();
+    let missing: Vec<&DiscoveredConfig> = configs.iter().filter(|c| !c.exists).collect();
+
+    let total_servers: usize = existing.iter().map(|c| c.server_count).sum();
+
+    out.push_str(&format!(
+        "  {} Discovered {} {} ({} with MCP configs, {} {})\n\n",
+        "●".green(),
+        configs.len(),
+        if configs.len() == 1 {
+            "location"
+        } else {
+            "locations"
+        },
+        existing.len(),
+        total_servers,
+        if total_servers == 1 {
+            "server"
+        } else {
+            "servers"
+        },
+    ));
+
+    if !existing.is_empty() {
+        let top = format!(
+            "  {}",
+            "┌──────────────────────────────────────────────────────────────┐".green()
+        );
+        let mid = format!(
+            "  {}  {}{}{}",
+            "│".green(),
+            "Found Configurations".green().bold(),
+            " ".repeat(62 - 4 - 20),
+            "│".green()
+        );
+        let bot = format!(
+            "  {}",
+            "└──────────────────────────────────────────────────────────────┘".green()
+        );
+        out.push_str(&format!("{}\n{}\n{}\n\n", top, mid, bot));
+
+        for config in &existing {
+            out.push_str(&format!(
+                "  {} {}\n",
+                "✔".green().bold(),
+                config.path.bold()
+            ));
+            out.push_str(&format!(
+                "    Source: {}  Servers: {}\n",
+                config.source.cyan(),
+                config.server_count
+            ));
+            if !config.servers.is_empty() {
+                for (i, name) in config.servers.iter().enumerate() {
+                    let prefix = if i == config.servers.len() - 1 {
+                        "└"
+                    } else {
+                        "├"
+                    };
+                    out.push_str(&format!("    {} {}\n", prefix, name.dimmed()));
+                }
+            }
+            out.push('\n');
+        }
+    }
+
+    if !missing.is_empty() {
+        out.push_str(&format!(
+            "  {} {}\n\n",
+            "Checked but not found:".dimmed(),
+            format!("({} locations)", missing.len()).dimmed()
+        ));
+        for config in &missing {
+            out.push_str(&format!(
+                "    {} {} {}\n",
+                "○".dimmed(),
+                config.path.dimmed(),
+                format!("({})", config.source).dimmed()
+            ));
+        }
+        out.push('\n');
+    }
+
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -373,5 +468,39 @@ mod tests {
         assert!(output.contains("Supply chain risk"));
         assert!(output.contains("Single maintainer"));
         assert!(output.contains("postinstall"));
+    }
+
+    #[test]
+    fn test_render_discover_with_configs() {
+        let configs = vec![
+            DiscoveredConfig {
+                path: "/home/user/.mcp.json".to_string(),
+                source: "Generic (~/.mcp.json)".to_string(),
+                exists: true,
+                server_count: 2,
+                servers: vec!["server-a".to_string(), "server-b".to_string()],
+            },
+            DiscoveredConfig {
+                path: "/home/user/.config/Claude/claude_desktop_config.json".to_string(),
+                source: "Claude Desktop".to_string(),
+                exists: false,
+                server_count: 0,
+                servers: vec![],
+            },
+        ];
+        let output = render_discover(&configs);
+        assert!(output.contains("agentwise"));
+        assert!(output.contains("2 locations"));
+        assert!(output.contains("server-a"));
+        assert!(output.contains("server-b"));
+        assert!(output.contains("Claude Desktop"));
+        assert!(output.contains("not found"));
+    }
+
+    #[test]
+    fn test_render_discover_empty() {
+        let configs: Vec<DiscoveredConfig> = vec![];
+        let output = render_discover(&configs);
+        assert!(output.contains("0 locations"));
     }
 }

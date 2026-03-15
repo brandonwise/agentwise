@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "dev-agents": {
+      "command": "php",
+      "args": [
+        "/path/to/dev/bin/mcp-server"
+      ],
+      "env": {
+        "ENV": "development"
+      }
+    }
+  }
+}

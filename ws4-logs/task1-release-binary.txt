@@ -1,0 +1,1 @@
+-rwx------@ 1 bwise  staff   4.0M Mar 15 08:59 target/release/agentwise

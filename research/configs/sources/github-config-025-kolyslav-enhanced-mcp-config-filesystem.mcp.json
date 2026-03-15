@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/home/username"
+      ],
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use this server for all file system operations including reading, writing, and managing files or directories. Ensure operations are restricted to allowed paths to prevent unauthorized access. Always validate file paths for security before execution.",
+        "useCases": [
+          "file management",
+          "project setup",
+          "codebase exploration"
+        ],
+        "constraints": "Do not access system directories like /etc or /sys unless explicitly authorized by the user."
+      }
+    }
+  }
+}

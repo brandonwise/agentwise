@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "enhanced-demo": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/mcp-server-demo",
+        "src/mcp_server_demo.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/home/username/mcp-server-demo/src",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "This server is for demonstration purposes. Utilize it to showcase MCP server capabilities or test new integrations in a sandboxed environment. Avoid using for production tasks.",
+        "useCases": [
+          "testing",
+          "demo"
+        ],
+        "constraints": "Limit usage to non-critical operations. Do not store sensitive data."
+      }
+    }
+  }
+}

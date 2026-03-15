@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "production-agents": {
+      "command": "php",
+      "args": [
+        "/path/to/prod/bin/mcp-server"
+      ],
+      "env": {
+        "ENV": "production"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running `target/debug/agentwise scan --help`
+Scan MCP server configurations for security issues
+
+Usage: agentwise scan [OPTIONS] [PATH]
+
+Arguments:
+  [PATH]  Path to scan (file or directory) [default: .]
+
+Options:
+      --format <FORMAT>    Output format [default: terminal] [possible values: terminal, json, sarif]
+      --fail-on <FAIL_ON>  Exit with code 1 if findings at this severity or above are found [possible values: critical, high, medium, low]
+      --live               Query OSV live for package CVEs found during this scan
+      --offline            Force offline mode (embedded + local cache only)
+      --supply-chain       Run supply chain and dependency analysis (requires network)
+  -h, --help               Print help

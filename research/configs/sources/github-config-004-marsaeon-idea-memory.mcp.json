@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\王敬尧\\Desktop\\idea\\mcp_servers\\src\\memory\\dist\\index.js"
+      ],
+      "env": {
+        "NODE_PATH": "c:\\Users\\王敬尧\\Desktop\\idea\\mcp_servers\\node_modules"
+      }
+    }
+  }
+}

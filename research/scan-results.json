@@ -1,0 +1,1187 @@
+{
+  "version": "0.1.0",
+  "configs_scanned": 65,
+  "servers_scanned": 109,
+  "score": 0,
+  "grade": "F",
+  "duration_ms": 30,
+  "findings": [
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'everything' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-048-modelcontextprotocol-servers-everything.mcp.json",
+      "server_name": "everything"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'claude-php-agent' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-057-claude-php-claude-php-agent-claude-php-agent.mcp.json",
+      "server_name": "claude-php-agent"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'agent-search' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-058-claude-php-claude-php-agent-agent-search.mcp.json",
+      "server_name": "agent-search"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'dev-agents' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-060-claude-php-claude-php-agent-dev-agents.mcp.json",
+      "server_name": "dev-agents"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-050-modelcontextprotocol-servers-memory.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'youtube-transcriber-enhanced' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-009-stevengeller-youtube-transcrib-youtube-transcriber-enhanced.mcp.json",
+      "server_name": "youtube-transcriber-enhanced"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'ultimate-mcp-hub' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-042-w3jdev-ultimate-mcp-system-ultimate-mcp-hub.mcp.json",
+      "server_name": "ultimate-mcp-hub"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'AstAnalyzer' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-010-angrysky56-ast-mcp-server-astanalyzer.mcp.json",
+      "server_name": "AstAnalyzer"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-005-marsaeon-idea-git.mcp.json",
+      "server_name": "git"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'ast-grep' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-027-kolyslav-enhanced-mcp-config-ast-grep.mcp.json",
+      "server_name": "ast-grep"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'fetch' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'fetch' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'markdownify' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-033-kolyslav-enhanced-mcp-config-markdownify.mcp.json",
+      "server_name": "markdownify"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'fastmcp-tutorial' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-055-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json",
+      "server_name": "fastmcp-tutorial"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'simple-character-counter' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-017-nanocentury-ai-supersimplemcp-simple-character-counter.mcp.json",
+      "server_name": "simple-character-counter"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'cashflow-forecast' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-043-ivossos-newcashflow-agent-cashflow-forecast.mcp.json",
+      "server_name": "cashflow-forecast"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-005",
+      "severity": "High",
+      "title": "Insecure HTTP URL in args",
+      "message": "Server 'service-desk-plus' has insecure HTTP URL in args: http://studio:3456/sse",
+      "fix": "Change URL to use https://",
+      "config_file": "research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json",
+      "server_name": "service-desk-plus"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'service-desk-plus' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json",
+      "server_name": "service-desk-plus"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git-local' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-041-angelargd8-proyecto1-redes-git-local.mcp.json",
+      "server_name": "git-local"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'fastmcp-tutorial' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-054-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json",
+      "server_name": "fastmcp-tutorial"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'claude-prompts' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-030-kolyslav-enhanced-mcp-config-claude-prompts.mcp.json",
+      "server_name": "claude-prompts"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-046-modelcontextprotocol-servers-git.mcp.json",
+      "server_name": "git"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-004-marsaeon-idea-memory.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-047-modelcontextprotocol-servers-git.mcp.json",
+      "server_name": "git"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'Context7' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-028-kolyslav-enhanced-mcp-config-context7.mcp.json",
+      "server_name": "Context7"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'time' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-006-marsaeon-idea-time.mcp.json",
+      "server_name": "time"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sentimentscope' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-018-rivadeus-mis453-midterm-mcp-sentimentscope.mcp.json",
+      "server_name": "sentimentscope"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'production-agents' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-059-claude-php-claude-php-agent-production-agents.mcp.json",
+      "server_name": "production-agents"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sequentialthinking' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-052-modelcontextprotocol-servers-sequentialthinking.mcp.json",
+      "server_name": "sequentialthinking"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'infra-monitor' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-022-shivkumarsah-infragpt-mcp-infra-monitor.mcp.json",
+      "server_name": "infra-monitor"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'mcp-server-docker' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-031-kolyslav-enhanced-mcp-config-mcp-server-docker.mcp.json",
+      "server_name": "mcp-server-docker"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'whiteboard_app' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-016-mortalreminderpt-whiteboard-ap-whiteboard-app.mcp.json",
+      "server_name": "whiteboard_app"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'tiendanube' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-023-pedrohsguimaraes-nuvem-shop-mc-tiendanube.mcp.json",
+      "server_name": "tiendanube"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'google-drive' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-019-avniproject-avni-impl-bundles-google-drive.mcp.json",
+      "server_name": "google-drive"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'TahubuSF' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-015-tahubu-ai-tahubusf-tahubusf.mcp.json",
+      "server_name": "TahubuSF"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'operation-dbus' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-011-repr0bated-op-dbus-staging-operation-dbus.mcp.json",
+      "server_name": "operation-dbus"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sequential-thinking' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-051-modelcontextprotocol-servers-sequential-thinking.mcp.json",
+      "server_name": "sequential-thinking"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'imessage-analysis' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-020-dodhon-message-analysis-mcp-imessage-analysis.mcp.json",
+      "server_name": "imessage-analysis"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'aiwebsearcher' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-021-vist233-ai-web-searcher-aiwebsearcher.mcp.json",
+      "server_name": "aiwebsearcher"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'selenium' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-044-aswinthulasir-mcp-selenium-selenium.mcp.json",
+      "server_name": "selenium"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'puppeteer' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json",
+      "server_name": "puppeteer"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'puppeteer' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json",
+      "server_name": "puppeteer"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-013-repr0bated-op-dbus-staging-memory.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'tenets' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-056-jddunn-tenets-tenets.mcp.json",
+      "server_name": "tenets"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'cognee' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-032-kolyslav-enhanced-mcp-config-cognee.mcp.json",
+      "server_name": "cognee"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git-mcp' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-029-kolyslav-enhanced-mcp-config-git-mcp.mcp.json",
+      "server_name": "git-mcp"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'agent-kit' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-001-sendaifun-solana-mcp-agent-kit.mcp.json",
+      "server_name": "agent-kit"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'brave-search' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-039-kolyslav-enhanced-mcp-config-brave-search.mcp.json",
+      "server_name": "brave-search"
+    },
+    {
+      "rule_id": "AW-004",
+      "severity": "High",
+      "title": "OpenAI API key in env var",
+      "message": "Server 'browserbase-local' has OpenAI API key exposed in env var 'OPENROUTER_API_KEY' = sk-o...2b0b",
+      "fix": "Use environment variable references instead of hardcoded secrets",
+      "config_file": "research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'browserbase-local' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'browserbase-local' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'deebo' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-034-kolyslav-enhanced-mcp-config-deebo.mcp.json",
+      "server_name": "deebo"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'github-mcp-server' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json",
+      "server_name": "github-mcp-server"
+    },
+    {
+      "rule_id": "AW-008",
+      "severity": "Medium",
+      "title": "Write-capable tools without restriction",
+      "message": "Server 'github-mcp-server' has write capabilities (create/update/delete) with no tool filtering",
+      "fix": "Add \"allowedTools\" to limit to read-only operations, or explicitly opt into write access",
+      "config_file": "research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json",
+      "server_name": "github-mcp-server"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'zetachain-mcp' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-008-paul-sizon-zetachain-mcp-zetachain-mcp.mcp.json",
+      "server_name": "zetachain-mcp"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sequential-thinking' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-036-kolyslav-enhanced-mcp-config-sequential-thinking.mcp.json",
+      "server_name": "sequential-thinking"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/official-readm-049-modelcontextprotocol-servers-memory.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'enhanced-demo' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-026-kolyslav-enhanced-mcp-config-enhanced-demo.mcp.json",
+      "server_name": "enhanced-demo"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'pubchem-chemical-safety' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-024-liueic-pubchem-mcp-server-pubchem-chemical-safety.mcp.json",
+      "server_name": "pubchem-chemical-safety"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'laravel-app' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/community-tuto-061-ghassenabida-djinson-mcp-laravel-app.mcp.json",
+      "server_name": "laravel-app"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'guess' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-007-luo-gary-bytebuddies-guess.mcp.json",
+      "server_name": "guess"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'runZero MCP' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/sources/github-config-014-tdiderich-runzero-scripts-runzero-mcp.mcp.json",
+      "server_name": "runZero MCP"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'time' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "time"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'zetachain-mcp' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "zetachain-mcp"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'guess' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "guess"
+    },
+    {
+      "rule_id": "AW-005",
+      "severity": "High",
+      "title": "Insecure HTTP URL in args",
+      "message": "Server 'service-desk-plus' has insecure HTTP URL in args: http://studio:3456/sse",
+      "fix": "Change URL to use https://",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "service-desk-plus"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'service-desk-plus' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "service-desk-plus"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'agent-kit' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "agent-kit"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'youtube-transcriber-enhanced' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "youtube-transcriber-enhanced"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "git"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'AstAnalyzer' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "AstAnalyzer"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'operation-dbus' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "operation-dbus"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem-1-12' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "filesystem-1-12"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem-1-12' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "filesystem-1-12"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-01.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-004",
+      "severity": "High",
+      "title": "OpenAI API key in env var",
+      "message": "Server 'browserbase-local' has OpenAI API key exposed in env var 'OPENROUTER_API_KEY' = sk-o...2b0b",
+      "fix": "Use environment variable references instead of hardcoded secrets",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'browserbase-local' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'browserbase-local' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "browserbase-local"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git-4-11' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "git-4-11"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'everything' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "everything"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git-local' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "git-local"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'cashflow-forecast' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "cashflow-forecast"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'selenium' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "selenium"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "git"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'github-mcp-server' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "github-mcp-server"
+    },
+    {
+      "rule_id": "AW-008",
+      "severity": "Medium",
+      "title": "Write-capable tools without restriction",
+      "message": "Server 'github-mcp-server' has write capabilities (create/update/delete) with no tool filtering",
+      "fix": "Add \"allowedTools\" to limit to read-only operations, or explicitly opt into write access",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "github-mcp-server"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'ultimate-mcp-hub' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "ultimate-mcp-hub"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'brave-search' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "brave-search"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'fetch' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'fetch' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/combined/combined-batch-04.mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'infra-monitor' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "infra-monitor"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'google-drive' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "google-drive"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'TahubuSF' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "TahubuSF"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'simple-character-counter' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "simple-character-counter"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'memory' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "memory"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'imessage-analysis' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "imessage-analysis"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'aiwebsearcher' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "aiwebsearcher"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'runZero MCP' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "runZero MCP"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sentimentscope' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "sentimentscope"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'tiendanube' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "tiendanube"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'pubchem-chemical-safety' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "pubchem-chemical-safety"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'whiteboard_app' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-02.mcp.json",
+      "server_name": "whiteboard_app"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'mcp-server-docker' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "mcp-server-docker"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'deebo' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "deebo"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'git-mcp' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "git-mcp"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'sequential-thinking' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "sequential-thinking"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'puppeteer' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "puppeteer"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'puppeteer' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "puppeteer"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'Context7' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "Context7"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'ast-grep' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "ast-grep"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'enhanced-demo' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "enhanced-demo"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "High",
+      "title": "Filesystem server without allowedDirectories",
+      "message": "Server 'filesystem' has no allowedDirectories restriction configured",
+      "fix": "Add \"allowedDirectories\" to restrict filesystem access scope",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'claude-prompts' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "claude-prompts"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'markdownify' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "markdownify"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'cognee' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "research/configs/combined/combined-batch-03.mcp.json",
+      "server_name": "cognee"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 13,
+    "medium": 117,
+    "low": 0,
+    "total": 130
+  }
+}

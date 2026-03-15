@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fastmcp-tutorial": {
+      "command": "uv",
+      "args": [
+        "run",
+        "fastmcp-tutorial"
+      ],
+      "cwd": "/absolute/path/to/fastmcp-tutorial"
+    }
+  }
+}

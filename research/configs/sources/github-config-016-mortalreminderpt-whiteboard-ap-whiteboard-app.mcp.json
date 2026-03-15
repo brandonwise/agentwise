@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "whiteboard_app": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "supergateway",
+        "--sse",
+        "http://localhost:8081/sse"
+      ]
+    }
+  }
+}

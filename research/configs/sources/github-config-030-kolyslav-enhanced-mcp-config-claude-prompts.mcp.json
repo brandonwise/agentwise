@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "claude-prompts": {
+      "command": "node",
+      "args": [
+        "/home/username/claude-prompts-mcp/server/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Access this server for predefined prompts tailored for Claude interactions. Select prompts based on task complexity and required output format. Customize prompts if necessary to fit specific user needs.",
+        "useCases": [
+          "prompt engineering",
+          "task-specific guidance"
+        ],
+        "constraints": "Ensure prompts are relevant to the task. Avoid generic or overly broad prompts."
+      }
+    }
+  }
+}

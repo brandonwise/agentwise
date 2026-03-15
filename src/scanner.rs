@@ -365,6 +365,276 @@ pub fn discover_and_parse(path: &str) -> Vec<ParsedConfig> {
     }
 }
 
+/// Scan a list of explicit config file paths and combine results.
+pub fn scan_paths(paths: &[String]) -> ScanResult {
+    let start = Instant::now();
+
+    let mut configs = Vec::new();
+    for path_str in paths {
+        let p = Path::new(path_str);
+        match load_config(p) {
+            Ok(config) => configs.push(config),
+            Err(e) => eprintln!("Warning: {}", e),
+        }
+    }
+
+    let rules = all_rules();
+    let mut findings = Vec::new();
+    let mut servers_scanned = 0;
+
+    for parsed_config in &configs {
+        for (server_name, server) in &parsed_config.config.mcp_servers {
+            if server.disabled == Some(true) {
+                continue;
+            }
+            servers_scanned += 1;
+
+            for rule in &rules {
+                let mut rule_findings = rule.check(server_name, server, &parsed_config.file_path);
+                findings.append(&mut rule_findings);
+            }
+        }
+    }
+
+    let severities: Vec<Severity> = findings.iter().map(|f| f.severity).collect();
+    let (score, grade) = compute_score(&severities);
+    let duration_ms = start.elapsed().as_millis() as u64;
+
+    ScanResult {
+        findings,
+        configs_scanned: configs.len(),
+        servers_scanned,
+        score,
+        grade,
+        duration_ms,
+        osv_stats: None,
+    }
+}
+
+/// Scan explicit paths with live OSV lookups + EPSS enrichment.
+pub async fn scan_paths_with_live(paths: &[String]) -> ScanResult {
+    let mut result = scan_paths(paths);
+
+    let mut all_configs = Vec::new();
+    for path_str in paths {
+        let p = Path::new(path_str);
+        if let Ok(config) = load_config(p) {
+            all_configs.push(config);
+        }
+    }
+
+    let mut package_usages = Vec::new();
+    let mut unique_packages: HashSet<String> = HashSet::new();
+
+    for parsed_config in &all_configs {
+        for (server_name, server) in &parsed_config.config.mcp_servers {
+            if server.disabled == Some(true) {
+                continue;
+            }
+            for (package, version) in extract_package_info(server) {
+                unique_packages.insert(package.clone());
+                package_usages.push((
+                    package,
+                    version,
+                    server_name.to_string(),
+                    parsed_config.file_path.clone(),
+                ));
+            }
+        }
+    }
+
+    if unique_packages.is_empty() {
+        result.osv_stats = Some(OsvStats {
+            packages_queried: 0,
+            new_vulnerabilities: 0,
+        });
+        enrich_with_epss(&mut result.findings).await;
+        return result;
+    }
+
+    let package_vec: Vec<String> = unique_packages.into_iter().collect();
+    let package_refs: Vec<&str> = package_vec.iter().map(String::as_str).collect();
+
+    let batch: Vec<(String, Vec<osv::OsvVulnerability>)> = if package_refs.len() == 1 {
+        let pkg = package_refs[0];
+        match osv::query_package(pkg, "npm").await {
+            Ok(vulns) => vec![(pkg.to_string(), vulns)],
+            Err(e) => {
+                eprintln!("Warning: live OSV lookup failed: {}", e);
+                result.osv_stats = Some(OsvStats {
+                    packages_queried: package_refs.len(),
+                    new_vulnerabilities: 0,
+                });
+                enrich_with_epss(&mut result.findings).await;
+                return result;
+            }
+        }
+    } else {
+        match osv::query_packages_batch(&package_refs, "npm").await {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Warning: live OSV lookup failed: {}", e);
+                result.osv_stats = Some(OsvStats {
+                    packages_queried: package_refs.len(),
+                    new_vulnerabilities: 0,
+                });
+                enrich_with_epss(&mut result.findings).await;
+                return result;
+            }
+        }
+    };
+
+    let mut live_cves_by_package: HashMap<String, Vec<cvedb::CveEntry>> = HashMap::new();
+    for (package, vulns) in &batch {
+        let entries = osv::vulns_to_cve_entries(package, vulns);
+        live_cves_by_package.insert(package.clone(), entries);
+    }
+
+    let mut existing_cve_keys: HashSet<(String, String, String)> = HashSet::new();
+    for finding in &result.findings {
+        if finding.rule_id == "AW-006" {
+            let cve_id = finding
+                .title
+                .split(':')
+                .next()
+                .unwrap_or("")
+                .trim()
+                .to_string();
+            if !cve_id.is_empty() {
+                existing_cve_keys.insert((
+                    cve_id,
+                    finding.config_file.clone(),
+                    finding.server_name.clone(),
+                ));
+            }
+        }
+    }
+
+    let mut new_findings = Vec::new();
+
+    for (package, version, server_name, config_file) in package_usages {
+        if let Some(cves) = live_cves_by_package.get(&package) {
+            let matching = cvedb::check_package(&package, &version, cves);
+            for cve in matching {
+                let key = (cve.id.clone(), config_file.clone(), server_name.clone());
+                if existing_cve_keys.contains(&key) {
+                    continue;
+                }
+
+                let severity = match cve.severity.as_str() {
+                    "critical" => Severity::Critical,
+                    "high" => Severity::High,
+                    "medium" => Severity::Medium,
+                    _ => Severity::Low,
+                };
+
+                new_findings.push(Finding {
+                    rule_id: "AW-006".to_string(),
+                    severity,
+                    title: format!("{}: {}", cve.id, cve.description),
+                    message: format!(
+                        "Server '{}' uses {}@{} which is affected by {} (CVSS {:.1})",
+                        server_name, package, version, cve.id, cve.cvss
+                    ),
+                    fix: cve.fix,
+                    config_file: config_file.clone(),
+                    server_name: server_name.clone(),
+                    source: Some("osv".to_string()),
+                    epss: None,
+                    sub_items: None,
+                });
+
+                existing_cve_keys.insert(key);
+            }
+        }
+    }
+
+    let new_count = new_findings.len();
+    result.findings.extend(new_findings);
+
+    enrich_with_epss(&mut result.findings).await;
+
+    let severities: Vec<Severity> = result.findings.iter().map(|f| f.severity).collect();
+    let (score, grade) = compute_score(&severities);
+    result.score = score;
+    result.grade = grade;
+    result.osv_stats = Some(OsvStats {
+        packages_queried: package_refs.len(),
+        new_vulnerabilities: new_count,
+    });
+
+    result
+}
+
+/// Scan explicit paths with supply chain and deps.dev analysis.
+pub async fn scan_paths_with_supply_chain(paths: &[String], live: bool) -> ScanResult {
+    let mut result = if live {
+        scan_paths_with_live(paths).await
+    } else {
+        scan_paths(paths)
+    };
+
+    let mut all_configs = Vec::new();
+    for path_str in paths {
+        let p = Path::new(path_str);
+        if let Ok(config) = load_config(p) {
+            all_configs.push(config);
+        }
+    }
+
+    let mut packages_for_supply_chain: Vec<(String, String, String)> = Vec::new();
+    let mut packages_for_deps: Vec<(String, String, String, String)> = Vec::new();
+    let mut seen_supply_chain: HashSet<String> = HashSet::new();
+    let mut seen_deps: HashSet<(String, String)> = HashSet::new();
+
+    for parsed_config in &all_configs {
+        for (server_name, server) in &parsed_config.config.mcp_servers {
+            if server.disabled == Some(true) {
+                continue;
+            }
+
+            for name in extract_all_package_names(server) {
+                if seen_supply_chain.insert(name.clone()) {
+                    packages_for_supply_chain.push((
+                        name,
+                        server_name.to_string(),
+                        parsed_config.file_path.clone(),
+                    ));
+                }
+            }
+
+            for (package, version) in extract_package_info(server) {
+                if seen_deps.insert((package.clone(), version.clone())) {
+                    packages_for_deps.push((
+                        package,
+                        version,
+                        server_name.to_string(),
+                        parsed_config.file_path.clone(),
+                    ));
+                }
+            }
+        }
+    }
+
+    if !packages_for_supply_chain.is_empty() {
+        let supply_chain_findings =
+            crate::rules::supply_chain::check_supply_chain(&packages_for_supply_chain).await;
+        result.findings.extend(supply_chain_findings);
+    }
+
+    if !packages_for_deps.is_empty() {
+        let deps_findings = crate::rules::deps::check_deps(&packages_for_deps).await;
+        result.findings.extend(deps_findings);
+    }
+
+    let severities: Vec<Severity> = result.findings.iter().map(|f| f.severity).collect();
+    let (score, grade) = compute_score(&severities);
+    result.score = score;
+    result.grade = grade;
+
+    result
+}
+
 /// Discover MCP config files in a directory.
 fn discover_configs(dir: &Path) -> Vec<ParsedConfig> {
     let mut configs = Vec::new();
@@ -465,5 +735,32 @@ mod tests {
         let parsed = discover_and_parse("testdata/vulnerable-mcp.json");
         assert_eq!(parsed.len(), 1);
         assert!(!parsed[0].config.mcp_servers.is_empty());
+    }
+
+    #[test]
+    fn test_scan_paths_multiple_files() {
+        let paths = vec![
+            "testdata/vulnerable-mcp.json".to_string(),
+            "testdata/clean-mcp.json".to_string(),
+        ];
+        let result = scan_paths(&paths);
+        assert_eq!(result.configs_scanned, 2);
+        assert!(result.servers_scanned > 0);
+    }
+
+    #[test]
+    fn test_scan_paths_empty() {
+        let paths: Vec<String> = vec![];
+        let result = scan_paths(&paths);
+        assert_eq!(result.configs_scanned, 0);
+        assert_eq!(result.servers_scanned, 0);
+        assert_eq!(result.score, 100);
+    }
+
+    #[test]
+    fn test_scan_paths_nonexistent() {
+        let paths = vec!["nonexistent/file.json".to_string()];
+        let result = scan_paths(&paths);
+        assert_eq!(result.configs_scanned, 0);
     }
 }

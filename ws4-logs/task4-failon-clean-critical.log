@@ -1,0 +1,23 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/agentwise scan testdata/clean-mcp.json --fail-on critical`
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  [36m[1magentwise[0m[39m [2mv0.1.0[0m  [2m║[0m
+  [2m║[0m  [37mMCP Security Scanner[39m                                      [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+
+  [32m●[39m Scanned 1 config (1 server) in [2m19ms[0m
+
+  [2m┌──────────────────────────────────────────────────────────────┐[0m
+  [2m│[0m  [1m[31m■[39m[0m [1m[31m0 critical[39m[0m  [1m[33m■[39m[0m [1m[33m0 high[39m[0m  [34m■[39m [34m1 medium[39m  [2m■[0m [2m0 low[0m                   [2m│[0m
+  [2m└──────────────────────────────────────────────────────────────┘[0m
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/clean-mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  Score: 95/100  [32m████████████████████████████░░[39m  Grade: [1m[32mA[39m[0m                    [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+
+Exit: 0

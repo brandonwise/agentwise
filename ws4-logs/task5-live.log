@@ -1,0 +1,86 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/agentwise scan testdata/vulnerable-mcp.json --live`
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  [36m[1magentwise[0m[39m [2mv0.1.0[0m  [2m║[0m
+  [2m║[0m  [37mMCP Security Scanner[39m                                      [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+
+  [32m●[39m Scanned 1 config (5 servers) in [2m9ms[0m
+
+  [2m┌──────────────────────────────────────────────────────────────┐[0m
+  [2m│[0m  [1m[31m■[39m[0m [1m[31m3 critical[39m[0m  [1m[33m■[39m[0m [1m[33m4 high[39m[0m  [34m■[39m [34m9 medium[39m  [2m■[0m [2m0 low[0m                   [2m│[0m
+  [2m└──────────────────────────────────────────────────────────────┘[0m
+
+  [1m[31m✖[39m[0m [1m[31mCRITICAL[39m[0m [2mtestdata/vulnerable-mcp.json → quickbooks[0m [2mAW-001[0m
+    No authentication on remote MCP server
+    [1m[32mFix:[39m[0m Add authentication via env vars (AUTH_TOKEN, API_KEY, etc.)
+
+  [1m[31m✖[39m[0m [1m[31mCRITICAL[39m[0m [2mtestdata/vulnerable-mcp.json → shell[0m [2mAW-003[0m
+    Unrestricted shell/exec access
+    [1m[32mFix:[39m[0m Add allowedTools or remove shell access entirely
+
+  [1m[31m✖[39m[0m [1m[31mCRITICAL[39m[0m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server with dangerous root access
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict access to specific project directories
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2mtestdata/vulnerable-mcp.json → database[0m [2mAW-004[0m
+    Generic password in connection string in args
+    [1m[32mFix:[39m[0m Use environment variable references instead of hardcoded secrets
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2mtestdata/vulnerable-mcp.json → shell[0m [2mAW-004[0m
+    OpenAI API key in env var
+    [1m[32mFix:[39m[0m Use environment variable references instead of hardcoded secrets
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-006[0m
+    CVE-2025-53110: Path traversal vulnerability allows reading files outside allowed directories
+    EPSS: 0% exploitation probability (16th percentile)
+    [1m[32mFix:[39m[0m Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-006[0m
+    CVE-2025-53109: Symlink following allows escaping allowed directories to read or write arbitrary files
+    EPSS: 0% exploitation probability (42th percentile)
+    [1m[32mFix:[39m[0m Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → quickbooks[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → database[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → database[0m [2mAW-008[0m
+    Write-capable tools without restriction
+    [1m[32mFix:[39m[0m Add "allowedTools" to limit to read-only operations, or explicitly opt into write access
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → fetch[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → fetch[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → shell[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-006[0m
+    GHSA-hc55-p739-j48w: 
+    [1m[32mFix:[39m[0m Check @modelcontextprotocol/server-filesystem for updates
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-006[0m
+    GHSA-q66q-fx2p-7w4m: 
+    [1m[32mFix:[39m[0m Check @modelcontextprotocol/server-filesystem for updates
+
+  [34m●[39m [34mMEDIUM  [39m [2mtestdata/vulnerable-mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [36m●[39m Live CVE check: queried OSV for 1 package (0 new vulnerabilities found)
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  Score: 0/100  [1m[31m░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[39m[0m  Grade: [1m[31mF[39m[0m                    [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+

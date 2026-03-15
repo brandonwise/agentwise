@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agent-search": {
+      "command": "php",
+      "args": [
+        "/path/to/bin/mcp-server"
+      ],
+      "description": "Search and execute AI agents"
+    }
+  }
+}

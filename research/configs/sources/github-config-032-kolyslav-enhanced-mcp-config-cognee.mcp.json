@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "cognee": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/cognee-mcp",
+        "main.py"
+      ],
+      "env": {
+        "ENV": "local",
+        "TOKENIZERS_PARALLELISM": "false",
+        "LLM_API_KEY": "your_openai_api_key_here",
+        "GRAPH_DATABASE_PROVIDER": "networkx",
+        "VECTOR_DB_PROVIDER": "lancedb",
+        "DB_PROVIDER": "sqlite",
+        "DB_NAME": "cognee_db",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "PATH": "/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "UV_HTTP_TIMEOUT": "300",
+        "UV_CONCURRENT_DOWNLOADS": "2",
+        "UV_CACHE_DIR": "/home/username/.cache/uv",
+        "PYTHONFAULTHANDLER": "1",
+        "PYTHONOPTIMIZE": "1"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Leverage cognee for cognitive computing tasks such as knowledge graph management and semantic analysis. Use when deep understanding or data correlation is required. Ensure API key security during operations.",
+        "useCases": [
+          "knowledge management",
+          "data analysis"
+        ],
+        "constraints": "Protect API keys and sensitive data. Limit to tasks requiring advanced cognition."
+      }
+    }
+  }
+}

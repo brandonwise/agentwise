@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "operation-dbus": {
+      "command": "node",
+      "args": [
+        "/git/operation-dbus/mcp-server-stdio.js"
+      ]
+    }
+  }
+}

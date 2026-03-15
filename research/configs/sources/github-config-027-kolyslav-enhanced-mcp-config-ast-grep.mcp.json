@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "ast-grep": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/home/username/ast-grep-mcp",
+        "main.py"
+      ],
+      "env": {
+        "PATH": "/home/username/.cargo/bin:/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Leverage ast-grep for advanced code analysis and structural search across codebases. Use for refactoring, finding patterns, or ensuring code quality. Provide detailed queries to maximize search precision.",
+        "useCases": [
+          "code refactoring",
+          "pattern matching",
+          "quality assurance"
+        ],
+        "constraints": "Avoid overuse on very large codebases to prevent performance issues. Use specific filters to narrow search scope."
+      }
+    }
+  }
+}

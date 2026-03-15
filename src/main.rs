@@ -1,6 +1,7 @@
 mod config;
 mod cvedb;
 mod depsdev;
+mod discover;
 mod epss;
 mod osv;
 mod report;
@@ -53,6 +54,25 @@ enum Commands {
         /// Run supply chain and dependency analysis (requires network)
         #[arg(long)]
         supply_chain: bool,
+
+        /// Auto-discover all system MCP configs and scan them
+        #[arg(long)]
+        auto: bool,
+    },
+
+    /// Discover MCP configuration files across the system
+    Discover {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+
+        /// Discover and scan all found configs
+        #[arg(long)]
+        scan: bool,
+
+        /// Output format for --scan mode
+        #[arg(long, default_value = "terminal", value_parser = ["terminal", "json", "sarif"])]
+        format: String,
     },
 
     /// Update local CVE cache from OSV
@@ -71,10 +91,24 @@ async fn main() {
             live,
             offline,
             supply_chain,
+            auto,
         } => {
             let output_format = OutputFormat::from_str(&format).unwrap_or(OutputFormat::Terminal);
 
-            let result = if supply_chain && !offline {
+            let result = if auto {
+                let paths = discover::discover_existing_paths();
+                if paths.is_empty() {
+                    eprintln!("No MCP configurations found on this system.");
+                    return;
+                }
+                if supply_chain && !offline {
+                    scanner::scan_paths_with_supply_chain(&paths, live).await
+                } else if live && !offline {
+                    scanner::scan_paths_with_live(&paths).await
+                } else {
+                    scanner::scan_paths(&paths)
+                }
+            } else if supply_chain && !offline {
                 scanner::scan_with_supply_chain(&path, live).await
             } else if live && !offline {
                 scanner::scan_with_live(&path).await
@@ -93,6 +127,33 @@ async fn main() {
                         std::process::exit(1);
                     }
                 }
+            }
+        }
+        Commands::Discover { json, scan, format } => {
+            if scan {
+                // Discover + scan mode
+                let paths = discover::discover_existing_paths();
+                if paths.is_empty() {
+                    eprintln!("No MCP configurations found on this system.");
+                    return;
+                }
+                let result = scanner::scan_paths(&paths);
+                let output_format = if json {
+                    OutputFormat::Json
+                } else {
+                    OutputFormat::from_str(&format).unwrap_or(OutputFormat::Terminal)
+                };
+                let output = report::render(&result, output_format);
+                print!("{}", output);
+            } else if json {
+                // JSON discovery report
+                let configs = discover::discover_configs();
+                let output = serde_json::to_string_pretty(&configs).unwrap();
+                println!("{}", output);
+            } else {
+                // Pretty terminal discovery report
+                let configs = discover::discover_configs();
+                print!("{}", report::terminal::render_discover(&configs));
             }
         }
         Commands::Update => {

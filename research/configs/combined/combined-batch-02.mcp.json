@@ -1,0 +1,102 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "runZero MCP": {
+      "command": "/Users/tyler/.local/share/virtualenvs/runZero-scripts-VoSeJ_A1/bin/python3",
+      "args": [
+        "/Users/tyler/git/runZero-scripts/mcp/run.py"
+      ],
+      "enabled": true
+    },
+    "TahubuSF": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "D:\\repos\\TahubuSF",
+        "run",
+        "run.py"
+      ]
+    },
+    "whiteboard_app": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "supergateway",
+        "--sse",
+        "http://localhost:8081/sse"
+      ]
+    },
+    "simple-character-counter": {
+      "command": "python",
+      "args": [
+        "/Users/electron/workspace/Nanocentury AI/NIO-MCPs/supersimpleMCP/server.py"
+      ]
+    },
+    "sentimentscope": {
+      "command": "C:\\Users\\Riva\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+      "args": [
+        "C:\\Users\\Riva\\Desktop\\sentimentscope-mcp\\mcp_server.py"
+      ]
+    },
+    "google-drive": {
+      "command": "npx",
+      "args": [
+        "@piotr-agier/google-drive-mcp"
+      ],
+      "env": {
+        "GOOGLE_DRIVE_OAUTH_CREDENTIALS": "./.mcp/gcp-oauth.keys.json"
+      }
+    },
+    "imessage-analysis": {
+      "command": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "args": [
+        "mcp_server.py"
+      ]
+    },
+    "aiwebsearcher": {
+      "command": "uvx",
+      "args": [
+        "aiwebsearcher@0.1.2"
+      ]
+    },
+    "infra-monitor": {
+      "command": "/Users/shivkumars/.pyenv/shims/python3",
+      "args": [
+        "-u",
+        "-m",
+        "infra_mcp.server"
+      ],
+      "cwd": "/Users/shivkumars/ProjectsLocal/InfraGPT-NerdMeetup",
+      "env": {
+        "PYTHONPATH": "/Users/shivkumars/ProjectsLocal/InfraGPT-NerdMeetup",
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "tiendanube": {
+      "command": "npx",
+      "args": [
+        "tiendanube-mcp-server"
+      ],
+      "env": {
+        "TIENDANUBE_ACCESS_TOKEN": "seu_token_aqui",
+        "TIENDANUBE_STORE_ID": "seu_store_id_aqui"
+      }
+    },
+    "pubchem-chemical-safety": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/workspace",
+        "run",
+        "pubchem_mcp/mcp_server.py"
+      ],
+      "env": {}
+    }
+  }
+}

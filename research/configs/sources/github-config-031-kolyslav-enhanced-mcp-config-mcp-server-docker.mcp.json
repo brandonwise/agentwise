@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "mcp-server-docker": {
+      "command": "/home/username/.local/bin/uvx",
+      "args": [
+        "mcp-server-docker"
+      ],
+      "env": {
+        "PATH": "/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "DOCKER_HOST": "unix:///var/run/docker.sock"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use for managing Docker containers and images. Ensure Docker operations are aligned with project requirements. Confirm user intent before initiating builds or deployments to avoid resource waste.",
+        "useCases": [
+          "container management",
+          "deployment"
+        ],
+        "constraints": "Limit operations to project-specific containers. Avoid system-wide Docker changes."
+      }
+    }
+  }
+}

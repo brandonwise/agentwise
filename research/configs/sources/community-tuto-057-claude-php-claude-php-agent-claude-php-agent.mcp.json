@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "claude-php-agent": {
+      "command": "php",
+      "args": [
+        "/absolute/path/to/claude-php-agent/bin/mcp-server"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}

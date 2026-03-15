@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "fastmcp-tutorial": {
+      "command": "fastmcp-tutorial"
+    }
+  }
+}

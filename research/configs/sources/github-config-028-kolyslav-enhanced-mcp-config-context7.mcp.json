@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "Context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "12000"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Utilize Context7 for maintaining conversational context over long interactions. Ensure context is preserved for complex tasks requiring historical data or multi-step reasoning.",
+        "useCases": [
+          "long conversations",
+          "complex task tracking"
+        ],
+        "constraints": "Monitor token usage to avoid exceeding limits. Summarize context when possible to optimize performance."
+      }
+    }
+  }
+}

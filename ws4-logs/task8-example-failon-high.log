@@ -1,0 +1,542 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running `target/debug/agentwise scan . --fail-on high`
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  [36m[1magentwise[0m[39m [2mv0.1.0[0m  [2m║[0m
+  [2m║[0m  [37mMCP Security Scanner[39m                                      [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+
+  [32m●[39m Scanned 66 configs (110 servers) in [2m56ms[0m
+
+  [2m┌──────────────────────────────────────────────────────────────┐[0m
+  [2m│[0m  [1m[31m■[39m[0m [1m[31m0 critical[39m[0m  [1m[33m■[39m[0m [1m[33m13 high[39m[0m  [34m■[39m [34m118 medium[39m  [2m■[0m [2m0 low[0m                [2m│[0m
+  [2m└──────────────────────────────────────────────────────────────┘[0m
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json → service-desk-plus[0m [2mAW-005[0m
+    Insecure HTTP URL in args
+    [1m[32mFix:[39m[0m Change URL to use https://
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json → browserbase-local[0m [2mAW-004[0m
+    OpenAI API key in env var
+    [1m[32mFix:[39m[0m Use environment variable references instead of hardcoded secrets
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-01.mcp.json → service-desk-plus[0m [2mAW-005[0m
+    Insecure HTTP URL in args
+    [1m[32mFix:[39m[0m Change URL to use https://
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-01.mcp.json → filesystem-1-12[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-01.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-04.mcp.json → browserbase-local[0m [2mAW-004[0m
+    OpenAI API key in env var
+    [1m[32mFix:[39m[0m Use environment variable references instead of hardcoded secrets
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-04.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [1m[33m▲[39m[0m [1m[33mHIGH    [39m[0m [2m./research/configs/combined/combined-batch-03.mcp.json → filesystem[0m [2mAW-002[0m
+    Filesystem server without allowedDirectories
+    [1m[32mFix:[39m[0m Add "allowedDirectories" to restrict filesystem access scope
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-048-modelcontextprotocol-servers-everything.mcp.json → everything[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-057-claude-php-claude-php-agent-claude-php-agent.mcp.json → claude-php-agent[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-058-claude-php-claude-php-agent-agent-search.mcp.json → agent-search[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-060-claude-php-claude-php-agent-dev-agents.mcp.json → dev-agents[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-050-modelcontextprotocol-servers-memory.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-009-stevengeller-youtube-transcrib-youtube-transcriber-enhanced.mcp.json → youtube-transcriber-enhanced[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-042-w3jdev-ultimate-mcp-system-ultimate-mcp-hub.mcp.json → ultimate-mcp-hub[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-010-angrysky56-ast-mcp-server-astanalyzer.mcp.json → AstAnalyzer[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-005-marsaeon-idea-git.mcp.json → git[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-027-kolyslav-enhanced-mcp-config-ast-grep.mcp.json → ast-grep[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json → fetch[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-037-kolyslav-enhanced-mcp-config-fetch.mcp.json → fetch[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-033-kolyslav-enhanced-mcp-config-markdownify.mcp.json → markdownify[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-040-angelargd8-proyecto1-redes-filesystem.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-055-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json → fastmcp-tutorial[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-017-nanocentury-ai-supersimplemcp-simple-character-counter.mcp.json → simple-character-counter[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-043-ivossos-newcashflow-agent-cashflow-forecast.mcp.json → cashflow-forecast[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-012-repr0bated-op-dbus-staging-filesystem.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-002-pttg-it-sdp-mcp-service-desk-plus.mcp.json → service-desk-plus[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-041-angelargd8-proyecto1-redes-git-local.mcp.json → git-local[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-054-zazencodes-zazencodes-season-2-fastmcp-tutorial.mcp.json → fastmcp-tutorial[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-030-kolyslav-enhanced-mcp-config-claude-prompts.mcp.json → claude-prompts[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-046-modelcontextprotocol-servers-git.mcp.json → git[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-004-marsaeon-idea-memory.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-047-modelcontextprotocol-servers-git.mcp.json → git[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-028-kolyslav-enhanced-mcp-config-context7.mcp.json → Context7[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-006-marsaeon-idea-time.mcp.json → time[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-018-rivadeus-mis453-midterm-mcp-sentimentscope.mcp.json → sentimentscope[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-059-claude-php-claude-php-agent-production-agents.mcp.json → production-agents[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-025-kolyslav-enhanced-mcp-config-filesystem.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-052-modelcontextprotocol-servers-sequentialthinking.mcp.json → sequentialthinking[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-022-shivkumarsah-infragpt-mcp-infra-monitor.mcp.json → infra-monitor[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-031-kolyslav-enhanced-mcp-config-mcp-server-docker.mcp.json → mcp-server-docker[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-016-mortalreminderpt-whiteboard-ap-whiteboard-app.mcp.json → whiteboard_app[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-023-pedrohsguimaraes-nuvem-shop-mc-tiendanube.mcp.json → tiendanube[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-019-avniproject-avni-impl-bundles-google-drive.mcp.json → google-drive[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-015-tahubu-ai-tahubusf-tahubusf.mcp.json → TahubuSF[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-011-repr0bated-op-dbus-staging-operation-dbus.mcp.json → operation-dbus[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-051-modelcontextprotocol-servers-sequential-thinking.mcp.json → sequential-thinking[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-020-dodhon-message-analysis-mcp-imessage-analysis.mcp.json → imessage-analysis[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-021-vist233-ai-web-searcher-aiwebsearcher.mcp.json → aiwebsearcher[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-044-aswinthulasir-mcp-selenium-selenium.mcp.json → selenium[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json → puppeteer[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-035-kolyslav-enhanced-mcp-config-puppeteer.mcp.json → puppeteer[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-053-modelcontextprotocol-servers-filesystem.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-013-repr0bated-op-dbus-staging-memory.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-056-jddunn-tenets-tenets.mcp.json → tenets[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-003-marsaeon-idea-filesystem.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-032-kolyslav-enhanced-mcp-config-cognee.mcp.json → cognee[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-029-kolyslav-enhanced-mcp-config-git-mcp.mcp.json → git-mcp[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-001-sendaifun-solana-mcp-agent-kit.mcp.json → agent-kit[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-039-kolyslav-enhanced-mcp-config-brave-search.mcp.json → brave-search[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json → browserbase-local[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-045-jony2176-fotolibros-argentina-browserbase-local.mcp.json → browserbase-local[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-034-kolyslav-enhanced-mcp-config-deebo.mcp.json → deebo[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json → github-mcp-server[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-038-kolyslav-enhanced-mcp-config-github-mcp-server.mcp.json → github-mcp-server[0m [2mAW-008[0m
+    Write-capable tools without restriction
+    [1m[32mFix:[39m[0m Add "allowedTools" to limit to read-only operations, or explicitly opt into write access
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-008-paul-sizon-zetachain-mcp-zetachain-mcp.mcp.json → zetachain-mcp[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-036-kolyslav-enhanced-mcp-config-sequential-thinking.mcp.json → sequential-thinking[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/official-readm-049-modelcontextprotocol-servers-memory.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-026-kolyslav-enhanced-mcp-config-enhanced-demo.mcp.json → enhanced-demo[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-024-liueic-pubchem-mcp-server-pubchem-chemical-safety.mcp.json → pubchem-chemical-safety[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/community-tuto-061-ghassenabida-djinson-mcp-laravel-app.mcp.json → laravel-app[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-007-luo-gary-bytebuddies-guess.mcp.json → guess[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/sources/github-config-014-tdiderich-runzero-scripts-runzero-mcp.mcp.json → runZero MCP[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → service-desk-plus[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → filesystem-1-12[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → agent-kit[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → time[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → git[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → guess[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → zetachain-mcp[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → youtube-transcriber-enhanced[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → AstAnalyzer[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-01.mcp.json → operation-dbus[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → github-mcp-server[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → github-mcp-server[0m [2mAW-008[0m
+    Write-capable tools without restriction
+    [1m[32mFix:[39m[0m Add "allowedTools" to limit to read-only operations, or explicitly opt into write access
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → browserbase-local[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → browserbase-local[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → git[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → everything[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → brave-search[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → selenium[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → git-local[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → cashflow-forecast[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → git-4-11[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → fetch[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → fetch[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-04.mcp.json → ultimate-mcp-hub[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → pubchem-chemical-safety[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → sentimentscope[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → whiteboard_app[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → TahubuSF[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → infra-monitor[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → google-drive[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → aiwebsearcher[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → tiendanube[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → runZero MCP[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → simple-character-counter[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-02.mcp.json → imessage-analysis[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → filesystem[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → deebo[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → ast-grep[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → claude-prompts[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → enhanced-demo[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → Context7[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → mcp-server-docker[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → markdownify[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → git-mcp[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → puppeteer[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → puppeteer[0m [2mAW-009[0m
+    Unrestricted network access
+    [1m[32mFix:[39m[0m Add domain restrictions or use allowedTools to limit network operations
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → cognee[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./research/configs/combined/combined-batch-03.mcp.json → sequential-thinking[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [34m●[39m [34mMEDIUM  [39m [2m./testdata/project/.mcp.json → memory[0m [2mAW-007[0m
+    No tool allowlist configured
+    [1m[32mFix:[39m[0m Add "allowedTools" to restrict which tools are available
+
+  [2m╔══════════════════════════════════════════════════════════════╗[0m
+  [2m║[0m  Score: 0/100  [1m[31m░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[39m[0m  Grade: [1m[31mF[39m[0m                    [2m║[0m
+  [2m╚══════════════════════════════════════════════════════════════╝[0m
+

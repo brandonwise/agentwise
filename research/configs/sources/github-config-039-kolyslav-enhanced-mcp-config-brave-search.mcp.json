@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "your_brave_api_key_here"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Use brave-search for web and local searches to gather information or answer user queries. Prioritize for factual data or recent information. Use domain filters to refine results when applicable.",
+        "useCases": [
+          "information gathering",
+          "research",
+          "local business search"
+        ],
+        "constraints": "Secure API key. Use sparingly for non-critical queries to manage API usage."
+      },
+      "recommendation": "Added to enhance search capabilities with a focus on privacy-preserving search results. Complements fetch by offering structured search data."
+    }
+  }
+}

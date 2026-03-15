@@ -1,0 +1,475 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "agentwise",
+          "version": "0.1.0",
+          "informationUri": "https://github.com/brandonwise/agentwise",
+          "rules": [
+            {
+              "id": "AW-001",
+              "name": "AW-001",
+              "shortDescription": {
+                "text": "No authentication on remote MCP server"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-001"
+            },
+            {
+              "id": "AW-007",
+              "name": "AW-007",
+              "shortDescription": {
+                "text": "No tool allowlist configured"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-007"
+            },
+            {
+              "id": "AW-004",
+              "name": "AW-004",
+              "shortDescription": {
+                "text": "Generic password in connection string in args"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-004"
+            },
+            {
+              "id": "AW-008",
+              "name": "AW-008",
+              "shortDescription": {
+                "text": "Write-capable tools without restriction"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-008"
+            },
+            {
+              "id": "AW-003",
+              "name": "AW-003",
+              "shortDescription": {
+                "text": "Unrestricted shell/exec access"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-003"
+            },
+            {
+              "id": "AW-009",
+              "name": "AW-009",
+              "shortDescription": {
+                "text": "Unrestricted network access"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-009"
+            },
+            {
+              "id": "AW-002",
+              "name": "AW-002",
+              "shortDescription": {
+                "text": "Filesystem server with dangerous root access"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-002"
+            },
+            {
+              "id": "AW-006",
+              "name": "AW-006",
+              "shortDescription": {
+                "text": "CVE-2025-53110: Path traversal vulnerability allows reading files outside allowed directories"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/brandonwise/agentwise#aw-006"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "AW-001",
+          "level": "error",
+          "message": {
+            "text": "No authentication on remote MCP server: Server 'quickbooks' uses remote transport but has no authentication configured"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add authentication via env vars (AUTH_TOKEN, API_KEY, etc.)"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-007",
+          "level": "warning",
+          "message": {
+            "text": "No tool allowlist configured: Server 'quickbooks' exposes all available tools with no filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to restrict which tools are available"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-004",
+          "level": "error",
+          "message": {
+            "text": "Generic password in connection string in args: Server 'database' has Generic password in connection string exposed in command args: post...main"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Use environment variable references instead of hardcoded secrets"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-007",
+          "level": "warning",
+          "message": {
+            "text": "No tool allowlist configured: Server 'database' exposes all available tools with no filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to restrict which tools are available"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-008",
+          "level": "warning",
+          "message": {
+            "text": "Write-capable tools without restriction: Server 'database' has write capabilities (create/update/delete) with no tool filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to limit to read-only operations, or explicitly opt into write access"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-003",
+          "level": "error",
+          "message": {
+            "text": "Unrestricted shell/exec access: Server 'shell' provides shell/exec capabilities with no command restrictions"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add allowedTools or remove shell access entirely"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-004",
+          "level": "error",
+          "message": {
+            "text": "OpenAI API key in env var: Server 'shell' has OpenAI API key exposed in env var 'OPENAI_API_KEY' = sk-p...x234"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Use environment variable references instead of hardcoded secrets"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-007",
+          "level": "warning",
+          "message": {
+            "text": "No tool allowlist configured: Server 'shell' exposes all available tools with no filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to restrict which tools are available"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-007",
+          "level": "warning",
+          "message": {
+            "text": "No tool allowlist configured: Server 'fetch' exposes all available tools with no filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to restrict which tools are available"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-009",
+          "level": "warning",
+          "message": {
+            "text": "Unrestricted network access: Server 'fetch' can make HTTP requests to any domain with no restrictions"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add domain restrictions or use allowedTools to limit network operations"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-002",
+          "level": "error",
+          "message": {
+            "text": "Filesystem server with dangerous root access: Server 'filesystem' exposes a broad filesystem path with no allowedDirectories restriction"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedDirectories\" to restrict access to specific project directories"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-006",
+          "level": "error",
+          "message": {
+            "text": "CVE-2025-53110: Path traversal vulnerability allows reading files outside allowed directories: Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by CVE-2025-53110 (CVSS 7.5)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-006",
+          "level": "error",
+          "message": {
+            "text": "CVE-2025-53109: Symlink following allows escaping allowed directories to read or write arbitrary files: Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by CVE-2025-53109 (CVSS 7.5)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-006",
+          "level": "warning",
+          "message": {
+            "text": "GHSA-hc55-p739-j48w: : Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by GHSA-hc55-p739-j48w (CVSS 5.0)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Check @modelcontextprotocol/server-filesystem for updates"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-006",
+          "level": "warning",
+          "message": {
+            "text": "GHSA-q66q-fx2p-7w4m: : Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by GHSA-q66q-fx2p-7w4m (CVSS 5.0)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Check @modelcontextprotocol/server-filesystem for updates"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AW-007",
+          "level": "warning",
+          "message": {
+            "text": "No tool allowlist configured: Server 'filesystem' exposes all available tools with no filtering"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "testdata/vulnerable-mcp.json"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Add \"allowedTools\" to restrict which tools are available"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

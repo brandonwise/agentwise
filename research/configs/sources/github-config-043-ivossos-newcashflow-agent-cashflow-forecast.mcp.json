@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "cashflow-forecast": {
+      "command": "python",
+      "args": [
+        "cashflow_mcp_server.py"
+      ],
+      "cwd": "C:\\Users\\ivoss\\Downloads\\Projetos\\cashflow-mcp"
+    }
+  }
+}

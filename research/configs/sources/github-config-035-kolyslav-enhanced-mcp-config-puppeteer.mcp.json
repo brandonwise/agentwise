@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use puppeteer for browser automation tasks like web scraping or testing web applications. Ensure scripts are safe and respect website terms of service.",
+        "useCases": [
+          "web automation",
+          "testing",
+          "data scraping"
+        ],
+        "constraints": "Avoid actions that could violate privacy or terms of service. Use minimal resources."
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+total 8304
+-rwx------@   1 bwise  staff   4.0M Mar 15 08:59 agentwise
+-rw-------@   1 bwise  staff   1.9K Mar 15 08:59 agentwise.d
+drwx------@  28 bwise  staff   896B Mar 15 08:59 build
+drwx------@ 336 bwise  staff    11K Mar 15 08:59 deps
+drwx------@   2 bwise  staff    64B Mar 15 08:59 examples
+drwx------@   2 bwise  staff    64B Mar 15 08:59 incremental

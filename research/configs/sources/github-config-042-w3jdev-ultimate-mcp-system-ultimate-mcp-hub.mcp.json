@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "ultimate-mcp-hub": {
+      "command": "python",
+      "args": [
+        "c:\\Users\\W3jde\\PROJECTS\\MCP\\ultimate-mcp-system\\mcp_hub_server.py"
+      ],
+      "env": {
+        "N8N_API_URL": "https://n8n-533751401713.us-central1.run.app/api/v1",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjRiMmI3Ny03ZmQ0LTQyNDAtOThiMi0xMDgyMjdhNzU0ZTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY0NDIzNTg1fQ.ZN3w3hwHQJDsYMiVIacuh6Ogc9PvNkOKevBYhYchABM"
+      }
+    }
+  }
+}

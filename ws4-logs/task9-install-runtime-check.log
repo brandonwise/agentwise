@@ -1,0 +1,4 @@
+Installing agentwise 0.0.0 (macos-arm64)...
+Downloading agentwise-0.0.0-macos-arm64.tar.gz
+curl: (56) The requested URL returned error: 404
+agentwise install error: Failed to download release archive from https://github.com/brandonwise/agentwise/releases/download/v0.0.0/agentwise-0.0.0-macos-arm64.tar.gz.

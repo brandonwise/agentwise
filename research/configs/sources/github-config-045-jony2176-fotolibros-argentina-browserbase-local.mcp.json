@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "browserbase-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Usuario\\Downloads\\fotolibros_argentina\\fotolibros-argentina-v2\\mcp-server-browserbase\\cli.js",
+        "--local"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "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",
+        "CHROME_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "deebo": {
+      "command": "node",
+      "args": [
+        "--experimental-specifier-resolution=node",
+        "--experimental-modules",
+        "--max-old-space-size=4096",
+        "/home/username/deebo-prototype/build/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "USE_MEMORY_BANK": "true",
+        "MOTHER_HOST": "openrouter",
+        "MOTHER_MODEL": "anthropic/claude-3.5-sonnet",
+        "SCENARIO_HOST": "openrouter",
+        "SCENARIO_MODEL": "deepseek/deepseek-chat",
+        "OPENROUTER_API_KEY": "your_openrouter_api_key_here",
+        "MEMORY_BANK_PATH": "/home/username/.deebo/memory-bank",
+        "SESSION_TIMEOUT": "1800000",
+        "MAX_CONCURRENT_SESSIONS": "3",
+        "ALLOWED_PATHS": "/home/username",
+        "RESTRICTED_PATHS": "/etc,/sys,/proc,/dev",
+        "DEBUG": "deebo:*",
+        "LOG_LEVEL": "info",
+        "PATH": "/home/username/.cargo/bin:/home/username/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8"
+      },
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Deebo is for experimental AI interactions using different models. Use for testing alternative AI responses or complex scenario analysis. Ensure memory bank usage for continuity.",
+        "useCases": [
+          "AI experimentation",
+          "scenario testing"
+        ],
+        "constraints": "Secure API keys. Limit session concurrency to avoid overloading."
+      }
+    }
+  }
+}

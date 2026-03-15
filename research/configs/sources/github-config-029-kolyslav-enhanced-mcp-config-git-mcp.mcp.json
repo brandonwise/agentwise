@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "git-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://gitmcp.io/docs"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "GITMCP_CACHE_TTL": "7200",
+        "GITMCP_MAX_TOKENS": "24000",
+        "GITMCP_CONCURRENT_REQUESTS": "3",
+        "GITMCP_RATE_LIMIT": "100",
+        "GITMCP_TIMEOUT": "30000",
+        "GITMCP_RETRY_ATTEMPTS": "3",
+        "NODE_OPTIONS": "--max-old-space-size=2048"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use git-mcp for all git operations including cloning, committing, branching, and merging. Ensure commands are safe and non-destructive unless explicitly confirmed by the user. Provide detailed commit messages for clarity.",
+        "useCases": [
+          "version control",
+          "repository management"
+        ],
+        "constraints": "Do not execute destructive commands like force push or repository deletion without user confirmation."
+      }
+    }
+  }
+}

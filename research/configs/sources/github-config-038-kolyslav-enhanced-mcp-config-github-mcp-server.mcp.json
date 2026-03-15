@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "github-mcp-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_github_personal_access_token_here"
+      },
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Use for all GitHub interactions including repository management, issue tracking, and pull requests. Ensure token security and confirm user intent for repository modifications.",
+        "useCases": [
+          "repository management",
+          "issue tracking",
+          "collaboration"
+        ],
+        "constraints": "Protect personal access token. Confirm destructive actions with user."
+      }
+    }
+  }
+}

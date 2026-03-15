@@ -1,0 +1,161 @@
+{
+  "version": "0.1.0",
+  "configs_scanned": 1,
+  "servers_scanned": 5,
+  "score": 0,
+  "grade": "F",
+  "duration_ms": 22,
+  "findings": [
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'fetch' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-009",
+      "severity": "Medium",
+      "title": "Unrestricted network access",
+      "message": "Server 'fetch' can make HTTP requests to any domain with no restrictions",
+      "fix": "Add domain restrictions or use allowedTools to limit network operations",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "fetch"
+    },
+    {
+      "rule_id": "AW-004",
+      "severity": "High",
+      "title": "Generic password in connection string in args",
+      "message": "Server 'database' has Generic password in connection string exposed in command args: post...main",
+      "fix": "Use environment variable references instead of hardcoded secrets",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "database"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'database' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "database"
+    },
+    {
+      "rule_id": "AW-008",
+      "severity": "Medium",
+      "title": "Write-capable tools without restriction",
+      "message": "Server 'database' has write capabilities (create/update/delete) with no tool filtering",
+      "fix": "Add \"allowedTools\" to limit to read-only operations, or explicitly opt into write access",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "database"
+    },
+    {
+      "rule_id": "AW-002",
+      "severity": "Critical",
+      "title": "Filesystem server with dangerous root access",
+      "message": "Server 'filesystem' exposes a broad filesystem path with no allowedDirectories restriction",
+      "fix": "Add \"allowedDirectories\" to restrict access to specific project directories",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-006",
+      "severity": "High",
+      "title": "CVE-2025-53110: Path traversal vulnerability allows reading files outside allowed directories",
+      "message": "Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by CVE-2025-53110 (CVSS 7.5)",
+      "fix": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-006",
+      "severity": "High",
+      "title": "CVE-2025-53109: Symlink following allows escaping allowed directories to read or write arbitrary files",
+      "message": "Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by CVE-2025-53109 (CVSS 7.5)",
+      "fix": "Upgrade to @modelcontextprotocol/server-filesystem >=0.6.3",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-006",
+      "severity": "Medium",
+      "title": "GHSA-hc55-p739-j48w: ",
+      "message": "Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by GHSA-hc55-p739-j48w (CVSS 5.0)",
+      "fix": "Check @modelcontextprotocol/server-filesystem for updates",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-006",
+      "severity": "Medium",
+      "title": "GHSA-q66q-fx2p-7w4m: ",
+      "message": "Server 'filesystem' uses @modelcontextprotocol/server-filesystem@0.5.0 which is affected by GHSA-q66q-fx2p-7w4m (CVSS 5.0)",
+      "fix": "Check @modelcontextprotocol/server-filesystem for updates",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'filesystem' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "filesystem"
+    },
+    {
+      "rule_id": "AW-001",
+      "severity": "Critical",
+      "title": "No authentication on remote MCP server",
+      "message": "Server 'quickbooks' uses remote transport but has no authentication configured",
+      "fix": "Add authentication via env vars (AUTH_TOKEN, API_KEY, etc.)",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "quickbooks"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'quickbooks' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "quickbooks"
+    },
+    {
+      "rule_id": "AW-003",
+      "severity": "Critical",
+      "title": "Unrestricted shell/exec access",
+      "message": "Server 'shell' provides shell/exec capabilities with no command restrictions",
+      "fix": "Add allowedTools or remove shell access entirely",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "shell"
+    },
+    {
+      "rule_id": "AW-004",
+      "severity": "High",
+      "title": "OpenAI API key in env var",
+      "message": "Server 'shell' has OpenAI API key exposed in env var 'OPENAI_API_KEY' = sk-p...x234",
+      "fix": "Use environment variable references instead of hardcoded secrets",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "shell"
+    },
+    {
+      "rule_id": "AW-007",
+      "severity": "Medium",
+      "title": "No tool allowlist configured",
+      "message": "Server 'shell' exposes all available tools with no filtering",
+      "fix": "Add \"allowedTools\" to restrict which tools are available",
+      "config_file": "testdata/vulnerable-mcp.json",
+      "server_name": "shell"
+    }
+  ],
+  "summary": {
+    "critical": 3,
+    "high": 4,
+    "medium": 9,
+    "low": 0,
+    "total": 16
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "imessage-analysis": {
+      "command": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "args": [
+        "mcp_server.py"
+      ]
+    }
+  }
+}

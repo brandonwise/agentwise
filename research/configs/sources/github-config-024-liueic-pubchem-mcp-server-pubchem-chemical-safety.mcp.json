@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "pubchem-chemical-safety": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/workspace",
+        "run",
+        "pubchem_mcp/mcp_server.py"
+      ],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "medium",
+        "prompt": "Use fetch for retrieving online content or API data. Ensure requests are secure and respect rate limits. Cache results when appropriate to reduce redundant calls.",
+        "useCases": [
+          "data retrieval",
+          "API interaction"
+        ],
+        "constraints": "Respect API rate limits and terms. Secure sensitive data in requests."
+      }
+    }
+  }
+}

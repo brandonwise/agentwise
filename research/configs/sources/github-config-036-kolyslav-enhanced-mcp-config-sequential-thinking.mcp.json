@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {},
+      "usagePolicy": {
+        "priority": "high",
+        "prompt": "Leverage sequential-thinking for complex problem-solving requiring step-by-step analysis. Use for tasks where intermediate conclusions need reevaluation. Adjust thought count dynamically based on problem depth.",
+        "useCases": [
+          "problem solving",
+          "hypothesis testing"
+        ],
+        "constraints": "Ensure thought process remains focused. Avoid overcomplicating simple tasks."
+      }
+    }
+  }
+}
