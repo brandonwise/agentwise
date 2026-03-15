@@ -46,10 +46,7 @@ pub async fn query_epss(cve_ids: &[&str]) -> Result<HashMap<String, EpssScore>, 
         .map_err(|e| format!("EPSS API request failed: {}", e))?;
 
     if !response.status().is_success() {
-        return Err(format!(
-            "EPSS API returned status {}",
-            response.status()
-        ));
+        return Err(format!("EPSS API returned status {}", response.status()));
     }
 
     let epss_response: EpssResponse = response
@@ -102,8 +99,8 @@ mod tests {
 
     #[test]
     fn test_parse_epss_response() {
-        let response: EpssResponse = serde_json::from_str(sample_epss_response_json())
-            .expect("should parse EPSS response");
+        let response: EpssResponse =
+            serde_json::from_str(sample_epss_response_json()).expect("should parse EPSS response");
         assert_eq!(response.data.len(), 2);
         assert_eq!(response.data[0].cve, "CVE-2025-53110");
         assert_eq!(response.data[0].epss, "0.72");
@@ -112,8 +109,8 @@ mod tests {
 
     #[test]
     fn test_parse_epss_scores() {
-        let response: EpssResponse = serde_json::from_str(sample_epss_response_json())
-            .expect("should parse");
+        let response: EpssResponse =
+            serde_json::from_str(sample_epss_response_json()).expect("should parse");
         let mut results = HashMap::new();
         for entry in response.data {
             let probability = entry.epss.parse::<f64>().unwrap_or(0.0);

@@ -46,23 +46,29 @@ pub fn render(result: &ScanResult) -> String {
 }
 
 fn render_header() -> String {
-    let top = format!("  {}",
-        "╔══════════════════════════════════════════════════════════════╗"
-            .dimmed());
-    let mid = format!("  {}  {} {}  {}",
+    let top = format!(
+        "  {}",
+        "╔══════════════════════════════════════════════════════════════╗".dimmed()
+    );
+    let mid = format!(
+        "  {}  {} {}  {}",
         "║".dimmed(),
         "agentwise".bold().cyan(),
         format!("v{}", env!("CARGO_PKG_VERSION")).dimmed(),
-        "║".dimmed());
+        "║".dimmed()
+    );
     let label = "MCP Security Scanner";
-    let mid2 = format!("  {}  {}{}{}",
+    let mid2 = format!(
+        "  {}  {}{}{}",
         "║".dimmed(),
         label.white(),
         " ".repeat(62 - 4 - label.len()),
-        "║".dimmed());
-    let bot = format!("  {}",
-        "╚══════════════════════════════════════════════════════════════╝"
-            .dimmed());
+        "║".dimmed()
+    );
+    let bot = format!(
+        "  {}",
+        "╚══════════════════════════════════════════════════════════════╝".dimmed()
+    );
     format!("{}\n{}\n{}\n{}\n", top, mid, mid2, bot)
 }
 
@@ -73,21 +79,55 @@ fn render_scan_summary(result: &ScanResult) -> String {
         format!("{}ms", result.duration_ms)
     };
 
-    format!(
+    let mut out = format!(
         "  {} Scanned {} {} ({} {}) in {}\n",
         "●".green(),
         result.configs_scanned,
-        if result.configs_scanned == 1 { "config" } else { "configs" },
+        if result.configs_scanned == 1 {
+            "config"
+        } else {
+            "configs"
+        },
         result.servers_scanned,
-        if result.servers_scanned == 1 { "server" } else { "servers" },
+        if result.servers_scanned == 1 {
+            "server"
+        } else {
+            "servers"
+        },
         duration_str.dimmed(),
-    )
+    );
+
+    if result.suppressed_count > 0 {
+        out.push_str(&format!(
+            "  {} Suppressed {} {} via baseline\n",
+            "○".dimmed(),
+            result.suppressed_count,
+            if result.suppressed_count == 1 {
+                "finding"
+            } else {
+                "findings"
+            }
+        ));
+    }
+
+    out
 }
 
 fn render_clean() -> String {
-    let top = format!("  {}", "┌──────────────────────────────────────────────────────────────┐".green());
-    let mid = format!("  {}  {}  {}", "│".green(), "No security issues found!".green().bold(), "│".green());
-    let bot = format!("  {}", "└──────────────────────────────────────────────────────────────┘".green());
+    let top = format!(
+        "  {}",
+        "┌──────────────────────────────────────────────────────────────┐".green()
+    );
+    let mid = format!(
+        "  {}  {}  {}",
+        "│".green(),
+        "No security issues found!".green().bold(),
+        "│".green()
+    );
+    let bot = format!(
+        "  {}",
+        "└──────────────────────────────────────────────────────────────┘".green()
+    );
     format!("{}\n{}\n{}\n", top, mid, bot)
 }
 
@@ -118,7 +158,10 @@ fn render_severity_summary(result: &ScanResult) -> String {
         critical, high, medium, low
     );
 
-    let top = format!("  {}", "┌──────────────────────────────────────────────────────────────┐".dimmed());
+    let top = format!(
+        "  {}",
+        "┌──────────────────────────────────────────────────────────────┐".dimmed()
+    );
     let mid = format!(
         "  {}  {} {}  {} {}  {} {}  {} {}{}{}",
         "│".dimmed(),
@@ -133,7 +176,10 @@ fn render_severity_summary(result: &ScanResult) -> String {
         " ".repeat(62usize.saturating_sub(summary.len() + 8)),
         "│".dimmed(),
     );
-    let bot = format!("  {}", "└──────────────────────────────────────────────────────────────┘".dimmed());
+    let bot = format!(
+        "  {}",
+        "└──────────────────────────────────────────────────────────────┘".dimmed()
+    );
     format!("{}\n{}\n{}\n", top, mid, bot)
 }
 
@@ -159,7 +205,9 @@ fn render_finding(finding: &Finding) -> String {
         _ => String::new(),
     };
 
-    let location = format!("{} → {}", finding.config_file, finding.server_name).dimmed().to_string();
+    let location = format!("{} → {}", finding.config_file, finding.server_name)
+        .dimmed()
+        .to_string();
     let rule_id = finding.rule_id.dimmed().to_string();
 
     let mut out = String::new();
@@ -212,9 +260,17 @@ fn render_osv_stats(stats: &OsvStats) -> String {
         "  {} Live CVE check: queried OSV for {} {} ({} new {} found)\n",
         "●".cyan(),
         stats.packages_queried,
-        if stats.packages_queried == 1 { "package" } else { "packages" },
+        if stats.packages_queried == 1 {
+            "package"
+        } else {
+            "packages"
+        },
         stats.new_vulnerabilities,
-        if stats.new_vulnerabilities == 1 { "vulnerability" } else { "vulnerabilities" },
+        if stats.new_vulnerabilities == 1 {
+            "vulnerability"
+        } else {
+            "vulnerabilities"
+        },
     )
 }
 
@@ -228,11 +284,7 @@ fn render_score(result: &ScanResult) -> String {
     let bar_char = "█";
     let empty_char = "░";
 
-    let bar = format!(
-        "{}{}",
-        bar_char.repeat(filled),
-        empty_char.repeat(empty)
-    );
+    let bar = format!("{}{}", bar_char.repeat(filled), empty_char.repeat(empty));
 
     let colored_bar = match score {
         80..=100 => bar.green().to_string(),
@@ -249,7 +301,10 @@ fn render_score(result: &ScanResult) -> String {
         _ => grade.red().bold().to_string(),
     };
 
-    let top = format!("  {}", "╔══════════════════════════════════════════════════════════════╗".dimmed());
+    let top = format!(
+        "  {}",
+        "╔══════════════════════════════════════════════════════════════╗".dimmed()
+    );
     let mid = format!(
         "  {}  Score: {}/100  {}  Grade: {}{}{}",
         "║".dimmed(),
@@ -259,7 +314,10 @@ fn render_score(result: &ScanResult) -> String {
         " ".repeat(62usize.saturating_sub(41 + grade.len())),
         "║".dimmed(),
     );
-    let bot = format!("  {}", "╚══════════════════════════════════════════════════════════════╝".dimmed());
+    let bot = format!(
+        "  {}",
+        "╚══════════════════════════════════════════════════════════════╝".dimmed()
+    );
     format!("{}\n{}\n{}\n", top, mid, bot)
 }
 
@@ -358,11 +416,23 @@ pub fn render_discover(configs: &[DiscoveredConfig]) -> String {
     out.push_str(&format!(
         "  Summary: checked {} {}, found {} {}, {} {} total\n\n",
         configs.len(),
-        if configs.len() == 1 { "location" } else { "locations" },
+        if configs.len() == 1 {
+            "location"
+        } else {
+            "locations"
+        },
         existing.len(),
-        if existing.len() == 1 { "config" } else { "configs" },
+        if existing.len() == 1 {
+            "config"
+        } else {
+            "configs"
+        },
         total_servers,
-        if total_servers == 1 { "server" } else { "servers" },
+        if total_servers == 1 {
+            "server"
+        } else {
+            "servers"
+        },
     ));
 
     out
@@ -383,6 +453,7 @@ mod tests {
             grade: "A".to_string(),
             duration_ms: 0,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         assert!(output.contains("agentwise"));
@@ -411,6 +482,7 @@ mod tests {
             grade: "B".to_string(),
             duration_ms: 1,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         assert!(output.contains("CRITICAL"));
@@ -443,6 +515,7 @@ mod tests {
             grade: "A".to_string(),
             duration_ms: 1,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         assert!(output.contains("EPSS: 72% exploitation probability"));
@@ -474,6 +547,7 @@ mod tests {
             grade: "A".to_string(),
             duration_ms: 1,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         assert!(output.contains("Supply chain risk"));

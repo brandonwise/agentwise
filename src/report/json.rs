@@ -9,6 +9,7 @@ struct JsonReport<'a> {
     score: i32,
     grade: &'a str,
     duration_ms: u64,
+    suppressed_count: usize,
     findings: &'a [crate::rules::Finding],
     summary: Summary,
 }
@@ -56,6 +57,7 @@ pub fn render(result: &ScanResult) -> String {
         score: result.score,
         grade: &result.grade,
         duration_ms: result.duration_ms,
+        suppressed_count: result.suppressed_count,
         findings: &result.findings,
         summary,
     };
@@ -89,10 +91,12 @@ mod tests {
             grade: "B".to_string(),
             duration_ms: 1,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
         assert_eq!(parsed["score"], 80);
+        assert_eq!(parsed["suppressed_count"], 0);
         assert_eq!(parsed["summary"]["critical"], 1);
         assert_eq!(parsed["findings"].as_array().unwrap().len(), 1);
     }
@@ -107,6 +111,7 @@ mod tests {
             grade: "A".to_string(),
             duration_ms: 0,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();

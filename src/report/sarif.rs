@@ -189,18 +189,13 @@ mod tests {
             grade: "B".to_string(),
             duration_ms: 1,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
         assert_eq!(parsed["version"], "2.1.0");
-        assert_eq!(
-            parsed["runs"][0]["tool"]["driver"]["name"],
-            "agentwise"
-        );
-        assert_eq!(
-            parsed["runs"][0]["results"].as_array().unwrap().len(),
-            1
-        );
+        assert_eq!(parsed["runs"][0]["tool"]["driver"]["name"], "agentwise");
+        assert_eq!(parsed["runs"][0]["results"].as_array().unwrap().len(), 1);
     }
 
     #[test]
@@ -221,12 +216,10 @@ mod tests {
             grade: "A".to_string(),
             duration_ms: 0,
             osv_stats: None,
+            suppressed_count: 0,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
-        assert!(parsed["runs"][0]["results"]
-            .as_array()
-            .unwrap()
-            .is_empty());
+        assert!(parsed["runs"][0]["results"].as_array().unwrap().is_empty());
     }
 }

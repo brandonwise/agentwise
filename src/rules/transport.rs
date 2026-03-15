@@ -18,10 +18,7 @@ impl Rule for TransportRule {
                     rule_id: self.id().to_string(),
                     severity: Severity::High,
                     title: "Insecure HTTP transport".to_string(),
-                    message: format!(
-                        "Server '{}' uses unencrypted HTTP: {}",
-                        server_name, url
-                    ),
+                    message: format!("Server '{}' uses unencrypted HTTP: {}", server_name, url),
                     fix: "Change URL to use https://".to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
@@ -48,8 +45,8 @@ impl Rule for TransportRule {
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
                         source: None,
-                    epss: None,
-                    sub_items: None,
+                        epss: None,
+                        sub_items: None,
                     });
                 }
             }

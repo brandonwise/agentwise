@@ -12,10 +12,7 @@ impl Rule for AllowlistRule {
     fn check(&self, server_name: &str, server: &McpServer, config_file: &str) -> Vec<Finding> {
         let mut findings = Vec::new();
 
-        let has_allowlist = server
-            .allowed_tools
-            .as_ref()
-            .is_some_and(|t| !t.is_empty());
+        let has_allowlist = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty());
 
         if !has_allowlist {
             findings.push(Finding {
@@ -30,8 +27,8 @@ impl Rule for AllowlistRule {
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
                 source: None,
-                    epss: None,
-                    sub_items: None,
+                epss: None,
+                sub_items: None,
             });
         }
 

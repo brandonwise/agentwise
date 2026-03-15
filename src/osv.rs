@@ -454,8 +454,8 @@ mod tests {
 
     #[test]
     fn test_parse_batch_response() {
-        let response: OsvBatchResponse =
-            serde_json::from_str(sample_batch_response_json()).expect("should parse batch response");
+        let response: OsvBatchResponse = serde_json::from_str(sample_batch_response_json())
+            .expect("should parse batch response");
         assert_eq!(response.results.len(), 2);
         assert_eq!(response.results[0].vulns.len(), 1);
         assert!(response.results[1].vulns.is_empty());
@@ -465,15 +465,16 @@ mod tests {
     fn test_vulns_to_cve_entries() {
         let response: OsvResponse =
             serde_json::from_str(sample_osv_response_json()).expect("should parse");
-        let entries = vulns_to_cve_entries(
-            "@modelcontextprotocol/server-filesystem",
-            &response.vulns,
-        );
+        let entries =
+            vulns_to_cve_entries("@modelcontextprotocol/server-filesystem", &response.vulns);
         assert_eq!(entries.len(), 2);
 
         // First entry should use CVE alias
         assert_eq!(entries[0].id, "CVE-2025-53110");
-        assert_eq!(entries[0].package, "@modelcontextprotocol/server-filesystem");
+        assert_eq!(
+            entries[0].package,
+            "@modelcontextprotocol/server-filesystem"
+        );
         assert_eq!(entries[0].affected_below, "0.6.3");
         assert_eq!(entries[0].severity, "high");
         assert_eq!(entries[0].cvss, 7.5);

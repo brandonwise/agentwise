@@ -28,6 +28,7 @@ pub struct ScanResult {
     pub grade: String,
     pub duration_ms: u64,
     pub osv_stats: Option<OsvStats>,
+    pub suppressed_count: usize,
 }
 
 /// Run a full scan on the given path.
@@ -85,6 +86,7 @@ pub fn scan(path: &str) -> ScanResult {
         grade,
         duration_ms,
         osv_stats: None,
+        suppressed_count: 0,
     }
 }
 
@@ -408,6 +410,7 @@ pub fn scan_paths(paths: &[String]) -> ScanResult {
         grade,
         duration_ms,
         osv_stats: None,
+        suppressed_count: 0,
     }
 }
 

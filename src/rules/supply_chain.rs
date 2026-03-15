@@ -17,9 +17,7 @@ pub async fn check_supply_chain(
                 let severity = match risk.overall_risk {
                     supply_chain::RiskLevel::High => Severity::High,
                     supply_chain::RiskLevel::Medium => Severity::Medium,
-                    supply_chain::RiskLevel::Low | supply_chain::RiskLevel::Info => {
-                        Severity::Low
-                    }
+                    supply_chain::RiskLevel::Low | supply_chain::RiskLevel::Info => Severity::Low,
                 };
 
                 let sub_items: Vec<String> =
@@ -45,10 +43,7 @@ pub async fn check_supply_chain(
                 });
             }
             Err(e) => {
-                eprintln!(
-                    "Warning: supply chain check failed for {}: {}",
-                    package, e
-                );
+                eprintln!("Warning: supply chain check failed for {}: {}", package, e);
             }
         }
     }

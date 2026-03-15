@@ -19,17 +19,8 @@ const WRITE_TOOL_PATTERNS: &[&str] = &[
 ];
 
 const WRITE_SERVER_NAMES: &[&str] = &[
-    "postgres",
-    "mysql",
-    "sqlite",
-    "redis",
-    "mongo",
-    "database",
-    "github",
-    "gitlab",
-    "slack",
-    "email",
-    "s3",
+    "postgres", "mysql", "sqlite", "redis", "mongo", "database", "github", "gitlab", "slack",
+    "email", "s3",
 ];
 
 /// AW-008: Flag tools known to have write capabilities.
@@ -64,10 +55,7 @@ impl Rule for WriteToolsRule {
         }
 
         // Only flag if there's no tool restriction
-        let has_allowlist = server
-            .allowed_tools
-            .as_ref()
-            .is_some_and(|t| !t.is_empty());
+        let has_allowlist = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty());
 
         if !has_allowlist {
             findings.push(Finding {

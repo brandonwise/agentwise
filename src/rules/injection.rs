@@ -152,10 +152,7 @@ mod tests {
         let rule = InjectionRule::new();
         let server = McpServer {
             command: Some("node".to_string()),
-            args: Some(vec![
-                "server.js".to_string(),
-                "$(whoami)".to_string(),
-            ]),
+            args: Some(vec!["server.js".to_string(), "$(whoami)".to_string()]),
             ..Default::default()
         };
         let findings = rule.check("custom", &server, "test.json");

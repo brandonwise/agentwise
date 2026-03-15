@@ -9,14 +9,7 @@ const FS_PATTERNS: &[&str] = &[
 ];
 
 const DANGEROUS_PATHS: &[&str] = &[
-    "/",
-    "C:\\",
-    "C:/",
-    "/home",
-    "/Users",
-    "/etc",
-    "/var",
-    "/root",
+    "/", "C:\\", "C:/", "/home", "/Users", "/etc", "/var", "/root",
 ];
 
 /// AW-002: Flag filesystem MCP servers with no allowedDirectories or serving overly broad paths.
@@ -61,9 +54,9 @@ impl Rule for FilesystemRule {
             let serves_root = server.args.as_ref().is_some_and(|args| {
                 args.iter().any(|a| {
                     let trimmed = a.trim_end_matches('/');
-                    DANGEROUS_PATHS.iter().any(|p| {
-                        a == *p || trimmed == p.trim_end_matches('/')
-                    })
+                    DANGEROUS_PATHS
+                        .iter()
+                        .any(|p| a == *p || trimmed == p.trim_end_matches('/'))
                 })
             });
 
@@ -92,7 +85,8 @@ impl Rule for FilesystemRule {
                         "Server '{}' has no allowedDirectories restriction configured",
                         server_name
                     ),
-                    fix: "Add \"allowedDirectories\" to restrict filesystem access scope".to_string(),
+                    fix: "Add \"allowedDirectories\" to restrict filesystem access scope"
+                        .to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
                     source: None,

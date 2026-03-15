@@ -219,7 +219,10 @@ mod tests {
 
     #[test]
     fn test_mask_secret() {
-        assert_eq!(SecretsRule::mask_secret("sk-proj-abc123def456"), "sk-p...f456");
+        assert_eq!(
+            SecretsRule::mask_secret("sk-proj-abc123def456"),
+            "sk-p...f456"
+        );
         assert_eq!(SecretsRule::mask_secret("short"), "*****");
     }
 

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "ignore": [
+    {
+      "rule": "AW-007",
+      "server": null,
+      "reason": "Accepted risk for internal test fixture",
+      "expires": null
+    },
+    {
+      "rule": "AW-009",
+      "server": null,
+      "reason": "Network egress is expected in this test scenario",
+      "expires": null
+    }
+  ]
+}

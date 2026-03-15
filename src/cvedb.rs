@@ -72,9 +72,7 @@ pub fn load_merged_db() -> Vec<CveEntry> {
 /// Check if a package + version is affected by any known CVE.
 pub fn check_package(package: &str, version: &str, db: &[CveEntry]) -> Vec<CveEntry> {
     db.iter()
-        .filter(|cve| {
-            cve.package == package && version_less_than(version, &cve.affected_below)
-        })
+        .filter(|cve| cve.package == package && version_less_than(version, &cve.affected_below))
         .cloned()
         .collect()
 }

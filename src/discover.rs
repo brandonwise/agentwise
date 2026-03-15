@@ -648,7 +648,11 @@ mod tests {
                 "path should contain 'cursor.mcp': {}",
                 s
             );
-            assert!(s.ends_with("mcp.json"), "path should end with mcp.json: {}", s);
+            assert!(
+                s.ends_with("mcp.json"),
+                "path should end with mcp.json: {}",
+                s
+            );
         }
     }
 
@@ -688,7 +692,11 @@ mod tests {
                 "path should contain 'codeium.windsurf': {}",
                 s
             );
-            assert!(s.ends_with("mcp.json"), "path should end with mcp.json: {}", s);
+            assert!(
+                s.ends_with("mcp.json"),
+                "path should end with mcp.json: {}",
+                s
+            );
         }
     }
 
@@ -715,9 +723,7 @@ mod tests {
     fn test_discover_with_mock_filesystem() {
         let tmp = std::env::temp_dir().join("agentwise_discover_mock");
         let _ = fs::remove_dir_all(&tmp);
-        let cursor_dir = tmp
-            .join(".cursor")
-            .join("mcp.json");
+        let cursor_dir = tmp.join(".cursor").join("mcp.json");
         // Create parent dirs
         fs::create_dir_all(cursor_dir.parent().unwrap()).unwrap();
         fs::write(

@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@0.5.0", "/"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "shell": {
+      "command": "npx",
+      "args": ["-y", "mcp-shell-server"],
+      "env": {
+        "OPENAI_API_KEY": "sk-proj-abc123def456ghi789jkl012mno345pqr678stu901vwx234"
+      }
+    },
+    "quickbooks": {
+      "url": "http://localhost:3000/mcp",
+      "transport": "sse"
+    },
+    "database": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://admin:password123@prod-db.company.com:5432/main"]
+    }
+  }
+}

@@ -46,8 +46,8 @@ pub fn parse_config(json: &str) -> Result<McpConfig, serde_json::Error> {
 pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
     let content = std::fs::read_to_string(path)
         .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
-    let config = parse_config(&content)
-        .map_err(|e| format!("Failed to parse {}: {}", path.display(), e))?;
+    let config =
+        parse_config(&content).map_err(|e| format!("Failed to parse {}: {}", path.display(), e))?;
     Ok(ParsedConfig {
         file_path: path.display().to_string(),
         config,

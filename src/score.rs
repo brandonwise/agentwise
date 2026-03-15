@@ -69,10 +69,7 @@ mod tests {
         assert_eq!(compute_score(&[Severity::High]).1, "A"); // 90
         assert_eq!(compute_score(&[Severity::High, Severity::Low]).1, "B"); // 88
         assert_eq!(compute_score(&[Severity::Critical]).1, "B"); // 80
-        assert_eq!(
-            compute_score(&[Severity::Critical, Severity::High]).1,
-            "C"
-        ); // 70
+        assert_eq!(compute_score(&[Severity::Critical, Severity::High]).1, "C"); // 70
         assert_eq!(
             compute_score(&[Severity::Critical, Severity::High, Severity::Medium]).1,
             "D"
@@ -81,9 +78,6 @@ mod tests {
             compute_score(&[Severity::Critical, Severity::Critical]).1,
             "D"
         ); // 60
-        assert_eq!(
-            compute_score(&[Severity::Critical; 3]).1,
-            "F"
-        ); // 40
+        assert_eq!(compute_score(&[Severity::Critical; 3]).1, "F"); // 40
     }
 }

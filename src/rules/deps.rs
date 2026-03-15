@@ -66,7 +66,8 @@ pub async fn check_deps(
                         "Dependency analysis for '{}@{}' in server '{}'",
                         package, version, server_name
                     ),
-                    fix: "Review transitive dependencies and update packages with advisories".to_string(),
+                    fix: "Review transitive dependencies and update packages with advisories"
+                        .to_string(),
                     config_file: config_file.clone(),
                     server_name: server_name.clone(),
                     source: Some("deps.dev".to_string()),

@@ -53,10 +53,7 @@ struct DepsDevVersionKey {
 // ── Analysis function ──────────────────────────────────────
 
 /// Analyze a package's dependency graph via deps.dev.
-pub async fn analyze_dependencies(
-    package: &str,
-    version: &str,
-) -> Result<DepsAnalysis, String> {
+pub async fn analyze_dependencies(package: &str, version: &str) -> Result<DepsAnalysis, String> {
     let client = reqwest::Client::builder()
         .timeout(TIMEOUT)
         .build()
@@ -97,8 +94,7 @@ pub async fn analyze_dependencies(
                 for license in &ver_info.licenses {
                     let upper = license.to_uppercase();
                     if upper.contains("GPL") && !upper.contains("LGPL") {
-                        license_issues
-                            .push(format!("GPL license detected: {}", license));
+                        license_issues.push(format!("GPL license detected: {}", license));
                     }
                 }
             }
@@ -153,8 +149,7 @@ mod tests {
                 }
             ]
         }"#;
-        let deps: DepsDevDependencies =
-            serde_json::from_str(json).expect("should parse");
+        let deps: DepsDevDependencies = serde_json::from_str(json).expect("should parse");
         assert_eq!(deps.nodes.len(), 3);
         let root = &deps.nodes[0];
         assert_eq!(root.version_key.as_ref().unwrap().name, "root-pkg");
@@ -167,8 +162,7 @@ mod tests {
             "advisoryKeys": [{"id": "GHSA-xxxx-yyyy-zzzz"}],
             "licenses": ["MIT"]
         }"#;
-        let ver: DepsDevVersion =
-            serde_json::from_str(json).expect("should parse");
+        let ver: DepsDevVersion = serde_json::from_str(json).expect("should parse");
         assert_eq!(ver.advisory_keys.len(), 1);
         assert_eq!(ver.advisory_keys[0].id, "GHSA-xxxx-yyyy-zzzz");
         assert_eq!(ver.licenses, vec!["MIT"]);
@@ -177,17 +171,14 @@ mod tests {
     #[test]
     fn test_parse_empty_deps_response() {
         let json = r#"{"nodes": []}"#;
-        let deps: DepsDevDependencies =
-            serde_json::from_str(json).expect("should parse");
+        let deps: DepsDevDependencies = serde_json::from_str(json).expect("should parse");
         assert!(deps.nodes.is_empty());
     }
 
     #[test]
     fn test_parse_version_no_advisories() {
-        let json =
-            r#"{"links": [], "advisoryKeys": [], "licenses": ["Apache-2.0"]}"#;
-        let ver: DepsDevVersion =
-            serde_json::from_str(json).expect("should parse");
+        let json = r#"{"links": [], "advisoryKeys": [], "licenses": ["Apache-2.0"]}"#;
+        let ver: DepsDevVersion = serde_json::from_str(json).expect("should parse");
         assert!(ver.advisory_keys.is_empty());
         assert_eq!(ver.licenses, vec!["Apache-2.0"]);
     }
@@ -224,8 +215,7 @@ mod tests {
                 {"versionKey": {"name": "dep-2", "version": "2.0.0"}}
             ]
         }"#;
-        let deps: DepsDevDependencies =
-            serde_json::from_str(json).expect("should parse");
+        let deps: DepsDevDependencies = serde_json::from_str(json).expect("should parse");
         let count = deps.nodes.len().saturating_sub(1);
         assert_eq!(count, 2);
     }

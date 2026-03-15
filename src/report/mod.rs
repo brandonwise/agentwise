@@ -1,4 +1,6 @@
+pub mod html;
 pub mod json;
+pub mod markdown;
 pub mod sarif;
 pub mod terminal;
 
@@ -9,6 +11,8 @@ pub enum OutputFormat {
     Terminal,
     Json,
     Sarif,
+    Markdown,
+    Html,
 }
 
 impl OutputFormat {
@@ -17,6 +21,8 @@ impl OutputFormat {
             "terminal" | "text" => Some(OutputFormat::Terminal),
             "json" => Some(OutputFormat::Json),
             "sarif" => Some(OutputFormat::Sarif),
+            "markdown" | "md" => Some(OutputFormat::Markdown),
+            "html" => Some(OutputFormat::Html),
             _ => None,
         }
     }
@@ -28,5 +34,7 @@ pub fn render(result: &ScanResult, format: OutputFormat) -> String {
         OutputFormat::Terminal => terminal::render(result),
         OutputFormat::Json => json::render(result),
         OutputFormat::Sarif => sarif::render(result),
+        OutputFormat::Markdown => markdown::render(result),
+        OutputFormat::Html => html::render(result),
     }
 }

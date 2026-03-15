@@ -168,24 +168,17 @@ pub async fn analyze_package(package: &str) -> Result<SupplyChainRisk, String> {
 
                 // Check install scripts on latest version
                 if let Some(latest) = metadata.dist_tags.get("latest") {
-                    let version_url =
-                        format!("{}/{}/{}", NPM_REGISTRY_URL, encoded, latest);
+                    let version_url = format!("{}/{}/{}", NPM_REGISTRY_URL, encoded, latest);
                     if let Ok(ver_response) = client.get(&version_url).send().await {
                         if ver_response.status().is_success() {
-                            if let Ok(ver_meta) =
-                                ver_response.json::<NpmVersionMetadata>().await
-                            {
+                            if let Ok(ver_meta) = ver_response.json::<NpmVersionMetadata>().await {
                                 if let Some(scripts) = &ver_meta.scripts {
-                                    let dangerous =
-                                        ["preinstall", "install", "postinstall"];
+                                    let dangerous = ["preinstall", "install", "postinstall"];
                                     for script_name in dangerous {
                                         if scripts.contains_key(script_name) {
                                             signals.push(RiskSignal {
                                                 level: RiskLevel::High,
-                                                description: format!(
-                                                    "Has {} script",
-                                                    script_name
-                                                ),
+                                                description: format!("Has {} script", script_name),
                                             });
                                         }
                                     }
@@ -349,8 +342,7 @@ mod tests {
             "time": {"created": "2026-01-01T00:00:00.000Z"},
             "dist-tags": {"latest": "1.0.0"}
         }"#;
-        let metadata: NpmPackageMetadata =
-            serde_json::from_str(json).expect("should parse");
+        let metadata: NpmPackageMetadata = serde_json::from_str(json).expect("should parse");
         assert_eq!(metadata.maintainers.len(), 1);
         assert_eq!(metadata.maintainers[0].name, "alice");
         assert_eq!(metadata.dist_tags.get("latest").unwrap(), "1.0.0");
@@ -363,8 +355,7 @@ mod tests {
             "time": {},
             "dist-tags": {}
         }"#;
-        let metadata: NpmPackageMetadata =
-            serde_json::from_str(json).expect("should parse");
+        let metadata: NpmPackageMetadata = serde_json::from_str(json).expect("should parse");
         assert_eq!(metadata.maintainers.len(), 3);
     }
 
@@ -377,8 +368,7 @@ mod tests {
                 "test": "jest"
             }
         }"#;
-        let metadata: NpmVersionMetadata =
-            serde_json::from_str(json).expect("should parse");
+        let metadata: NpmVersionMetadata = serde_json::from_str(json).expect("should parse");
         let scripts = metadata.scripts.unwrap();
         assert!(scripts.contains_key("preinstall"));
         assert!(scripts.contains_key("postinstall"));
@@ -388,24 +378,22 @@ mod tests {
     #[test]
     fn test_parse_npm_version_metadata_no_scripts() {
         let json = r#"{}"#;
-        let metadata: NpmVersionMetadata =
-            serde_json::from_str(json).expect("should parse");
+        let metadata: NpmVersionMetadata = serde_json::from_str(json).expect("should parse");
         assert!(metadata.scripts.is_none());
     }
 
     #[test]
     fn test_parse_npm_downloads() {
-        let json = r#"{"downloads": 43, "start": "2026-03-07", "end": "2026-03-13", "package": "test"}"#;
-        let downloads: NpmDownloads =
-            serde_json::from_str(json).expect("should parse");
+        let json =
+            r#"{"downloads": 43, "start": "2026-03-07", "end": "2026-03-13", "package": "test"}"#;
+        let downloads: NpmDownloads = serde_json::from_str(json).expect("should parse");
         assert_eq!(downloads.downloads, 43);
     }
 
     #[test]
     fn test_parse_npm_downloads_high() {
         let json = r#"{"downloads": 500000}"#;
-        let downloads: NpmDownloads =
-            serde_json::from_str(json).expect("should parse");
+        let downloads: NpmDownloads = serde_json::from_str(json).expect("should parse");
         assert!(downloads.downloads >= 1000);
     }
 

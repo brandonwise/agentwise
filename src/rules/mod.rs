@@ -13,9 +13,9 @@ pub mod deps;
 pub mod supply_chain;
 
 use crate::config::McpServer;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Severity {
     Low = 0,
     Medium = 1,
@@ -23,7 +23,7 @@ pub enum Severity {
     Critical = 3,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EpssData {
     pub probability: f64,
     pub percentile: f64,
@@ -56,7 +56,7 @@ impl std::fmt::Display for Severity {
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Finding {
     pub rule_id: String,
     pub severity: Severity,

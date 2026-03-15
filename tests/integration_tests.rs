@@ -1,7 +1,34 @@
+use std::fs;
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn agentwise() -> Command {
     Command::new(env!("CARGO_BIN_EXE_agentwise"))
+}
+
+fn temp_path(prefix: &str, ext: &str) -> std::path::PathBuf {
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    std::env::temp_dir().join(format!("agentwise-{}-{}.{}", prefix, nanos, ext))
+}
+
+fn write_scan_json_report(scan_target: &str) -> std::path::PathBuf {
+    let output = agentwise()
+        .args(["scan", scan_target, "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "Scan failed for '{}': {}",
+        scan_target,
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let path = temp_path("report", "json");
+    fs::write(&path, &output.stdout).unwrap();
+    path
 }
 
 // ── CLI basics ──────────────────────────────────────────────
@@ -24,10 +51,7 @@ fn test_cli_help() {
 
 #[test]
 fn test_scan_help() {
-    let output = agentwise()
-        .args(["scan", "--help"])
-        .output()
-        .unwrap();
+    let output = agentwise().args(["scan", "--help"]).output().unwrap();
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("--format"));
@@ -60,10 +84,7 @@ fn test_scan_clean_file() {
 
 #[test]
 fn test_scan_directory() {
-    let output = agentwise()
-        .args(["scan", "testdata/"])
-        .output()
-        .unwrap();
+    let output = agentwise().args(["scan", "testdata/"]).output().unwrap();
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("agentwise"));
@@ -139,12 +160,7 @@ fn test_fail_on_critical_with_criticals() {
 #[test]
 fn test_fail_on_critical_clean_config() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/clean-mcp.json",
-            "--fail-on",
-            "critical",
-        ])
+        .args(["scan", "testdata/clean-mcp.json", "--fail-on", "critical"])
         .output()
         .unwrap();
     // Clean config shouldn't have critical findings
@@ -154,12 +170,7 @@ fn test_fail_on_critical_clean_config() {
 #[test]
 fn test_fail_on_low_catches_everything() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--fail-on",
-            "low",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--fail-on", "low"])
         .output()
         .unwrap();
     // Should fail because there are findings at or above low
@@ -195,12 +206,7 @@ fn test_detects_insecure_transport() {
 #[test]
 fn test_detects_secrets() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -212,12 +218,7 @@ fn test_detects_secrets() {
 #[test]
 fn test_detects_shell_access() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -229,12 +230,7 @@ fn test_detects_shell_access() {
 #[test]
 fn test_detects_filesystem_issues() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -246,12 +242,7 @@ fn test_detects_filesystem_issues() {
 #[test]
 fn test_detects_known_cves() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -263,12 +254,7 @@ fn test_detects_known_cves() {
 #[test]
 fn test_detects_injection_risk() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/injection-risk.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/injection-risk.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -280,12 +266,7 @@ fn test_detects_injection_risk() {
 #[test]
 fn test_detects_missing_allowlist() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -297,12 +278,7 @@ fn test_detects_missing_allowlist() {
 #[test]
 fn test_detects_network_access() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/vulnerable-mcp.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -315,12 +291,7 @@ fn test_detects_network_access() {
 #[test]
 fn test_detects_cve_in_claude_desktop() {
     let output = agentwise()
-        .args([
-            "scan",
-            "testdata/claude-desktop.json",
-            "--format",
-            "json",
-        ])
+        .args(["scan", "testdata/claude-desktop.json", "--format", "json"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -374,4 +345,121 @@ fn test_scan_nonexistent_path() {
         .unwrap();
     // Should still succeed (just no findings)
     assert!(output.status.success());
+}
+
+// ── Baseline / ignore support ───────────────────────────────
+
+#[test]
+fn test_scan_uses_auto_detected_baseline() {
+    let output = agentwise()
+        .args([
+            "scan",
+            "testdata/baseline-test/vulnerable-mcp.json",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(!findings.iter().any(|f| f["rule_id"] == "AW-007"));
+    assert!(!findings.iter().any(|f| f["rule_id"] == "AW-009"));
+    assert!(
+        parsed["suppressed_count"].as_u64().unwrap_or(0) >= 2,
+        "Expected at least 2 suppressed findings"
+    );
+}
+
+#[test]
+fn test_expired_baseline_rule_is_not_suppressed() {
+    let baseline_path = temp_path("expired-baseline", "json");
+    fs::write(
+        &baseline_path,
+        r#"{
+  "version": 1,
+  "ignore": [
+    {
+      "rule": "AW-007",
+      "server": null,
+      "reason": "Expired temporary waiver",
+      "expires": "2000-01-01"
+    }
+  ]
+}"#,
+    )
+    .unwrap();
+
+    let output = agentwise()
+        .args([
+            "scan",
+            "testdata/vulnerable-mcp.json",
+            "--baseline",
+            baseline_path.to_str().unwrap(),
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(findings.iter().any(|f| f["rule_id"] == "AW-007"));
+    assert_eq!(parsed["suppressed_count"], 0);
+}
+
+// ── Diff mode ───────────────────────────────────────────────
+
+#[test]
+fn test_diff_terminal_output() {
+    let before = write_scan_json_report("testdata/vulnerable-mcp.json");
+    let after = write_scan_json_report("testdata/clean-mcp.json");
+
+    let output = agentwise()
+        .args(["diff", before.to_str().unwrap(), after.to_str().unwrap()])
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("agentwise diff"));
+    assert!(stdout.contains("fixed"));
+}
+
+#[test]
+fn test_diff_json_output_valid() {
+    let before = write_scan_json_report("testdata/clean-mcp.json");
+    let after = write_scan_json_report("testdata/vulnerable-mcp.json");
+
+    let output = agentwise()
+        .args([
+            "diff",
+            before.to_str().unwrap(),
+            after.to_str().unwrap(),
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+
+    assert!(parsed["before_score"].is_number());
+    assert!(parsed["after_score"].is_number());
+    assert!(parsed["score_delta"].is_number());
+    assert!(parsed["fixed"].is_array());
+    assert!(parsed["new"].is_array());
+    assert!(parsed["unchanged"].is_array());
 }
