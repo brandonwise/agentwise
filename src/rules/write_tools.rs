@@ -81,6 +81,7 @@ impl Rule for WriteToolsRule {
                 fix: "Add \"allowedTools\" to limit to read-only operations, or explicitly opt into write access".to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
+                source: None,
             });
         }
 

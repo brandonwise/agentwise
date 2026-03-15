@@ -105,6 +105,7 @@ impl Rule for SecretsRule {
                             .to_string(),
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
+                        source: None,
                     });
                 }
             }
@@ -128,6 +129,7 @@ impl Rule for SecretsRule {
                             .to_string(),
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
+                        source: None,
                     });
                 }
             }
@@ -149,6 +151,7 @@ impl Rule for SecretsRule {
                     fix: "Use environment variable references for credentials in URLs".to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
+                    source: None,
                 });
             }
         }

@@ -56,6 +56,9 @@ pub struct Finding {
     pub fix: String,
     pub config_file: String,
     pub server_name: String,
+    /// Source of the finding: None for rule checks, Some("osv") for live OSV lookups.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
 }
 
 /// Trait that all detection rules must implement.

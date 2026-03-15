@@ -1,5 +1,5 @@
 use crate::rules::{Finding, Severity};
-use crate::scanner::ScanResult;
+use crate::scanner::{OsvStats, ScanResult};
 use owo_colors::OwoColorize;
 
 pub fn render(result: &ScanResult) -> String {
@@ -29,6 +29,12 @@ pub fn render(result: &ScanResult) -> String {
         for finding in &sorted {
             out.push_str(&render_finding(finding));
         }
+    }
+
+    // OSV live query stats
+    if let Some(ref stats) = result.osv_stats {
+        out.push_str(&render_osv_stats(stats));
+        out.push('\n');
     }
 
     // Score
@@ -145,13 +151,19 @@ fn render_finding(finding: &Finding) -> String {
         Severity::Low => "○".dimmed().to_string(),
     };
 
+    let source_tag = if finding.source.as_deref() == Some("osv") {
+        format!(" {}", "[LIVE]".cyan().bold())
+    } else {
+        String::new()
+    };
+
     let location = format!("{} → {}", finding.config_file, finding.server_name).dimmed().to_string();
     let rule_id = finding.rule_id.dimmed().to_string();
 
     let mut out = String::new();
     out.push_str(&format!(
-        "  {} {} {} {}\n",
-        icon, severity_label, location, rule_id
+        "  {} {} {} {}{}\n",
+        icon, severity_label, location, rule_id, source_tag
     ));
     out.push_str(&format!("    {}\n", finding.title));
     out.push_str(&format!(
@@ -161,6 +173,17 @@ fn render_finding(finding: &Finding) -> String {
     ));
 
     out
+}
+
+fn render_osv_stats(stats: &OsvStats) -> String {
+    format!(
+        "  {} Live CVE check: queried OSV for {} {} ({} new {} found)\n",
+        "●".cyan(),
+        stats.packages_queried,
+        if stats.packages_queried == 1 { "package" } else { "packages" },
+        stats.new_vulnerabilities,
+        if stats.new_vulnerabilities == 1 { "vulnerability" } else { "vulnerabilities" },
+    )
 }
 
 fn render_score(result: &ScanResult) -> String {
@@ -222,6 +245,7 @@ mod tests {
             score: 100,
             grade: "A".to_string(),
             duration_ms: 0,
+            osv_stats: None,
         };
         let output = render(&result);
         assert!(output.contains("agentwise"));
@@ -240,12 +264,14 @@ mod tests {
                 fix: "Test fix".to_string(),
                 config_file: "test.json".to_string(),
                 server_name: "test-server".to_string(),
+                source: None,
             }],
             configs_scanned: 1,
             servers_scanned: 1,
             score: 80,
             grade: "B".to_string(),
             duration_ms: 1,
+            osv_stats: None,
         };
         let output = render(&result);
         assert!(output.contains("CRITICAL"));

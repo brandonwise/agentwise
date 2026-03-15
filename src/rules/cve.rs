@@ -10,7 +10,7 @@ pub struct CveRule {
 impl CveRule {
     pub fn new() -> Self {
         Self {
-            db: cvedb::load_cve_db(),
+            db: cvedb::load_merged_db(),
         }
     }
 }
@@ -45,6 +45,7 @@ impl Rule for CveRule {
                     fix: cve.fix.clone(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
+                    source: None,
                 });
             }
         }

@@ -69,6 +69,7 @@ impl Rule for NetworkRule {
                     .to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
+                source: None,
             });
         }
 

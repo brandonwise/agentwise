@@ -79,6 +79,7 @@ impl Rule for FilesystemRule {
                     fix: "Add \"allowedDirectories\" to restrict access to specific project directories".to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
+                    source: None,
                 });
             } else {
                 findings.push(Finding {
@@ -92,6 +93,7 @@ impl Rule for FilesystemRule {
                     fix: "Add \"allowedDirectories\" to restrict filesystem access scope".to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
+                    source: None,
                 });
             }
         }

@@ -50,6 +50,7 @@ impl Rule for AuthRule {
                 fix: "Add authentication via env vars (AUTH_TOKEN, API_KEY, etc.)".to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
+                source: None,
             });
         }
 

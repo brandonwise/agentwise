@@ -25,6 +25,7 @@ impl Rule for TransportRule {
                     fix: "Change URL to use https://".to_string(),
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
+                    source: None,
                 });
             }
         }
@@ -44,6 +45,7 @@ impl Rule for TransportRule {
                         fix: "Change URL to use https://".to_string(),
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
+                        source: None,
                     });
                 }
             }

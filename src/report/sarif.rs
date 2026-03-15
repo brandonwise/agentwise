@@ -179,12 +179,14 @@ mod tests {
                 fix: "Add auth".to_string(),
                 config_file: "test.json".to_string(),
                 server_name: "test".to_string(),
+                source: None,
             }],
             configs_scanned: 1,
             servers_scanned: 1,
             score: 80,
             grade: "B".to_string(),
             duration_ms: 1,
+            osv_stats: None,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
@@ -216,6 +218,7 @@ mod tests {
             score: 100,
             grade: "A".to_string(),
             duration_ms: 0,
+            osv_stats: None,
         };
         let output = render(&result);
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();

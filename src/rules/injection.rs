@@ -80,6 +80,7 @@ impl Rule for InjectionRule {
                         fix: "Review and sanitize tool descriptions and arguments".to_string(),
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
+                        source: None,
                     });
                 }
             }
@@ -100,6 +101,7 @@ impl Rule for InjectionRule {
                         fix: "Review and sanitize environment variable values".to_string(),
                         config_file: config_file.to_string(),
                         server_name: server_name.to_string(),
+                        source: None,
                     });
                 }
             }

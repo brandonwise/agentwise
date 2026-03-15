@@ -1,5 +1,6 @@
 mod config;
 mod cvedb;
+mod osv;
 mod report;
 mod rules;
 mod scanner;
@@ -8,6 +9,7 @@ mod score;
 use clap::{Parser, Subcommand};
 use report::OutputFormat;
 use rules::Severity;
+use std::collections::HashSet;
 
 #[derive(Parser)]
 #[command(
@@ -36,10 +38,22 @@ enum Commands {
         /// Exit with code 1 if findings at this severity or above are found
         #[arg(long, value_parser = ["critical", "high", "medium", "low"])]
         fail_on: Option<String>,
+
+        /// Query OSV live for package CVEs found during this scan
+        #[arg(long)]
+        live: bool,
+
+        /// Force offline mode (embedded + local cache only)
+        #[arg(long)]
+        offline: bool,
     },
+
+    /// Update local CVE cache from OSV
+    Update,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let cli = Cli::parse();
 
     match cli.command {
@@ -47,24 +61,64 @@ fn main() {
             path,
             format,
             fail_on,
+            live,
+            offline,
         } => {
             let output_format = OutputFormat::from_str(&format).unwrap_or(OutputFormat::Terminal);
-            let result = scanner::scan(&path);
+
+            let result = if live && !offline {
+                scanner::scan_with_live(&path).await
+            } else {
+                scanner::scan(&path)
+            };
+
             let output = report::render(&result, output_format);
             print!("{}", output);
 
             // Check fail-on threshold
             if let Some(fail_on) = fail_on {
                 if let Some(threshold) = Severity::from_str(&fail_on) {
-                    let has_violation = result
-                        .findings
-                        .iter()
-                        .any(|f| f.severity >= threshold);
+                    let has_violation = result.findings.iter().any(|f| f.severity >= threshold);
                     if has_violation {
                         std::process::exit(1);
                     }
                 }
             }
         }
+        Commands::Update => {
+            match update_cache_from_osv().await {
+                Ok((count, packages)) => {
+                    println!(
+                        "Updated: {} vulnerabilities for {} packages (cached at {})",
+                        count,
+                        packages,
+                        cvedb::cache_path().display()
+                    );
+                }
+                Err(e) => {
+                    eprintln!("Update failed: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        }
     }
+}
+
+async fn update_cache_from_osv() -> Result<(usize, usize), String> {
+    let batch = osv::query_packages_batch(osv::KNOWN_MCP_PACKAGES, "npm").await?;
+
+    let mut entries = Vec::new();
+    for (package, vulns) in &batch {
+        let mut converted = osv::vulns_to_cve_entries(package, vulns);
+        entries.append(&mut converted);
+    }
+
+    // Deduplicate by (id, package)
+    let mut seen = HashSet::new();
+    entries.retain(|e| seen.insert((e.id.clone(), e.package.clone())));
+
+    cvedb::save_cache(&entries)?;
+
+    let packages_with_results = batch.iter().filter(|(_, v)| !v.is_empty()).count();
+    Ok((entries.len(), packages_with_results))
 }

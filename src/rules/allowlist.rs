@@ -29,6 +29,7 @@ impl Rule for AllowlistRule {
                 fix: "Add \"allowedTools\" to restrict which tools are available".to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
+                source: None,
             });
         }
 

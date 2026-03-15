@@ -71,6 +71,7 @@ impl Rule for ShellRule {
                 fix: "Add allowedTools or remove shell access entirely".to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
+                source: None,
             });
         }
 
