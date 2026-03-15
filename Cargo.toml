@@ -8,6 +8,17 @@ repository = "https://github.com/brandonwise/agentwise"
 readme = "README.md"
 keywords = ["mcp", "security", "scanner", "ai-agents", "cli"]
 categories = ["command-line-utilities", "development-tools"]
+include = [
+    "src/**",
+    "cvedb/**",
+    "tests/**",
+    "testdata/**",
+    "Cargo.toml",
+    "Cargo.lock",
+    "README.md",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+]
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }

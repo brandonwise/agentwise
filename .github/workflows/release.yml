@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.asset_target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rust_target: x86_64-unknown-linux-gnu
+            asset_target: linux-amd64
+            platform: linux
+          - os: ubuntu-latest
+            rust_target: aarch64-unknown-linux-gnu
+            asset_target: linux-arm64
+            platform: linux
+          - os: macos-latest
+            rust_target: x86_64-apple-darwin
+            asset_target: macos-amd64
+            platform: macos
+          - os: macos-latest
+            rust_target: aarch64-apple-darwin
+            asset_target: macos-arm64
+            platform: macos
+          - os: windows-latest
+            rust_target: x86_64-pc-windows-msvc
+            asset_target: windows-amd64
+            platform: windows
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install Linux ARM64 linker
+        if: matrix.rust_target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
+
+      - name: Compute version and artifact name
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "ASSET_BASENAME=agentwise-${VERSION}-${{ matrix.asset_target }}" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.rust_target }}
+
+      - name: Package (Unix)
+        if: matrix.platform != 'windows'
+        shell: bash
+        run: |
+          mkdir -p dist package
+          cp "target/${{ matrix.rust_target }}/release/agentwise" "package/agentwise"
+          tar -czf "dist/${ASSET_BASENAME}.tar.gz" -C package agentwise
+          echo "ASSET_PATH=dist/${ASSET_BASENAME}.tar.gz" >> "$GITHUB_ENV"
+
+      - name: Package (Windows)
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist, package -Force | Out-Null
+          Copy-Item "target/${{ matrix.rust_target }}/release/agentwise.exe" "package/agentwise.exe"
+          Compress-Archive -Path "package/agentwise.exe" -DestinationPath "dist/$env:ASSET_BASENAME.zip" -Force
+          "ASSET_PATH=dist/$env:ASSET_BASENAME.zip" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ASSET_BASENAME }}
+          path: ${{ env.ASSET_PATH }}
+
+  release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+
+    steps:
+      - name: Compute version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate SHA256 checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum agentwise-* > "agentwise-${VERSION}-checksums.txt"
+
+      - name: Upload checksums artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentwise-${{ env.VERSION }}-checksums
+          path: dist/agentwise-${{ env.VERSION }}-checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: agentwise ${{ github.ref_name }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            dist/agentwise-*.tar.gz
+            dist/agentwise-*.zip
+            dist/agentwise-${{ env.VERSION }}-checksums.txt
