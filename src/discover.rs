@@ -572,7 +572,7 @@ mod tests {
     fn test_discover_configs_returns_vec() {
         // Smoke test: should not panic and return a vec
         let configs = discover_configs();
-        assert!(configs.len() > 0 || configs.is_empty()); // just no panic
+        assert!(!configs.is_empty() || configs.is_empty()); // just no panic
     }
 
     #[test]
