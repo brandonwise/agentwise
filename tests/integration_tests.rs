@@ -338,6 +338,32 @@ fn test_detects_cve_in_claude_desktop() {
     );
 }
 
+// ── scan --auto ─────────────────────────────────────────────
+
+#[test]
+fn test_scan_auto_runs_discovery() {
+    let output = agentwise()
+        .args(["scan", "--auto", "--format", "json"])
+        .output()
+        .unwrap();
+    // --auto should succeed (exit 0) whether or not configs exist on this machine
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if stdout.is_empty() {
+        // No configs found — stderr should say so
+        assert!(
+            stderr.contains("No MCP configurations found"),
+            "Expected 'No MCP configurations found' in stderr, got: {}",
+            stderr
+        );
+    } else {
+        // Configs found — output should be valid JSON with findings array
+        let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+        assert!(parsed["findings"].is_array());
+        assert!(parsed["score"].is_number());
+    }
+}
+
 // ── Nonexistent paths ───────────────────────────────────────
 
 #[test]

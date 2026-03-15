@@ -354,6 +354,17 @@ pub fn render_discover(configs: &[DiscoveredConfig]) -> String {
         out.push('\n');
     }
 
+    // Summary line with checked/found/server totals
+    out.push_str(&format!(
+        "  Summary: checked {} {}, found {} {}, {} {} total\n\n",
+        configs.len(),
+        if configs.len() == 1 { "location" } else { "locations" },
+        existing.len(),
+        if existing.len() == 1 { "config" } else { "configs" },
+        total_servers,
+        if total_servers == 1 { "server" } else { "servers" },
+    ));
+
     out
 }
 
@@ -495,6 +506,11 @@ mod tests {
         assert!(output.contains("server-b"));
         assert!(output.contains("Claude Desktop"));
         assert!(output.contains("not found"));
+        // Summary line
+        assert!(output.contains("Summary:"));
+        assert!(output.contains("checked 2 locations"));
+        assert!(output.contains("found 1 config"));
+        assert!(output.contains("2 servers total"));
     }
 
     #[test]
@@ -502,5 +518,7 @@ mod tests {
         let configs: Vec<DiscoveredConfig> = vec![];
         let output = render_discover(&configs);
         assert!(output.contains("0 locations"));
+        assert!(output.contains("Summary:"));
+        assert!(output.contains("checked 0 locations"));
     }
 }

@@ -10,7 +10,15 @@
 - Zed support with `mcpServers` and `context_servers` key parsing
 - Deduplication by canonical path
 - `discover_existing()` and `discover_existing_paths()` helpers
-- 14 unit tests covering serialization, path walking, probing, dedup, JSON validity
+- `expand_tilde()` helper for `~/` path expansion
+- 22 unit tests covering serialization, path walking, probing, dedup, tilde expansion, platform segments, mock filesystem, JSON validity
+
+### Corrected Global Paths (requirements-alignment patch)
+- **Cursor global**: macOS `~/Library/Application Support/Cursor/User/globalStorage/cursor.mcp/mcp.json`, Linux `~/.config/Cursor/User/globalStorage/cursor.mcp/mcp.json`
+- **VS Code + Continue global**: macOS `~/Library/Application Support/Code/User/globalStorage/continue.continue/config.json`, Linux `~/.config/Code/User/globalStorage/continue.continue/config.json`
+- **Windsurf global**: macOS `~/Library/Application Support/Windsurf/User/globalStorage/codeium.windsurf/mcp.json`, Linux `~/.config/Windsurf/User/globalStorage/codeium.windsurf/mcp.json`
+- **Zed global**: macOS `~/Library/Application Support/Zed/settings.json` (was `~/.config/zed/settings.json`), Linux `~/.config/zed/settings.json` (unchanged)
+- **Claude Desktop**: unchanged (already correct)
 
 ### Modified: `src/main.rs`
 - Added `discover` module declaration
@@ -26,12 +34,16 @@
 
 ### Modified: `src/report/terminal.rs`
 - `render_discover(&[DiscoveredConfig])` — pretty terminal output with box drawing, color coding, server tree
-- 2 new tests for discover rendering
+- Added summary line: "Summary: checked N locations, found M configs, S servers total"
+- 2 tests updated to verify summary line content
+
+### Modified: `tests/integration_tests.rs`
+- Added `test_scan_auto_runs_discovery` — validates `scan --auto --format json` produces valid JSON or "no configs found" message
 
 ## Quality Gates
 
 - `cargo build` — clean
-- `cargo test` — 149 unit + 24 integration tests pass (0 failures)
+- `cargo test` — 158 unit + 25 integration tests pass (0 failures)
 - `cargo clippy -- -D warnings` — clean (0 warnings)
 
 ## CLI Usage
