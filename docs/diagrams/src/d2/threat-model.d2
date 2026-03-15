@@ -1,0 +1,114 @@
+direction: down
+
+title: {
+  label: What agentwise catches
+  style: {
+    font-size: 26
+    bold: true
+    font-color: "#1a1a2e"
+  }
+}
+
+# ── Attack row ────────────────────────────────────────
+attacks: {
+  label: Attack Vectors
+  style: {
+    fill: "#ffeaa7"
+    stroke: "#d35400"
+    border-radius: 10
+    font-size: 14
+  }
+
+  no_auth: {
+    label: "No Auth\non Remote Server"
+    style: { fill: "#ff7675"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+
+  filesystem: {
+    label: "Unrestricted\nFilesystem"
+    style: { fill: "#e17055"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+
+  shell: {
+    label: "Shell/Exec\nAccess"
+    style: { fill: "#d63031"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+
+  secrets: {
+    label: "Hardcoded\nAPI Keys"
+    style: { fill: "#e17055"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+
+  supply: {
+    label: "Supply Chain\nCompromise"
+    style: { fill: "#d63031"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+
+  cve: {
+    label: "Unpatched\nCVE"
+    style: { fill: "#c0392b"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+}
+
+# ── Detection row ─────────────────────────────────────
+detections: {
+  label: "agentwise Detection"
+  style: {
+    fill: "#dfe6e9"
+    stroke: "#2c3e50"
+    border-radius: 10
+    font-size: 14
+    bold: true
+  }
+
+  aw001: {
+    label: "AW-001"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+  aw002: {
+    label: "AW-002"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+  aw003: {
+    label: "AW-003"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+  aw004: {
+    label: "AW-004"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+  aw011: {
+    label: "AW-011"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+  aw006: {
+    label: "AW-006"
+    style: { fill: "#00b894"; font-color: "#fff"; font-size: 15; bold: true }
+  }
+}
+
+# ── Direct 1:1 mapping (no crossing) ─────────────────
+attacks.no_auth -> detections.aw001: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}
+attacks.filesystem -> detections.aw002: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}
+attacks.shell -> detections.aw003: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}
+attacks.secrets -> detections.aw004: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}
+attacks.supply -> detections.aw011: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}
+attacks.cve -> detections.aw006: "blocked" {
+  style.stroke: "#00b894"
+  style.stroke-width: 2
+}

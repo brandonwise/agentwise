@@ -1,0 +1,163 @@
+direction: down
+
+title: {
+  label: agentwise scan — Workflow
+  style: {
+    font-size: 24
+    bold: true
+    font-color: "#1a1a2e"
+  }
+}
+
+start: {
+  label: "agentwise scan <path>"
+  shape: oval
+  style: {
+    fill: "#74b9ff"
+    font-color: "#fff"
+    bold: true
+  }
+}
+
+discover: {
+  label: "Discover configs\n.mcp.json, claude_desktop_config.json"
+  shape: rectangle
+  style: {
+    fill: "#dfe6e9"
+    border-radius: 6
+  }
+}
+
+parse: {
+  label: "Parse mcpServers\nExtract: command, args, env, url"
+  shape: rectangle
+  style: {
+    fill: "#dfe6e9"
+    border-radius: 6
+  }
+}
+
+rules: {
+  label: "Run 12 detection rules\n(AW-001 → AW-012)"
+  shape: rectangle
+  style: {
+    fill: "#ffeaa7"
+    border-radius: 6
+    bold: true
+  }
+}
+
+live_check: {
+  label: "--live flag?"
+  shape: diamond
+  style: {
+    fill: "#a29bfe"
+    font-color: "#fff"
+  }
+}
+
+osv_epss: {
+  label: "Query OSV + EPSS\nfor each CVE finding"
+  shape: rectangle
+  style: {
+    fill: "#6c5ce7"
+    font-color: "#fff"
+    border-radius: 6
+  }
+}
+
+sc_check: {
+  label: "--supply-chain flag?"
+  shape: diamond
+  style: {
+    fill: "#00b894"
+    font-color: "#fff"
+  }
+}
+
+npm_deps: {
+  label: "Query npm + deps.dev\nfor each MCP package"
+  shape: rectangle
+  style: {
+    fill: "#00cec9"
+    font-color: "#fff"
+    border-radius: 6
+  }
+}
+
+score: {
+  label: "Compute score\n0-100, grade A-F"
+  shape: rectangle
+  style: {
+    fill: "#fdcb6e"
+    border-radius: 6
+    bold: true
+  }
+}
+
+output: {
+  label: "Render output\nterminal / JSON / SARIF"
+  shape: rectangle
+  style: {
+    fill: "#636e72"
+    font-color: "#fff"
+    border-radius: 6
+  }
+}
+
+fail_check: {
+  label: "--fail-on?"
+  shape: diamond
+  style: {
+    fill: "#e17055"
+    font-color: "#fff"
+  }
+}
+
+exit_0: {
+  label: "Exit 0\n(pass)"
+  shape: oval
+  style: {
+    fill: "#00b894"
+    font-color: "#fff"
+  }
+}
+
+exit_1: {
+  label: "Exit 1\n(fail CI)"
+  shape: oval
+  style: {
+    fill: "#d63031"
+    font-color: "#fff"
+  }
+}
+
+# ── Flow ──────────────────────────────────────────────
+start -> discover
+discover -> parse
+parse -> rules
+rules -> live_check
+
+live_check -> osv_epss: yes {
+  style.stroke: "#6c5ce7"
+}
+live_check -> sc_check: no
+
+osv_epss -> sc_check
+
+sc_check -> npm_deps: yes {
+  style.stroke: "#00b894"
+}
+sc_check -> score: no
+
+npm_deps -> score
+
+score -> output
+output -> fail_check
+
+fail_check -> exit_1: "severity ≥ threshold" {
+  style.stroke: "#d63031"
+}
+fail_check -> exit_0: "below threshold" {
+  style.stroke: "#00b894"
+}

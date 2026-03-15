@@ -46,6 +46,12 @@ $ agentwise scan .
   ╚══════════════════════════════════════════════════════════════╝
 ```
 
+## How it works
+
+<p align="center">
+  <img src="docs/diagrams/out/static/architecture.svg" alt="agentwise architecture" width="800">
+</p>
+
 ## Why agentwise?
 
 30+ CVEs against MCP servers in the last 60 days. 36% of MCP servers ship with zero authentication. Your AI agent setup is probably vulnerable.
@@ -56,18 +62,70 @@ Every existing scanner is Python, JavaScript, or TypeScript. They need `pip inst
 |--|-----------|-----------------|---------------------|------------|
 | Language | Rust | Python | Python | TypeScript |
 | Install | Single binary | pip / uvx | pip | npm |
-| Speed | Milliseconds | Seconds | Seconds | Seconds |
+| Speed class | Milliseconds | Seconds | Seconds | Seconds |
 | Offline | Yes | No | No | Yes |
 | EPSS scoring | Yes | No | No | No |
 | Supply chain | Yes | No | No | No |
 | deps.dev | Yes | No | No | No |
 
+## Performance (measured)
+
+Measured on macOS arm64, release build, using `hyperfine`.
+
+### agentwise scan latency
+
+| Command | Mean time |
+|---|---:|
+| `agentwise scan testdata/vulnerable-mcp.json` (5 servers) | **3.2 ms** |
+| `agentwise scan research/configs/` (109 servers) | **3.9 ms** |
+
+### Quick head-to-head (same vulnerable fixture)
+
+| Tool | Mean runtime |
+|---|---:|
+| `agentwise` | **3.1 ms** |
+| Cisco `mcp-scanner` (`--analyzers yara`) | **2.68 s** |
+| `mcp-shield` (default run) | **60.62 s** |
+
+Notes:
+- These are default CLI runs on the same fixture (`testdata/vulnerable-mcp.json`).
+- Some tools attempt live server connections by design, which increases runtime.
+- Reproduce locally with the benchmark commands in [`research/benchmarks.md`](research/benchmarks.md).
+
+## Real-world findings snapshot
+
+From a scan of **109 MCP server entries** collected from public GitHub configs + official docs:
+
+- **130 total findings** (13 high, 117 medium)
+- **100%** missing tool allowlists (AW-007)
+- **8.26%** had unrestricted filesystem access (AW-002)
+- **1.83%** exposed hardcoded secrets (AW-004)
+- Insecure HTTP transport still present in public configs (AW-005)
+
+Full methodology, source attribution, and raw output are in [`research/FINDINGS.md`](research/FINDINGS.md) and [`research/scan-results.json`](research/scan-results.json).
+
+## Trust signals
+
+- **4.0 MB** release binary
+- **153/153 tests passing**
+- **0 clippy warnings** with `-D warnings`
+- **0 known Rust dependency vulnerabilities** (`cargo audit`)
+
 ## Install
 
-### From crates.io
+### From crates.io (publishing with first tagged release)
 
 ```bash
 cargo install agentwise
+```
+
+### Build from source now
+
+```bash
+git clone https://github.com/brandonwise/agentwise
+cd agentwise
+cargo build --release
+./target/release/agentwise --version
 ```
 
 ### Pre-built binary
@@ -81,6 +139,12 @@ curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.s
 ```bash
 brew install brandonwise/tap/agentwise
 ```
+
+## Scan workflow
+
+<p align="center">
+  <img src="docs/diagrams/out/static/scan-workflow.svg" alt="agentwise scan workflow" width="500">
+</p>
 
 ## Quick Start
 
@@ -110,6 +174,12 @@ agentwise auto-detects and scans:
 - `.cursor/mcp.json` — Cursor editor
 - `mcp.json` — Generic MCP configs
 - Any JSON file with `mcpServers` passed as argument
+
+## Threat coverage
+
+<p align="center">
+  <img src="docs/diagrams/out/static/threat-model.svg" alt="agentwise threat model" width="700">
+</p>
 
 ## Detection Rules
 
@@ -178,17 +248,7 @@ $ agentwise scan . --supply-chain
 
 ## CI/CD Integration
 
-### GitHub Action
-
-```yaml
-- uses: brandonwise/agentwise-action@v1
-  with:
-    path: .
-    fail-on: high
-    format: sarif
-```
-
-### Manual Setup
+### GitHub Actions (manual, available now)
 
 ```yaml
 - name: Install agentwise
