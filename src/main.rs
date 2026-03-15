@@ -202,15 +202,12 @@ async fn main() {
 
             let rendered_output = report::render(&result, output_format);
 
-            if output_format == OutputFormat::Html {
-                if let Some(output_path) = output {
-                    if let Err(e) = std::fs::write(&output_path, &rendered_output) {
-                        eprintln!("Failed to write HTML report to {}: {}", output_path, e);
-                        std::process::exit(1);
-                    }
-                } else {
-                    print!("{}", rendered_output);
+            if let Some(output_path) = output {
+                if let Err(e) = std::fs::write(&output_path, &rendered_output) {
+                    eprintln!("Failed to write report to {}: {}", output_path, e);
+                    std::process::exit(1);
                 }
+                eprintln!("Report written to {}", output_path);
             } else {
                 print!("{}", rendered_output);
             }
