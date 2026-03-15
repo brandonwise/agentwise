@@ -134,10 +134,11 @@ cargo build --release
 curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh
 ```
 
-### Homebrew (coming soon)
+### Homebrew
 
 ```bash
-brew install brandonwise/tap/agentwise
+brew tap brandonwise/tap
+brew install agentwise
 ```
 
 ## Scan workflow
