@@ -151,10 +151,11 @@ fn render_finding(finding: &Finding) -> String {
         Severity::Low => "○".dimmed().to_string(),
     };
 
-    let source_tag = if finding.source.as_deref() == Some("osv") {
-        format!(" {}", "[LIVE]".cyan().bold())
-    } else {
-        String::new()
+    let source_tag = match finding.source.as_deref() {
+        Some("osv") => format!(" {}", "[LIVE]".cyan().bold()),
+        Some("supply-chain") => format!(" {}", "[SUPPLY-CHAIN]".magenta().bold()),
+        Some("deps.dev") => format!(" {}", "[DEPS.DEV]".magenta().bold()),
+        _ => String::new(),
     };
 
     let location = format!("{} → {}", finding.config_file, finding.server_name).dimmed().to_string();
@@ -166,6 +167,36 @@ fn render_finding(finding: &Finding) -> String {
         icon, severity_label, location, rule_id, source_tag
     ));
     out.push_str(&format!("    {}\n", finding.title));
+
+    // EPSS data for CVE findings
+    if let Some(ref epss) = finding.epss {
+        let pct = (epss.probability * 100.0) as u32;
+        let ptile = (epss.percentile * 100.0) as u32;
+        let emoji = if pct > 50 {
+            " \u{1F525}" // 🔥
+        } else if pct > 20 {
+            " \u{26A0}\u{FE0F}" // ⚠️
+        } else {
+            ""
+        };
+        out.push_str(&format!(
+            "    EPSS: {}% exploitation probability ({}th percentile){}\n",
+            pct, ptile, emoji
+        ));
+    }
+
+    // Sub-items for supply chain findings (tree format)
+    if let Some(ref items) = finding.sub_items {
+        for (i, item) in items.iter().enumerate() {
+            let prefix = if i == items.len() - 1 {
+                "\u{2514}" // └
+            } else {
+                "\u{251C}" // ├
+            };
+            out.push_str(&format!("    {} {}\n", prefix, item));
+        }
+    }
+
     out.push_str(&format!(
         "    {} {}\n\n",
         "Fix:".green().bold(),
@@ -265,6 +296,8 @@ mod tests {
                 config_file: "test.json".to_string(),
                 server_name: "test-server".to_string(),
                 source: None,
+                epss: None,
+                sub_items: None,
             }],
             configs_scanned: 1,
             servers_scanned: 1,
@@ -277,5 +310,68 @@ mod tests {
         assert!(output.contains("CRITICAL"));
         assert!(output.contains("Test finding"));
         assert!(output.contains("Test fix"));
+    }
+
+    #[test]
+    fn test_render_with_epss() {
+        use crate::rules::EpssData;
+        let result = ScanResult {
+            findings: vec![Finding {
+                rule_id: "AW-006".to_string(),
+                severity: Severity::High,
+                title: "CVE-2025-53110: Path traversal".to_string(),
+                message: "Test".to_string(),
+                fix: "Upgrade".to_string(),
+                config_file: "test.json".to_string(),
+                server_name: "test".to_string(),
+                source: Some("osv".to_string()),
+                epss: Some(EpssData {
+                    probability: 0.72,
+                    percentile: 0.95,
+                }),
+                sub_items: None,
+            }],
+            configs_scanned: 1,
+            servers_scanned: 1,
+            score: 90,
+            grade: "A".to_string(),
+            duration_ms: 1,
+            osv_stats: None,
+        };
+        let output = render(&result);
+        assert!(output.contains("EPSS: 72% exploitation probability"));
+        assert!(output.contains("95th percentile"));
+    }
+
+    #[test]
+    fn test_render_with_sub_items() {
+        let result = ScanResult {
+            findings: vec![Finding {
+                rule_id: "AW-011".to_string(),
+                severity: Severity::High,
+                title: "Supply chain risk: HIGH for test-pkg".to_string(),
+                message: "Test".to_string(),
+                fix: "Review".to_string(),
+                config_file: "test.json".to_string(),
+                server_name: "test".to_string(),
+                source: Some("supply-chain".to_string()),
+                epss: None,
+                sub_items: Some(vec![
+                    "Single maintainer (account takeover risk)".to_string(),
+                    "Has postinstall script".to_string(),
+                    "43 weekly downloads".to_string(),
+                ]),
+            }],
+            configs_scanned: 1,
+            servers_scanned: 1,
+            score: 90,
+            grade: "A".to_string(),
+            duration_ms: 1,
+            osv_stats: None,
+        };
+        let output = render(&result);
+        assert!(output.contains("Supply chain risk"));
+        assert!(output.contains("Single maintainer"));
+        assert!(output.contains("postinstall"));
     }
 }

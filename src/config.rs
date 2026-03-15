@@ -75,6 +75,60 @@ pub fn extract_package_info(server: &McpServer) -> Vec<(String, String)> {
     packages
 }
 
+/// Extract all npm package names from MCP server config, with or without versions.
+pub fn extract_all_package_names(server: &McpServer) -> Vec<String> {
+    let mut names = Vec::new();
+
+    // Get versioned packages first
+    let versioned = extract_package_info(server);
+    for (name, _) in &versioned {
+        names.push(name.clone());
+    }
+
+    // Also look for unversioned package references in args
+    if let Some(args) = &server.args {
+        for arg in args {
+            if let Some(name) = parse_package_name(arg) {
+                if !names.contains(&name) {
+                    names.push(name);
+                }
+            }
+        }
+    }
+
+    names
+}
+
+/// Parse a potential npm package name from a string (ignoring version).
+fn parse_package_name(s: &str) -> Option<String> {
+    // Skip flags, paths, URLs
+    if s.starts_with('-') || s.starts_with('/') || s.starts_with('.') || s.contains("://") {
+        return None;
+    }
+
+    // Already handles versioned packages
+    if let Some((name, _)) = parse_package_version(s) {
+        return Some(name);
+    }
+
+    // Scoped unversioned: @scope/name
+    if s.starts_with('@') && s[1..].contains('/') && !s[1..].contains('@') {
+        return Some(s.to_string());
+    }
+
+    // Unscoped unversioned: name with hyphens (like "mcp-shell-server")
+    if !s.is_empty()
+        && !s.contains('/')
+        && !s.contains('@')
+        && s.chars()
+            .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+    {
+        return Some(s.to_string());
+    }
+
+    None
+}
+
 /// Parse a package@version string into (package_name, version).
 fn parse_package_version(s: &str) -> Option<(String, String)> {
     // Handle scoped packages: @scope/name@version
@@ -190,4 +244,71 @@ mod tests {
         assert!(packages.is_empty());
     }
 
+    #[test]
+    fn test_extract_all_package_names_with_version() {
+        let server = McpServer {
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-filesystem@0.5.0".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let names = extract_all_package_names(&server);
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0], "@modelcontextprotocol/server-filesystem");
+    }
+
+    #[test]
+    fn test_extract_all_package_names_without_version() {
+        let server = McpServer {
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let names = extract_all_package_names(&server);
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0], "@modelcontextprotocol/server-fetch");
+    }
+
+    #[test]
+    fn test_extract_all_package_names_unscoped() {
+        let server = McpServer {
+            args: Some(vec!["-y".to_string(), "mcp-shell-server".to_string()]),
+            ..Default::default()
+        };
+        let names = extract_all_package_names(&server);
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0], "mcp-shell-server");
+    }
+
+    #[test]
+    fn test_extract_all_skips_flags_and_paths() {
+        let server = McpServer {
+            args: Some(vec![
+                "-y".to_string(),
+                "/home/user/data".to_string(),
+                "mcp-remote".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let names = extract_all_package_names(&server);
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0], "mcp-remote");
+    }
+
+    #[test]
+    fn test_extract_all_no_duplicates() {
+        let server = McpServer {
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-filesystem@0.5.0".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let names = extract_all_package_names(&server);
+        // Should not have duplicates even though both extract_package_info and parse_package_name find it
+        assert_eq!(names.len(), 1);
+    }
 }

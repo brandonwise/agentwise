@@ -1,10 +1,13 @@
 mod config;
 mod cvedb;
+mod depsdev;
+mod epss;
 mod osv;
 mod report;
 mod rules;
 mod scanner;
 mod score;
+mod supply_chain;
 
 use clap::{Parser, Subcommand};
 use report::OutputFormat;
@@ -46,6 +49,10 @@ enum Commands {
         /// Force offline mode (embedded + local cache only)
         #[arg(long)]
         offline: bool,
+
+        /// Run supply chain and dependency analysis (requires network)
+        #[arg(long)]
+        supply_chain: bool,
     },
 
     /// Update local CVE cache from OSV
@@ -63,10 +70,13 @@ async fn main() {
             fail_on,
             live,
             offline,
+            supply_chain,
         } => {
             let output_format = OutputFormat::from_str(&format).unwrap_or(OutputFormat::Terminal);
 
-            let result = if live && !offline {
+            let result = if supply_chain && !offline {
+                scanner::scan_with_supply_chain(&path, live).await
+            } else if live && !offline {
                 scanner::scan_with_live(&path).await
             } else {
                 scanner::scan(&path)

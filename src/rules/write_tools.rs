@@ -82,6 +82,8 @@ impl Rule for WriteToolsRule {
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
                 source: None,
+                    epss: None,
+                    sub_items: None,
             });
         }
 

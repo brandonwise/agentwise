@@ -80,6 +80,8 @@ mod tests {
                 config_file: "test.json".to_string(),
                 server_name: "test".to_string(),
                 source: None,
+                epss: None,
+                sub_items: None,
             }],
             configs_scanned: 1,
             servers_scanned: 1,

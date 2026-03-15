@@ -80,6 +80,8 @@ impl Rule for FilesystemRule {
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
                     source: None,
+                    epss: None,
+                    sub_items: None,
                 });
             } else {
                 findings.push(Finding {
@@ -94,6 +96,8 @@ impl Rule for FilesystemRule {
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
                     source: None,
+                    epss: None,
+                    sub_items: None,
                 });
             }
         }

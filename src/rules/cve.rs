@@ -46,6 +46,8 @@ impl Rule for CveRule {
                     config_file: config_file.to_string(),
                     server_name: server_name.to_string(),
                     source: None,
+                    epss: None,
+                    sub_items: None,
                 });
             }
         }
@@ -76,7 +78,10 @@ mod tests {
 
     #[test]
     fn test_patched_filesystem_server() {
-        let rule = CveRule::new();
+        // Use embedded DB only (not cache, which may have 999.0.0 entries)
+        let rule = CveRule {
+            db: crate::cvedb::load_cve_db(),
+        };
         let server = McpServer {
             command: Some("npx".to_string()),
             args: Some(vec![

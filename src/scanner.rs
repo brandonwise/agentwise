@@ -1,7 +1,7 @@
-use crate::config::{extract_package_info, load_config, ParsedConfig};
+use crate::config::{extract_all_package_names, extract_package_info, load_config, ParsedConfig};
 use crate::cvedb;
 use crate::osv;
-use crate::rules::{all_rules, Finding, Severity};
+use crate::rules::{all_rules, EpssData, Finding, Severity};
 use crate::score::compute_score;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -88,7 +88,7 @@ pub fn scan(path: &str) -> ScanResult {
     }
 }
 
-/// Run scan and augment with live OSV lookups.
+/// Run scan and augment with live OSV lookups + EPSS enrichment.
 pub async fn scan_with_live(path: &str) -> ScanResult {
     let mut result = scan(path);
 
@@ -118,6 +118,8 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
             packages_queried: 0,
             new_vulnerabilities: 0,
         });
+        // Still run EPSS on any existing CVE findings from embedded DB
+        enrich_with_epss(&mut result.findings).await;
         return result;
     }
 
@@ -134,6 +136,7 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
                     packages_queried: package_refs.len(),
                     new_vulnerabilities: 0,
                 });
+                enrich_with_epss(&mut result.findings).await;
                 return result;
             }
         }
@@ -146,6 +149,7 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
                     packages_queried: package_refs.len(),
                     new_vulnerabilities: 0,
                 });
+                enrich_with_epss(&mut result.findings).await;
                 return result;
             }
         }
@@ -208,6 +212,8 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
                     config_file: config_file.clone(),
                     server_name: server_name.clone(),
                     source: Some("osv".to_string()),
+                    epss: None,
+                    sub_items: None,
                 });
 
                 existing_cve_keys.insert(key);
@@ -217,6 +223,9 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
 
     let new_count = new_findings.len();
     result.findings.extend(new_findings);
+
+    // EPSS enrichment for all CVE findings
+    enrich_with_epss(&mut result.findings).await;
 
     let severities: Vec<Severity> = result.findings.iter().map(|f| f.severity).collect();
     let (score, grade) = compute_score(&severities);
@@ -228,6 +237,117 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
     });
 
     result
+}
+
+/// Run scan with supply chain and deps.dev analysis.
+/// If `live` is true, also runs OSV lookups + EPSS enrichment.
+pub async fn scan_with_supply_chain(path: &str, live: bool) -> ScanResult {
+    let mut result = if live {
+        scan_with_live(path).await
+    } else {
+        scan(path)
+    };
+
+    let configs = discover_and_parse(path);
+    let mut packages_for_supply_chain: Vec<(String, String, String)> = Vec::new();
+    let mut packages_for_deps: Vec<(String, String, String, String)> = Vec::new();
+    let mut seen_supply_chain: HashSet<String> = HashSet::new();
+    let mut seen_deps: HashSet<(String, String)> = HashSet::new();
+
+    for parsed_config in &configs {
+        for (server_name, server) in &parsed_config.config.mcp_servers {
+            if server.disabled == Some(true) {
+                continue;
+            }
+
+            // All package names (with or without versions) for supply chain
+            for name in extract_all_package_names(server) {
+                if seen_supply_chain.insert(name.clone()) {
+                    packages_for_supply_chain.push((
+                        name,
+                        server_name.to_string(),
+                        parsed_config.file_path.clone(),
+                    ));
+                }
+            }
+
+            // Versioned packages for deps.dev
+            for (package, version) in extract_package_info(server) {
+                if seen_deps.insert((package.clone(), version.clone())) {
+                    packages_for_deps.push((
+                        package,
+                        version,
+                        server_name.to_string(),
+                        parsed_config.file_path.clone(),
+                    ));
+                }
+            }
+        }
+    }
+
+    // Run supply chain checks
+    if !packages_for_supply_chain.is_empty() {
+        let supply_chain_findings =
+            crate::rules::supply_chain::check_supply_chain(&packages_for_supply_chain).await;
+        result.findings.extend(supply_chain_findings);
+    }
+
+    // Run deps.dev checks
+    if !packages_for_deps.is_empty() {
+        let deps_findings = crate::rules::deps::check_deps(&packages_for_deps).await;
+        result.findings.extend(deps_findings);
+    }
+
+    // Recompute score
+    let severities: Vec<Severity> = result.findings.iter().map(|f| f.severity).collect();
+    let (score, grade) = compute_score(&severities);
+    result.score = score;
+    result.grade = grade;
+
+    result
+}
+
+/// Enrich CVE findings (AW-006) with EPSS exploitation probability data.
+async fn enrich_with_epss(findings: &mut [Finding]) {
+    let cve_ids: Vec<String> = findings
+        .iter()
+        .filter(|f| f.rule_id == "AW-006")
+        .filter_map(|f| {
+            let id = f.title.split(':').next().map(|s| s.trim().to_string())?;
+            if id.starts_with("CVE-") {
+                Some(id)
+            } else {
+                None
+            }
+        })
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect();
+
+    if cve_ids.is_empty() {
+        return;
+    }
+
+    let cve_refs: Vec<&str> = cve_ids.iter().map(String::as_str).collect();
+    match crate::epss::query_epss(&cve_refs).await {
+        Ok(epss_scores) => {
+            for finding in findings.iter_mut() {
+                if finding.rule_id == "AW-006" {
+                    if let Some(cve_id) = finding.title.split(':').next().map(|s| s.trim()) {
+                        if let Some(score) = epss_scores.get(cve_id) {
+                            finding.epss = Some(EpssData {
+                                probability: score.probability,
+                                percentile: score.percentile,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Warning: EPSS lookup failed: {}", e);
+        }
+    }
 }
 
 /// Discover and parse MCP config files at the given path.
@@ -271,8 +391,8 @@ fn discover_configs(dir: &Path) -> Vec<ParsedConfig> {
             continue;
         }
 
-        let is_config =
-            CONFIG_FILE_NAMES.iter().any(|name| file_name == *name) || file_name.ends_with(".mcp.json");
+        let is_config = CONFIG_FILE_NAMES.iter().any(|name| file_name == *name)
+            || file_name.ends_with(".mcp.json");
 
         if is_config {
             match load_config(path) {

@@ -9,6 +9,9 @@ pub mod shell;
 pub mod transport;
 pub mod write_tools;
 
+pub mod deps;
+pub mod supply_chain;
+
 use crate::config::McpServer;
 use serde::Serialize;
 
@@ -18,6 +21,12 @@ pub enum Severity {
     Medium = 1,
     High = 2,
     Critical = 3,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct EpssData {
+    pub probability: f64,
+    pub percentile: f64,
 }
 
 impl Severity {
@@ -59,6 +68,12 @@ pub struct Finding {
     /// Source of the finding: None for rule checks, Some("osv") for live OSV lookups.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+    /// EPSS exploitation probability data for CVE findings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub epss: Option<EpssData>,
+    /// Sub-items for supply chain risk signals, rendered as a tree in terminal output.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sub_items: Option<Vec<String>>,
 }
 
 /// Trait that all detection rules must implement.
