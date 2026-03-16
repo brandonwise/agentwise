@@ -1,32 +1,39 @@
 name: 'agentwise'
-description: 'Security scanner for MCP server configurations'
+description: 'Scan MCP server configurations for security vulnerabilities, misconfigurations, and known CVEs'
 author: 'Brandon Wise'
+branding:
+  icon: 'shield'
+  color: 'blue'
 
 inputs:
   path:
-    description: 'Path to scan (default: current directory)'
+    description: 'Path to scan (file or directory)'
     required: false
     default: '.'
+  format:
+    description: 'Output format (terminal, json, sarif, html, markdown)'
+    required: false
+    default: 'terminal'
   fail-on:
     description: 'Fail if findings at this severity or above (critical, high, medium, low)'
     required: false
     default: ''
-  format:
-    description: 'Output format (terminal, json, sarif)'
+  output:
+    description: 'Write report to file path'
     required: false
-    default: 'terminal'
+    default: ''
+  live:
+    description: 'Query OSV for live CVE data'
+    required: false
+    default: 'false'
+  supply-chain:
+    description: 'Run supply chain analysis'
+    required: false
+    default: 'false'
   version:
-    description: 'agentwise version to use (default: latest)'
+    description: 'agentwise version to install'
     required: false
     default: 'latest'
-
-outputs:
-  score:
-    description: 'Security score (0-100)'
-  grade:
-    description: 'Security grade (A-F)'
-  findings:
-    description: 'Number of findings'
 
 runs:
   using: 'composite'
@@ -34,20 +41,27 @@ runs:
     - name: Install agentwise
       shell: bash
       run: |
-        curl -sSfL https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh
+        if [ "${{ inputs.version }}" = "latest" ]; then
+          curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh
+        else
+          curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh -s -- --version ${{ inputs.version }}
+        fi
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Run scan
+    - name: Run agentwise scan
       shell: bash
       run: |
-        ARGS="scan ${{ inputs.path }}"
+        ARGS="scan ${{ inputs.path }} --format ${{ inputs.format }}"
         if [ -n "${{ inputs.fail-on }}" ]; then
           ARGS="$ARGS --fail-on ${{ inputs.fail-on }}"
         fi
-        if [ "${{ inputs.format }}" != "terminal" ]; then
-          ARGS="$ARGS --format ${{ inputs.format }}"
+        if [ -n "${{ inputs.output }}" ]; then
+          ARGS="$ARGS --output ${{ inputs.output }}"
+        fi
+        if [ "${{ inputs.live }}" = "true" ]; then
+          ARGS="$ARGS --live"
+        fi
+        if [ "${{ inputs.supply-chain }}" = "true" ]; then
+          ARGS="$ARGS --supply-chain"
         fi
         agentwise $ARGS
-
-branding:
-  icon: 'shield'
-  color: 'orange'
