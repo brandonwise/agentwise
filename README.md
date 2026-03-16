@@ -1,11 +1,11 @@
 <p align="center">
   <h1 align="center">agentwise</h1>
   <p align="center">
-    <strong>The fast, offline security scanner for AI agent configurations. Written in Rust. 🦀</strong>
+    <strong>The fast, offline security scanner for AI agent configurations.</strong>
   </p>
   <p align="center">
     <a href="https://github.com/brandonwise/agentwise/actions"><img src="https://img.shields.io/github/actions/workflow/status/brandonwise/agentwise/ci.yml?branch=main&label=CI" alt="CI"></a>
-    <a href="https://crates.io/crates/agentwise"><img src="https://img.shields.io/crates/v/agentwise.svg" alt="crates.io"></a>
+    <a href="https://github.com/brandonwise/agentwise/releases"><img src="https://img.shields.io/github/v/release/brandonwise/agentwise?label=release" alt="release"></a>
     <a href="#license"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg" alt="License"></a>
     <a href="https://github.com/brandonwise/agentwise/stargazers"><img src="https://img.shields.io/github/stars/brandonwise/agentwise?style=flat" alt="GitHub Stars"></a>
   </p>
@@ -107,16 +107,20 @@ Full methodology, source attribution, and raw output are in [`research/FINDINGS.
 ## Trust signals
 
 - **4.0 MB** release binary
-- **153/153 tests passing**
+- **203/203 tests passing**
 - **0 clippy warnings** with `-D warnings`
 - **0 known Rust dependency vulnerabilities** (`cargo audit`)
 
 ## Install
 
-### From crates.io (publishing with first tagged release)
+### From crates.io (coming soon)
+
+`agentwise` is not published on crates.io yet.
+
+### Install with Cargo today
 
 ```bash
-cargo install agentwise
+cargo install --git https://github.com/brandonwise/agentwise agentwise
 ```
 
 ### Build from source now
