@@ -6,7 +6,7 @@
   <p align="center">
     <a href="https://github.com/brandonwise/agentwise/actions"><img src="https://img.shields.io/github/actions/workflow/status/brandonwise/agentwise/ci.yml?branch=main&label=CI" alt="CI"></a>
     <a href="https://github.com/brandonwise/agentwise/releases"><img src="https://img.shields.io/github/v/release/brandonwise/agentwise?label=release" alt="release"></a>
-    <a href="#license"><img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg" alt="License"></a>
+    <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
     <a href="https://github.com/brandonwise/agentwise/stargazers"><img src="https://img.shields.io/github/stars/brandonwise/agentwise?style=flat" alt="GitHub Stars"></a>
   </p>
 </p>
@@ -333,12 +333,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). The easiest way to contribute is adding 
 
 ## License
 
-Licensed under either of:
-
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
-- MIT License ([LICENSE-MIT](LICENSE-MIT))
-
-at your option.
+MIT License ([LICENSE-MIT](LICENSE-MIT)).
 
 ---
 
