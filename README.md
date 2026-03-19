@@ -280,6 +280,26 @@ agentwise scan . --format markdown                      # Markdown for PRs/Notio
 agentwise badge --format svg --output badge.svg         # Shields.io-style SVG badge
 ```
 
+## Baseline management
+
+`agentwise` supports suppressing findings with expiry:
+
+```bash
+agentwise baseline init
+agentwise baseline show
+agentwise baseline add --rule AW-007 --server mcp-fetch --reason "trusted tool for now" --expires 2026-12-31
+agentwise baseline remove --rule AW-007 --server mcp-fetch
+agentwise baseline prune-expired
+```
+
+## Parser compatibility
+
+`agentwise` parses multiple MCP config shapes:
+- `mcpServers`
+- `context_servers` (e.g. Zed)
+- `lsp.{mcpServers|context_servers}` nested blocks
+```
+
 ## Scoring
 
 Every scan produces a security score from 0 to 100:

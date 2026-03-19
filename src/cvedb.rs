@@ -1,3 +1,4 @@
+use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -77,21 +78,62 @@ pub fn check_package(package: &str, version: &str, db: &[CveEntry]) -> Vec<CveEn
         .collect()
 }
 
-/// Simple semver less-than comparison.
+/// Semver-aware less-than comparison.
 /// Returns true if `version` < `threshold`.
-/// Handles x.y.z format. Falls back to string comparison for non-standard versions.
+/// Supports:
+/// - v-prefixed versions (e.g. v1.2.3)
+/// - partial versions (e.g. 1.2 -> 1.2.0)
+/// - prerelease tags (e.g. 1.0.0-beta.1)
+///   Falls back to numeric tuple comparison for non-standard versions.
 fn version_less_than(version: &str, threshold: &str) -> bool {
-    let v = parse_version(version);
-    let t = parse_version(threshold);
-    v < t
+    match (parse_semver_loose(version), parse_semver_loose(threshold)) {
+        (Some(v), Some(t)) => v < t,
+        _ => {
+            let v = parse_version_fallback(version);
+            let t = parse_version_fallback(threshold);
+            v < t
+        }
+    }
 }
 
-/// Parse a version string into a comparable tuple of (major, minor, patch).
-fn parse_version(s: &str) -> (u64, u64, u64) {
-    let parts: Vec<&str> = s.split('.').collect();
-    let major = parts.first().and_then(|p| p.parse().ok()).unwrap_or(0);
-    let minor = parts.get(1).and_then(|p| p.parse().ok()).unwrap_or(0);
-    let patch = parts.get(2).and_then(|p| p.parse().ok()).unwrap_or(0);
+fn parse_semver_loose(input: &str) -> Option<Version> {
+    let cleaned = input.trim().trim_start_matches('v');
+
+    // first try strict semver
+    if let Ok(v) = Version::parse(cleaned) {
+        return Some(v);
+    }
+
+    // pad partial versions like 1 or 1.2
+    let padded = match cleaned.split('.').count() {
+        1 => format!("{}.0.0", cleaned),
+        2 => format!("{}.0", cleaned),
+        _ => cleaned.to_string(),
+    };
+
+    Version::parse(&padded).ok()
+}
+
+fn parse_version_fallback(s: &str) -> (u64, u64, u64) {
+    let cleaned = s.trim().trim_start_matches('v');
+    let core = cleaned
+        .split(|c| ['-', '+'].contains(&c))
+        .next()
+        .unwrap_or(cleaned);
+
+    let parts: Vec<&str> = core.split('.').collect();
+    let major = parts
+        .first()
+        .and_then(|p| p.parse::<u64>().ok())
+        .unwrap_or(0);
+    let minor = parts
+        .get(1)
+        .and_then(|p| p.parse::<u64>().ok())
+        .unwrap_or(0);
+    let patch = parts
+        .get(2)
+        .and_then(|p| p.parse::<u64>().ok())
+        .unwrap_or(0);
     (major, minor, patch)
 }
 
@@ -113,6 +155,19 @@ mod tests {
         assert!(!version_less_than("0.6.3", "0.6.3"));
         assert!(!version_less_than("0.7.0", "0.6.3"));
         assert!(!version_less_than("1.0.0", "0.6.3"));
+    }
+
+    #[test]
+    fn test_semver_v_prefix_and_partial() {
+        assert!(version_less_than("v0.9", "1.0.0"));
+        assert!(version_less_than("1.2", "1.2.1"));
+        assert!(!version_less_than("v1.2.0", "1.2"));
+    }
+
+    #[test]
+    fn test_semver_prerelease() {
+        assert!(version_less_than("1.0.0-beta.1", "1.0.0"));
+        assert!(!version_less_than("1.0.0", "1.0.0-beta.1"));
     }
 
     #[test]

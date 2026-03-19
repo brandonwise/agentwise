@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::collections::HashMap;
 use std::path::Path;
 
@@ -19,6 +20,8 @@ pub struct McpServer {
     #[serde(default)]
     pub env: Option<HashMap<String, String>>,
     #[serde(default)]
+    pub headers: Option<HashMap<String, String>>,
+    #[serde(default)]
     pub url: Option<String>,
     #[serde(default)]
     pub transport: Option<String>,
@@ -38,20 +41,71 @@ pub struct ParsedConfig {
 }
 
 /// Parse an MCP config from a JSON string.
+///
+/// Supports multiple common schema variants:
+/// - { "mcpServers": { ... } }
+/// - { "context_servers": { ... } } (e.g. Zed)
+/// - { "lsp": { "mcpServers": { ... } } }
+/// - { "lsp": { "context_servers": { ... } } }
 pub fn parse_config(json: &str) -> Result<McpConfig, serde_json::Error> {
-    serde_json::from_str(json)
+    let root: Value = serde_json::from_str(json)?;
+    let mut servers: HashMap<String, McpServer> = HashMap::new();
+
+    merge_server_map(root.get("mcpServers"), &mut servers)?;
+    merge_server_map(root.get("context_servers"), &mut servers)?;
+
+    if let Some(lsp) = root.get("lsp") {
+        merge_server_map(lsp.get("mcpServers"), &mut servers)?;
+        merge_server_map(lsp.get("context_servers"), &mut servers)?;
+    }
+
+    Ok(McpConfig {
+        mcp_servers: servers,
+    })
 }
 
 /// Load and parse an MCP config from a file path.
 pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
     let content = std::fs::read_to_string(path)
         .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
-    let config =
-        parse_config(&content).map_err(|e| format!("Failed to parse {}: {}", path.display(), e))?;
+
+    if content.trim().is_empty() {
+        return Err(format!(
+            "Failed to parse {}: file is empty. Expected JSON like {{\"mcpServers\": {{...}}}}",
+            path.display()
+        ));
+    }
+
+    let config = parse_config(&content).map_err(|e| {
+        let msg = e.to_string();
+        if msg.contains("EOF while parsing") || msg.contains("expected value") {
+            format!(
+                "Failed to parse {}: {}. Hint: file appears empty or truncated; use valid JSON or {{}}",
+                path.display(),
+                msg
+            )
+        } else {
+            format!("Failed to parse {}: {}", path.display(), e)
+        }
+    })?;
+
     Ok(ParsedConfig {
         file_path: path.display().to_string(),
         config,
     })
+}
+
+fn merge_server_map(
+    value: Option<&Value>,
+    target: &mut HashMap<String, McpServer>,
+) -> Result<(), serde_json::Error> {
+    if let Some(v) = value {
+        let map: HashMap<String, McpServer> = serde_json::from_value(v.clone())?;
+        for (name, server) in map {
+            target.insert(name, server);
+        }
+    }
+    Ok(())
 }
 
 /// Extract package name and version from MCP server args.
@@ -177,6 +231,38 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_context_servers() {
+        let json = r#"{
+            "context_servers": {
+                "zed": {
+                    "command": "npx",
+                    "args": ["-y", "@modelcontextprotocol/server-fetch"]
+                }
+            }
+        }"#;
+        let config = parse_config(json).unwrap();
+        assert_eq!(config.mcp_servers.len(), 1);
+        assert!(config.mcp_servers.contains_key("zed"));
+    }
+
+    #[test]
+    fn test_parse_lsp_nested_mcp_servers() {
+        let json = r#"{
+            "lsp": {
+                "mcpServers": {
+                    "nested": {
+                        "command": "uvx",
+                        "args": ["mcp-server"]
+                    }
+                }
+            }
+        }"#;
+        let config = parse_config(json).unwrap();
+        assert_eq!(config.mcp_servers.len(), 1);
+        assert!(config.mcp_servers.contains_key("nested"));
+    }
+
+    #[test]
     fn test_parse_empty_config() {
         let json = r#"{"mcpServers": {}}"#;
         let config = parse_config(json).unwrap();
@@ -191,6 +277,7 @@ mod tests {
                     "url": "https://example.com/mcp",
                     "transport": "sse",
                     "env": {"TOKEN": "abc"},
+                    "headers": {"Authorization": "Bearer x"},
                     "allowedTools": ["read"],
                     "allowedDirectories": ["/home"]
                 }
@@ -202,6 +289,7 @@ mod tests {
         assert_eq!(server.transport.as_deref(), Some("sse"));
         assert!(server.allowed_tools.is_some());
         assert!(server.allowed_directories.is_some());
+        assert!(server.headers.is_some());
     }
 
     #[test]

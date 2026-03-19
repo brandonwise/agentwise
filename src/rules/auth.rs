@@ -4,6 +4,58 @@ use crate::rules::{Finding, Rule, Severity};
 /// AW-001: Flag MCP servers using remote transport (SSE/HTTP) without authentication.
 pub struct AuthRule;
 
+impl AuthRule {
+    fn is_remote(server: &McpServer) -> bool {
+        server.url.is_some()
+            || matches!(
+                server.transport.as_deref(),
+                Some("sse") | Some("streamable-http") | Some("http")
+            )
+    }
+
+    fn has_auth_env(server: &McpServer) -> bool {
+        server.env.as_ref().is_some_and(|env| {
+            env.iter().any(|(k, v)| {
+                let key = k.to_lowercase();
+                let value = v.trim();
+                value.len() > 2
+                    && (key.contains("authorization")
+                        || key.contains("auth")
+                        || key.contains("token")
+                        || key.contains("api_key")
+                        || key.contains("apikey")
+                        || key.contains("secret")
+                        || key.contains("bearer")
+                        || key.contains("password"))
+            })
+        })
+    }
+
+    fn has_auth_headers(server: &McpServer) -> bool {
+        server.headers.as_ref().is_some_and(|headers| {
+            headers.keys().any(|k| {
+                let key = k.to_lowercase();
+                key.contains("authorization")
+                    || key == "x-api-key"
+                    || key == "api-key"
+                    || key.contains("bearer")
+                    || key.contains("cookie")
+            })
+        })
+    }
+
+    fn has_auth_args(server: &McpServer) -> bool {
+        server.args.as_ref().is_some_and(|args| {
+            let joined = args.join(" ").to_lowercase();
+            joined.contains("--bearer")
+                || joined.contains("--token")
+                || joined.contains("--api-key")
+                || joined.contains("authorization:")
+                || joined.contains("x-api-key:")
+        })
+    }
+}
+
 impl Rule for AuthRule {
     fn id(&self) -> &'static str {
         "AW-001"
@@ -12,31 +64,13 @@ impl Rule for AuthRule {
     fn check(&self, server_name: &str, server: &McpServer, config_file: &str) -> Vec<Finding> {
         let mut findings = Vec::new();
 
-        let is_remote = server.url.is_some()
-            || matches!(
-                server.transport.as_deref(),
-                Some("sse") | Some("streamable-http") | Some("http")
-            );
-
-        if !is_remote {
+        if !Self::is_remote(server) {
             return findings;
         }
 
-        // Check if any auth-related env vars are set
-        let has_auth = if let Some(env) = &server.env {
-            env.keys().any(|k| {
-                let k = k.to_lowercase();
-                k.contains("auth")
-                    || k.contains("token")
-                    || k.contains("api_key")
-                    || k.contains("apikey")
-                    || k.contains("secret")
-                    || k.contains("password")
-                    || k.contains("bearer")
-            })
-        } else {
-            false
-        };
+        let has_auth = Self::has_auth_env(server)
+            || Self::has_auth_headers(server)
+            || Self::has_auth_args(server);
 
         if !has_auth {
             findings.push(Finding {
@@ -44,10 +78,11 @@ impl Rule for AuthRule {
                 severity: Severity::Critical,
                 title: "No authentication on remote MCP server".to_string(),
                 message: format!(
-                    "Server '{}' uses remote transport but has no authentication configured",
+                    "Server '{}' uses remote transport but no auth token/header was detected",
                     server_name
                 ),
-                fix: "Add authentication via env vars (AUTH_TOKEN, API_KEY, etc.)".to_string(),
+                fix: "Configure authentication (Authorization header, bearer token, or API key env var)"
+                    .to_string(),
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
                 source: None,
@@ -79,7 +114,7 @@ mod tests {
     }
 
     #[test]
-    fn test_sse_with_auth() {
+    fn test_sse_with_auth_env() {
         let rule = AuthRule;
         let mut env = HashMap::new();
         env.insert("AUTH_TOKEN".to_string(), "Bearer secret".to_string());
@@ -91,6 +126,52 @@ mod tests {
         };
         let findings = rule.check("test", &server, "test.json");
         assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_sse_with_auth_header() {
+        let rule = AuthRule;
+        let mut headers = HashMap::new();
+        headers.insert("Authorization".to_string(), "Bearer abc".to_string());
+        let server = McpServer {
+            url: Some("https://example.com/mcp".to_string()),
+            transport: Some("sse".to_string()),
+            headers: Some(headers),
+            ..Default::default()
+        };
+        let findings = rule.check("test", &server, "test.json");
+        assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_sse_with_auth_args() {
+        let rule = AuthRule;
+        let server = McpServer {
+            url: Some("https://example.com/mcp".to_string()),
+            transport: Some("streamable-http".to_string()),
+            args: Some(vec![
+                "--header".to_string(),
+                "Authorization: Bearer test".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let findings = rule.check("test", &server, "test.json");
+        assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_empty_auth_value_does_not_count() {
+        let rule = AuthRule;
+        let mut env = HashMap::new();
+        env.insert("AUTH_TOKEN".to_string(), "".to_string());
+        let server = McpServer {
+            url: Some("https://example.com/mcp".to_string()),
+            transport: Some("sse".to_string()),
+            env: Some(env),
+            ..Default::default()
+        };
+        let findings = rule.check("test", &server, "test.json");
+        assert_eq!(findings.len(), 1);
     }
 
     #[test]

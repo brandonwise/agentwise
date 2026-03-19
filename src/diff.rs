@@ -27,8 +27,12 @@ struct JsonScanReport {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct FindingKey {
     rule_id: String,
+    severity: String,
     server_name: String,
     config_file: String,
+    title: String,
+    message: String,
+    source: Option<String>,
 }
 
 pub fn compare_reports(before_path: &str, after_path: &str) -> Result<DiffResult, String> {
@@ -193,8 +197,12 @@ fn bucket_findings(findings: Vec<Finding>) -> HashMap<FindingKey, Vec<Finding>> 
     for finding in findings {
         let key = FindingKey {
             rule_id: finding.rule_id.clone(),
+            severity: finding.severity.as_str().to_string(),
             server_name: finding.server_name.clone(),
             config_file: finding.config_file.clone(),
+            title: finding.title.clone(),
+            message: finding.message.clone(),
+            source: finding.source.clone(),
         };
         buckets.entry(key).or_default().push(finding);
     }

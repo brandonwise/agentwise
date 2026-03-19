@@ -42,7 +42,7 @@ enum Commands {
         #[arg(long, default_value = "terminal", value_parser = ["terminal", "json", "sarif", "markdown", "html"])]
         format: String,
 
-        /// Optional output file path (used for HTML reports)
+        /// Optional output file path (supported for all formats)
         #[arg(long)]
         output: Option<String>,
 
@@ -131,6 +131,39 @@ enum BaselineAction {
 
     /// Print the baseline file from the current directory
     Show,
+
+    /// Add or update an ignore rule in .agentwise-ignore.json
+    Add {
+        /// Rule id to ignore (e.g. AW-007)
+        #[arg(long)]
+        rule: String,
+
+        /// Optional server name scope (ignore only for one server)
+        #[arg(long)]
+        server: Option<String>,
+
+        /// Human reason for the suppression
+        #[arg(long, default_value = "Accepted risk")]
+        reason: String,
+
+        /// Expiration date (YYYY-MM-DD)
+        #[arg(long)]
+        expires: Option<String>,
+    },
+
+    /// Remove ignore rule(s) from .agentwise-ignore.json
+    Remove {
+        /// Rule id to remove (e.g. AW-007)
+        #[arg(long)]
+        rule: String,
+
+        /// Optional server scope (remove only matching scoped rule)
+        #[arg(long)]
+        server: Option<String>,
+    },
+
+    /// Remove expired ignores from .agentwise-ignore.json
+    PruneExpired,
 }
 
 #[tokio::main]
@@ -295,6 +328,46 @@ async fn main() {
                     std::process::exit(1);
                 }
             },
+            BaselineAction::Add {
+                rule,
+                server,
+                reason,
+                expires,
+            } => match baseline::add_rule_in_dir(
+                std::path::Path::new("."),
+                &rule,
+                server.as_deref(),
+                &reason,
+                expires.as_deref(),
+            ) {
+                Ok(path) => println!("Updated baseline file: {}", path.display()),
+                Err(e) => {
+                    eprintln!("{}", e);
+                    std::process::exit(1);
+                }
+            },
+            BaselineAction::Remove { rule, server } => {
+                match baseline::remove_rule_in_dir(
+                    std::path::Path::new("."),
+                    &rule,
+                    server.as_deref(),
+                ) {
+                    Ok(count) => println!("Removed {} ignore rule(s)", count),
+                    Err(e) => {
+                        eprintln!("{}", e);
+                        std::process::exit(1);
+                    }
+                }
+            }
+            BaselineAction::PruneExpired => {
+                match baseline::prune_expired_in_dir(std::path::Path::new(".")) {
+                    Ok(count) => println!("Pruned {} expired ignore rule(s)", count),
+                    Err(e) => {
+                        eprintln!("{}", e);
+                        std::process::exit(1);
+                    }
+                }
+            }
         },
         Commands::Badge {
             format,

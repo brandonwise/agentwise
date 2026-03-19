@@ -12,7 +12,7 @@ pub struct BaselineConfig {
     pub ignore: Vec<IgnoreRule>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct IgnoreRule {
     pub rule: String,
     pub server: Option<String>,
@@ -44,6 +44,19 @@ pub fn load_from_file(path: &Path) -> Result<BaselineConfig, String> {
 
     serde_json::from_str(&raw)
         .map_err(|e| format!("Failed to parse baseline file '{}': {}", path.display(), e))
+}
+
+fn save_to_file(path: &Path, config: &BaselineConfig) -> Result<(), String> {
+    let content = serde_json::to_string_pretty(config).map_err(|e| {
+        format!(
+            "Failed to serialize baseline file '{}': {}",
+            path.display(),
+            e
+        )
+    })?;
+
+    fs::write(path, format!("{}\n", content))
+        .map_err(|e| format!("Failed to write baseline file '{}': {}", path.display(), e))
 }
 
 pub fn auto_detect_path(scan_path: &str) -> Option<PathBuf> {
@@ -111,12 +124,7 @@ pub fn init_in_dir(dir: &Path) -> Result<PathBuf, String> {
         ignore: vec![],
     };
 
-    let content = serde_json::to_string_pretty(&template)
-        .map_err(|e| format!("Failed to serialize baseline template: {}", e))?;
-
-    fs::write(&path, format!("{}\n", content))
-        .map_err(|e| format!("Failed to write baseline file '{}': {}", path.display(), e))?;
-
+    save_to_file(&path, &template)?;
     Ok(path)
 }
 
@@ -130,6 +138,98 @@ pub fn show_in_dir(dir: &Path) -> Result<String, String> {
             e
         )
     })
+}
+
+pub fn add_rule_in_dir(
+    dir: &Path,
+    rule: &str,
+    server: Option<&str>,
+    reason: &str,
+    expires: Option<&str>,
+) -> Result<PathBuf, String> {
+    let path = dir.join(BASELINE_FILE_NAME);
+
+    if let Some(date_str) = expires {
+        NaiveDate::parse_from_str(date_str, "%Y-%m-%d")
+            .map_err(|e| format!("Invalid expires date '{}': {}", date_str, e))?;
+    }
+
+    let mut config = if path.exists() {
+        load_from_file(&path)?
+    } else {
+        BaselineConfig {
+            version: 1,
+            ignore: vec![],
+        }
+    };
+
+    let server_owned = server.map(|s| s.to_string());
+    if let Some(existing) = config
+        .ignore
+        .iter_mut()
+        .find(|r| r.rule == rule && r.server == server_owned)
+    {
+        existing.reason = reason.to_string();
+        existing.expires = expires.map(|s| s.to_string());
+    } else {
+        config.ignore.push(IgnoreRule {
+            rule: rule.to_string(),
+            server: server_owned,
+            reason: reason.to_string(),
+            expires: expires.map(|s| s.to_string()),
+        });
+    }
+
+    save_to_file(&path, &config)?;
+    Ok(path)
+}
+
+pub fn remove_rule_in_dir(dir: &Path, rule: &str, server: Option<&str>) -> Result<usize, String> {
+    let path = dir.join(BASELINE_FILE_NAME);
+    let mut config = load_from_file(&path)?;
+
+    let before = config.ignore.len();
+    config.ignore.retain(|r| {
+        if r.rule != rule {
+            return true;
+        }
+
+        match server {
+            Some(s) => r.server.as_deref() != Some(s),
+            None => false,
+        }
+    });
+
+    let removed = before.saturating_sub(config.ignore.len());
+    if removed > 0 {
+        save_to_file(&path, &config)?;
+    }
+
+    Ok(removed)
+}
+
+pub fn prune_expired_in_dir(dir: &Path) -> Result<usize, String> {
+    let path = dir.join(BASELINE_FILE_NAME);
+    let mut config = load_from_file(&path)?;
+    let today = Local::now().date_naive();
+
+    let before = config.ignore.len();
+    config.ignore.retain(|r| {
+        if let Some(expires) = &r.expires {
+            if let Ok(date) = NaiveDate::parse_from_str(expires, "%Y-%m-%d") {
+                return date >= today;
+            }
+            return true;
+        }
+        true
+    });
+
+    let removed = before.saturating_sub(config.ignore.len());
+    if removed > 0 {
+        save_to_file(&path, &config)?;
+    }
+
+    Ok(removed)
 }
 
 fn matches_rule(finding: &Finding, rule: &IgnoreRule) -> bool {
@@ -248,5 +348,31 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&shown).unwrap();
         assert_eq!(parsed["version"], 1);
         assert!(parsed["ignore"].is_array());
+    }
+
+    #[test]
+    fn test_add_remove_and_prune() {
+        let dir = temp_dir();
+
+        add_rule_in_dir(
+            &dir,
+            "AW-009",
+            Some("fetch"),
+            "accepted",
+            Some("2999-12-31"),
+        )
+        .unwrap();
+
+        let shown = show_in_dir(&dir).unwrap();
+        assert!(shown.contains("AW-009"));
+
+        // add an expired rule
+        add_rule_in_dir(&dir, "AW-001", None, "temporary", Some("2000-01-01")).unwrap();
+
+        let pruned = prune_expired_in_dir(&dir).unwrap();
+        assert_eq!(pruned, 1);
+
+        let removed = remove_rule_in_dir(&dir, "AW-009", Some("fetch")).unwrap();
+        assert_eq!(removed, 1);
     }
 }

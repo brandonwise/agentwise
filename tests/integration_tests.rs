@@ -101,9 +101,63 @@ fn test_scan_empty_config() {
     assert!(stdout.contains("100"));
 }
 
-// ── Output formats ──────────────────────────────────────────
+#[test]
+fn test_scan_context_servers_format() {
+    let cfg = temp_path("ctx", "json");
+    fs::write(
+        &cfg,
+        r#"{
+            "context_servers": {
+                "zed": {
+                    "command": "npx",
+                    "args": ["-y", "@modelcontextprotocol/server-fetch@1.0.0"]
+                }
+            }
+        }"#,
+    )
+    .unwrap();
+
+    let output = agentwise()
+        .args(["scan", cfg.to_str().unwrap(), "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+    assert!(!findings.is_empty());
+}
 
 #[test]
+fn test_scan_nested_context_servers() {
+    let cfg = temp_path("ctx-nested", "json");
+    fs::write(
+        &cfg,
+        r#"{
+            "lsp": {
+                "context_servers": {
+                    "nested": {
+                        "command": "npx",
+                        "args": ["-y", "@modelcontextprotocol/server-fetch@1.0.0"]
+                    }
+                }
+            }
+        }"#,
+    )
+    .unwrap();
+
+    let output = agentwise()
+        .args(["scan", cfg.to_str().unwrap(), "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+    assert!(!findings.is_empty());
+    assert_eq!(parsed["servers_scanned"], 1);
+}
+
 fn test_json_output() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
@@ -414,6 +468,64 @@ fn test_expired_baseline_rule_is_not_suppressed() {
 
     assert!(findings.iter().any(|f| f["rule_id"] == "AW-007"));
     assert_eq!(parsed["suppressed_count"], 0);
+}
+
+#[test]
+fn test_baseline_cli_add_remove_prune() {
+    let dir = temp_path("baseline-cli", "dir");
+    fs::create_dir_all(&dir).unwrap();
+
+    let init = Command::new(env!("CARGO_BIN_EXE_agentwise"))
+        .current_dir(&dir)
+        .args(["baseline", "init"])
+        .output()
+        .unwrap();
+    assert!(init.status.success());
+
+    let add = Command::new(env!("CARGO_BIN_EXE_agentwise"))
+        .current_dir(&dir)
+        .args([
+            "baseline",
+            "add",
+            "--rule",
+            "AW-007",
+            "--server",
+            "fetcher",
+            "--reason",
+            "temporary",
+            "--expires",
+            "2099-12-31",
+        ])
+        .output()
+        .unwrap();
+    assert!(add.status.success());
+
+    let show = Command::new(env!("CARGO_BIN_EXE_agentwise"))
+        .current_dir(&dir)
+        .args(["baseline", "show"])
+        .output()
+        .unwrap();
+    assert!(show.status.success());
+    let show_text = String::from_utf8_lossy(&show.stdout);
+    assert!(show_text.contains("AW-007"));
+
+    let remove = Command::new(env!("CARGO_BIN_EXE_agentwise"))
+        .current_dir(&dir)
+        .args([
+            "baseline", "remove", "--rule", "AW-007", "--server", "fetcher",
+        ])
+        .output()
+        .unwrap();
+    assert!(remove.status.success());
+
+    let show2 = Command::new(env!("CARGO_BIN_EXE_agentwise"))
+        .current_dir(&dir)
+        .args(["baseline", "show"])
+        .output()
+        .unwrap();
+    assert!(show2.status.success());
+    let show2_text = String::from_utf8_lossy(&show2.stdout);
+    assert!(!show2_text.contains("AW-007"));
 }
 
 // ── Diff mode ───────────────────────────────────────────────
