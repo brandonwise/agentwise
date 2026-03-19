@@ -54,25 +54,67 @@ impl NetworkRule {
 
     fn has_domain_restrictions(server: &McpServer) -> bool {
         let env_restricted = server.env.as_ref().is_some_and(|env| {
-            env.keys().any(|k| {
+            env.iter().any(|(k, v)| {
                 let key = k.to_lowercase();
                 DOMAIN_RESTRICTION_HINTS.iter().any(|h| key.contains(h))
+                    && Self::has_specific_targets(v)
             })
         });
 
         let args_restricted = server.args.as_ref().is_some_and(|args| {
-            args.iter().any(|arg| {
-                let a = arg.to_lowercase();
-                DOMAIN_RESTRICTION_HINTS.iter().any(|h| a.contains(h))
-                    || a.contains("--allow-domain")
-                    || a.contains("--allowed-domain")
-                    || a.contains("--allowed-host")
-                    || a.contains("--allowed-origin")
-                    || a.contains("--deny-domain")
-            })
+            for (idx, arg) in args.iter().enumerate() {
+                let lowered = arg.to_lowercase();
+                let hint_match = DOMAIN_RESTRICTION_HINTS.iter().any(|h| lowered.contains(h))
+                    || lowered.contains("--allow-domain")
+                    || lowered.contains("--allowed-domain")
+                    || lowered.contains("--allowed-host")
+                    || lowered.contains("--allowed-origin")
+                    || lowered.contains("--deny-domain");
+
+                if !hint_match {
+                    continue;
+                }
+
+                if let Some((_, rhs)) = arg.split_once('=') {
+                    if Self::has_specific_targets(rhs) {
+                        return true;
+                    }
+                    continue;
+                }
+
+                if let Some(next) = args.get(idx + 1) {
+                    if !next.starts_with('-') && Self::has_specific_targets(next) {
+                        return true;
+                    }
+                }
+
+                if !arg.starts_with('-') && Self::has_specific_targets(arg) {
+                    return true;
+                }
+            }
+            false
         });
 
         env_restricted || args_restricted
+    }
+
+    fn has_specific_targets(value: &str) -> bool {
+        value
+            .split([',', ';'])
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .any(|target| !Self::is_wildcard_target(target))
+    }
+
+    fn is_wildcard_target(value: &str) -> bool {
+        let lower = value.trim().to_lowercase();
+        lower == "*"
+            || lower == "all"
+            || lower == "any"
+            || lower == "0.0.0.0/0"
+            || lower == "::/0"
+            || lower == "0.0.0.0"
+            || lower.contains('*')
     }
 }
 
@@ -193,5 +235,56 @@ mod tests {
         };
         let findings = rule.check("fetch", &server, "test.json");
         assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_fetch_with_arg_inline_domain_restrictions_ok() {
+        let rule = NetworkRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+                "--allowed-domain=example.com".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let findings = rule.check("fetch", &server, "test.json");
+        assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_fetch_with_env_wildcard_still_flagged() {
+        let rule = NetworkRule;
+        let mut env = HashMap::new();
+        env.insert("ALLOWED_DOMAINS".to_string(), "*".to_string());
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+            ]),
+            env: Some(env),
+            ..Default::default()
+        };
+        let findings = rule.check("fetch", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+    }
+
+    #[test]
+    fn test_fetch_with_arg_wildcard_still_flagged() {
+        let rule = NetworkRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+                "--allowed-domain".to_string(),
+                "*".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let findings = rule.check("fetch", &server, "test.json");
+        assert_eq!(findings.len(), 1);
     }
 }

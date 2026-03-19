@@ -6,6 +6,7 @@ mod depsdev;
 mod diff;
 mod discover;
 mod epss;
+mod inspect;
 mod osv;
 mod report;
 mod rules;
@@ -83,6 +84,17 @@ enum Commands {
 
         /// Output format for --scan mode
         #[arg(long, default_value = "terminal", value_parser = ["terminal", "json", "sarif", "markdown", "html"])]
+        format: String,
+    },
+
+    /// Inspect MCP server configs and summarize risk posture per server
+    Inspect {
+        /// Path to inspect (file or directory)
+        #[arg(default_value = ".")]
+        path: String,
+
+        /// Output format
+        #[arg(long, default_value = "terminal", value_parser = ["terminal", "json"])]
         format: String,
     },
 
@@ -280,6 +292,26 @@ async fn main() {
                 // Pretty terminal discovery report
                 let configs = discover::discover_configs();
                 print!("{}", report::terminal::render_discover(&configs));
+            }
+        }
+        Commands::Inspect { path, format } => {
+            let result = inspect::inspect(&path);
+            match format.to_lowercase().as_str() {
+                "terminal" | "text" => print!("{}", inspect::render_terminal(&result)),
+                "json" => match inspect::render_json(&result) {
+                    Ok(output) => println!("{}", output),
+                    Err(e) => {
+                        eprintln!("{}", e);
+                        std::process::exit(1);
+                    }
+                },
+                _ => {
+                    eprintln!(
+                        "Unsupported inspect format '{}'. Use 'terminal' or 'json'.",
+                        format
+                    );
+                    std::process::exit(1);
+                }
             }
         }
         Commands::Diff {

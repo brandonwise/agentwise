@@ -178,7 +178,7 @@ agentwise auto-detects and scans:
 - `claude_desktop_config.json` — Claude Desktop
 - `.cursor/mcp.json` — Cursor editor
 - `mcp.json` — Generic MCP configs
-- Any JSON file with `mcpServers` passed as argument
+- Any JSON file with `mcpServers` or `context_servers` passed as argument
 
 ## Threat coverage
 
@@ -278,6 +278,8 @@ agentwise scan . --format sarif                         # SARIF for GitHub Code 
 agentwise scan . --format html --output report.html     # Dark-themed HTML report
 agentwise scan . --format markdown                      # Markdown for PRs/Notion/Confluence
 agentwise badge --format svg --output badge.svg         # Shields.io-style SVG badge
+agentwise inspect .                                      # Per-server risk posture summary
+agentwise inspect . --format json                        # Machine-readable inspect output
 ```
 
 ## Baseline management
@@ -298,7 +300,17 @@ agentwise baseline prune-expired
 - `mcpServers`
 - `context_servers` (e.g. Zed)
 - `lsp.{mcpServers|context_servers}` nested blocks
+
+## Inspect mode
+
+`inspect` gives a per-server posture view without changing the AW-* taxonomy:
+
+```bash
+agentwise inspect .
+agentwise inspect ~/.mcp.json --format json
 ```
+
+Inspect output includes transport type, auth/allowlist presence, package pinning, and risk tags such as `remote_no_auth`, `unrestricted_network`, and `broad_filesystem`.
 
 ## Scoring
 
@@ -342,7 +354,8 @@ agentwise update
 - [x] Terminal, JSON, SARIF output
 - [x] GitHub Action
 - [x] Scoring system (0-100, A-F)
-- [ ] Auto-discovery (`agentwise scan --auto`)
+- [x] Auto-discovery (`agentwise scan --auto`)
+- [x] Inspect mode (`agentwise inspect`)
 - [ ] Custom rule DSL (YAML)
 - [ ] Interactive TUI
 - [ ] Auto-fix (`agentwise fix`)

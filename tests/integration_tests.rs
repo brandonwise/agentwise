@@ -158,6 +158,7 @@ fn test_scan_nested_context_servers() {
     assert_eq!(parsed["servers_scanned"], 1);
 }
 
+#[test]
 fn test_json_output() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
@@ -168,6 +169,39 @@ fn test_json_output() {
     let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
     assert!(parsed["findings"].is_array());
     assert!(parsed["score"].is_number());
+}
+
+#[test]
+fn test_inspect_json_output() {
+    let output = agentwise()
+        .args([
+            "inspect",
+            "testdata/vulnerable-mcp.json",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    assert!(parsed["servers"].is_array());
+    assert!(parsed["servers_scanned"].is_number());
+    assert!(parsed["high_risk_servers"].is_number());
+}
+
+#[test]
+fn test_inspect_terminal_output() {
+    let output = agentwise()
+        .args(["inspect", "testdata/vulnerable-mcp.json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("agentwise inspect"));
+    assert!(stdout.contains("risk_tags"));
 }
 
 #[test]
