@@ -1,4 +1,4 @@
-use crate::config::McpServer;
+use crate::config::{has_effective_allowed_tools, has_global_wildcard_allowed_tools, McpServer};
 use crate::rules::{Finding, Rule, Severity};
 
 /// AW-007: Flag configs with no tool filtering (allowedTools).
@@ -54,7 +54,8 @@ impl Rule for AllowlistRule {
     fn check(&self, server_name: &str, server: &McpServer, config_file: &str) -> Vec<Finding> {
         let mut findings = Vec::new();
 
-        let has_allowlist = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty());
+        let has_allowlist = has_effective_allowed_tools(server);
+        let has_wildcard_allowlist = has_global_wildcard_allowed_tools(server);
 
         if !has_allowlist {
             let high_risk = Self::is_high_risk(server_name, server);
@@ -64,22 +65,43 @@ impl Rule for AllowlistRule {
                 Severity::Medium
             };
 
-            let title = if high_risk {
+            let title = if has_wildcard_allowlist {
+                if high_risk {
+                    "Wildcard tool allowlist on high-risk server"
+                } else {
+                    "Wildcard tool allowlist is effectively unrestricted"
+                }
+            } else if high_risk {
                 "No tool allowlist on high-risk server"
             } else {
                 "No tool allowlist configured"
+            };
+
+            let message = if has_wildcard_allowlist {
+                format!(
+                    "Server '{}' uses a global wildcard in allowedTools, which effectively exposes all tools",
+                    server_name
+                )
+            } else {
+                format!(
+                    "Server '{}' exposes all available tools with no filtering",
+                    server_name
+                )
+            };
+
+            let fix = if has_wildcard_allowlist {
+                "Replace wildcard entries in \"allowedTools\" with explicit least-privilege tool names"
+                    .to_string()
+            } else {
+                "Add \"allowedTools\" to restrict exposed tools to least privilege".to_string()
             };
 
             findings.push(Finding {
                 rule_id: self.id().to_string(),
                 severity,
                 title: title.to_string(),
-                message: format!(
-                    "Server '{}' exposes all available tools with no filtering",
-                    server_name
-                ),
-                fix: "Add \"allowedTools\" to restrict exposed tools to least privilege"
-                    .to_string(),
+                message,
+                fix,
                 config_file: config_file.to_string(),
                 server_name: server_name.to_string(),
                 source: None,
@@ -146,5 +168,38 @@ mod tests {
         };
         let findings = rule.check("test", &server, "test.json");
         assert_eq!(findings.len(), 1);
+    }
+
+    #[test]
+    fn test_wildcard_allowlist_flagged() {
+        let rule = AllowlistRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            allowed_tools: Some(vec!["*".to_string()]),
+            ..Default::default()
+        };
+
+        let findings = rule.check("test", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert!(findings[0].title.contains("Wildcard"));
+        assert_eq!(findings[0].severity, Severity::Medium);
+    }
+
+    #[test]
+    fn test_wildcard_allowlist_on_high_risk_server_is_high() {
+        let rule = AllowlistRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+            ]),
+            allowed_tools: Some(vec!["all".to_string()]),
+            ..Default::default()
+        };
+
+        let findings = rule.check("fetch", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].severity, Severity::High);
     }
 }

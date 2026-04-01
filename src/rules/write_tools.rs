@@ -1,4 +1,4 @@
-use crate::config::McpServer;
+use crate::config::{has_effective_allowed_tools, McpServer};
 use crate::rules::{Finding, Rule, Severity};
 
 const WRITE_TOOL_PATTERNS: &[&str] = &[
@@ -55,7 +55,7 @@ impl Rule for WriteToolsRule {
         }
 
         // Only flag if there's no tool restriction
-        let has_allowlist = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty());
+        let has_allowlist = has_effective_allowed_tools(server);
 
         if !has_allowlist {
             findings.push(Finding {
@@ -125,5 +125,22 @@ mod tests {
         };
         let findings = rule.check("memory", &server, "test.json");
         assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_write_server_with_wildcard_allowlist_is_flagged() {
+        let rule = WriteToolsRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-postgres".to_string(),
+            ]),
+            allowed_tools: Some(vec!["all".to_string()]),
+            ..Default::default()
+        };
+
+        let findings = rule.check("database", &server, "test.json");
+        assert_eq!(findings.len(), 1);
     }
 }

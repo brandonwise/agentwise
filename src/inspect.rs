@@ -1,4 +1,7 @@
-use crate::config::{extract_all_package_names, extract_package_info, McpServer};
+use crate::config::{
+    extract_all_package_names, extract_package_info, has_effective_allowed_tools,
+    has_global_wildcard_allowed_tools, McpServer,
+};
 use crate::scanner;
 use serde::Serialize;
 use std::fmt::Write;
@@ -100,7 +103,8 @@ fn inspect_server(server_name: &str, config_file: &str, server: &McpServer) -> I
     let remote = is_remote(server);
     let transport = if remote { "remote" } else { "stdio" }.to_string();
     let auth_present = has_auth(server);
-    let allowlist_present = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty());
+    let allowlist_present = has_effective_allowed_tools(server);
+    let wildcard_allowlist = has_global_wildcard_allowed_tools(server);
 
     let network_tool = is_network_tool(server_name, server);
     let network_restricted = if network_tool {
@@ -133,6 +137,9 @@ fn inspect_server(server_name: &str, config_file: &str, server: &McpServer) -> I
     }
     if !allowlist_present {
         risk_tags.push("no_allowlist".to_string());
+    }
+    if wildcard_allowlist {
+        risk_tags.push("wildcard_allowlist".to_string());
     }
     if !network_restricted {
         risk_tags.push("unrestricted_network".to_string());
@@ -433,5 +440,26 @@ mod tests {
         let out = render_terminal(&result);
         assert!(out.contains("agentwise inspect"));
         assert!(out.contains("Scanned:"));
+    }
+
+    #[test]
+    fn test_wildcard_allowlist_marked_as_risk() {
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec![
+                "-y".to_string(),
+                "@modelcontextprotocol/server-fetch".to_string(),
+            ]),
+            allowed_tools: Some(vec!["*".to_string()]),
+            ..Default::default()
+        };
+
+        let inspected = inspect_server("fetch", "test.json", &server);
+        assert!(!inspected.allowlist_present);
+        assert!(inspected
+            .risk_tags
+            .iter()
+            .any(|t| t == "wildcard_allowlist"));
+        assert!(inspected.risk_tags.iter().any(|t| t == "no_allowlist"));
     }
 }

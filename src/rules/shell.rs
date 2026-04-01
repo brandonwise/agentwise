@@ -1,4 +1,4 @@
-use crate::config::McpServer;
+use crate::config::{has_effective_allowed_tools, McpServer};
 use crate::rules::{Finding, Rule, Severity};
 
 const SHELL_PATTERNS: &[&str] = &[
@@ -51,7 +51,7 @@ impl Rule for ShellRule {
         }
 
         // Check if there are any restrictions (allowedTools, allowedCommands in env)
-        let has_restrictions = server.allowed_tools.as_ref().is_some_and(|t| !t.is_empty())
+        let has_restrictions = has_effective_allowed_tools(server)
             || server.env.as_ref().is_some_and(|env| {
                 env.keys().any(|k| {
                     let k = k.to_lowercase();
@@ -121,5 +121,20 @@ mod tests {
         };
         let findings = rule.check("shell", &server, "test.json");
         assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_shell_with_wildcard_allowlist_is_flagged() {
+        let rule = ShellRule;
+        let server = McpServer {
+            command: Some("npx".to_string()),
+            args: Some(vec!["-y".to_string(), "mcp-shell-server".to_string()]),
+            allowed_tools: Some(vec!["*".to_string()]),
+            ..Default::default()
+        };
+
+        let findings = rule.check("shell", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].severity, Severity::Critical);
     }
 }
