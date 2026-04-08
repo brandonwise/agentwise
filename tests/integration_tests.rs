@@ -364,6 +364,33 @@ fn test_detects_missing_allowlist() {
 }
 
 #[test]
+fn test_detects_pattern_wildcard_allowlist() {
+    let output = agentwise()
+        .args([
+            "scan",
+            "testdata/allowlist-pattern-wildcard.json",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(
+        findings.iter().any(|f| {
+            f["rule_id"] == "AW-007"
+                && f["title"]
+                    .as_str()
+                    .is_some_and(|title| title.contains("Wildcard-pattern"))
+        }),
+        "Expected AW-007 wildcard-pattern finding, got: {}",
+        stdout
+    );
+}
+
+#[test]
 fn test_detects_network_access() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])

@@ -35,14 +35,14 @@ pub struct McpServer {
 
 /// Returns true when `allowedTools` is present and provides meaningful restriction.
 ///
-/// A list that contains global wildcards like `*` / `all` / `any` is considered
-/// effectively unrestricted.
+/// A list that contains wildcard entries (global or namespace patterns) is
+/// considered effectively unrestricted.
 pub fn has_effective_allowed_tools(server: &McpServer) -> bool {
     match &server.allowed_tools {
         Some(tools) if !tools.is_empty() => {
-            let has_specific_tools = tools.iter().any(|tool| !is_global_tool_wildcard(tool));
-            let has_global_wildcard = tools.iter().any(|tool| is_global_tool_wildcard(tool));
-            has_specific_tools && !has_global_wildcard
+            let has_specific_tools = tools.iter().any(|tool| !is_tool_wildcard(tool));
+            let has_wildcard = tools.iter().any(|tool| is_tool_wildcard(tool));
+            has_specific_tools && !has_wildcard
         }
         _ => false,
     }
@@ -57,12 +57,32 @@ pub fn has_global_wildcard_allowed_tools(server: &McpServer) -> bool {
         .is_some_and(|tools| tools.iter().any(|tool| is_global_tool_wildcard(tool)))
 }
 
+/// Returns true when `allowedTools` includes wildcard patterns (for example,
+/// `github:*` or `mcp__github__*`) that are broader than explicit tool names.
+pub fn has_pattern_wildcard_allowed_tools(server: &McpServer) -> bool {
+    server.allowed_tools.as_ref().is_some_and(|tools| {
+        tools.iter().any(|tool| {
+            let trimmed = tool.trim();
+            is_pattern_tool_wildcard(trimmed) && !is_global_tool_wildcard(trimmed)
+        })
+    })
+}
+
+fn is_tool_wildcard(value: &str) -> bool {
+    is_global_tool_wildcard(value) || is_pattern_tool_wildcard(value)
+}
+
 fn is_global_tool_wildcard(value: &str) -> bool {
     let lower = value.trim().to_lowercase();
     matches!(
         lower.as_str(),
         "*" | "all" | "any" | ".*" | "all-tools" | "all_tools" | "tool:*" | "tools:*"
     )
+}
+
+fn is_pattern_tool_wildcard(value: &str) -> bool {
+    let trimmed = value.trim();
+    !trimmed.is_empty() && (trimmed.contains('*') || trimmed.contains('?'))
 }
 
 /// A config file that has been loaded and parsed.
@@ -278,6 +298,30 @@ mod tests {
 
         assert!(!has_effective_allowed_tools(&server));
         assert!(has_global_wildcard_allowed_tools(&server));
+    }
+
+    #[test]
+    fn test_pattern_wildcard_allowlist_is_not_effective() {
+        let server = McpServer {
+            allowed_tools: Some(vec!["github:*".to_string()]),
+            ..Default::default()
+        };
+
+        assert!(!has_effective_allowed_tools(&server));
+        assert!(!has_global_wildcard_allowed_tools(&server));
+        assert!(has_pattern_wildcard_allowed_tools(&server));
+    }
+
+    #[test]
+    fn test_mixed_allowlist_with_pattern_wildcard_is_not_effective() {
+        let server = McpServer {
+            allowed_tools: Some(vec!["read_file".to_string(), "mcp__github__*".to_string()]),
+            ..Default::default()
+        };
+
+        assert!(!has_effective_allowed_tools(&server));
+        assert!(!has_global_wildcard_allowed_tools(&server));
+        assert!(has_pattern_wildcard_allowed_tools(&server));
     }
 
     #[test]
