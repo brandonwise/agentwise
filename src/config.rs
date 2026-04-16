@@ -25,9 +25,15 @@ pub struct McpServer {
     pub url: Option<String>,
     #[serde(default)]
     pub transport: Option<String>,
-    #[serde(rename = "allowedDirectories", default)]
+    #[serde(rename = "allowedDirectories", alias = "allowed_directories", default)]
     pub allowed_directories: Option<Vec<String>>,
-    #[serde(rename = "allowedTools", default)]
+    #[serde(
+        rename = "allowedTools",
+        alias = "allowed_tools",
+        alias = "toolAllowlist",
+        alias = "tool_allowlist",
+        default
+    )]
     pub allowed_tools: Option<Vec<String>>,
     #[serde(default)]
     pub disabled: Option<bool>,
@@ -96,19 +102,27 @@ pub struct ParsedConfig {
 ///
 /// Supports multiple common schema variants:
 /// - { "mcpServers": { ... } }
+/// - { "mcp_servers": { ... } }
 /// - { "context_servers": { ... } } (e.g. Zed)
+/// - { "contextServers": { ... } }
 /// - { "lsp": { "mcpServers": { ... } } }
+/// - { "lsp": { "mcp_servers": { ... } } }
 /// - { "lsp": { "context_servers": { ... } } }
+/// - { "lsp": { "contextServers": { ... } } }
 pub fn parse_config(json: &str) -> Result<McpConfig, serde_json::Error> {
     let root: Value = serde_json::from_str(json)?;
     let mut servers: HashMap<String, McpServer> = HashMap::new();
 
     merge_server_map(root.get("mcpServers"), &mut servers)?;
+    merge_server_map(root.get("mcp_servers"), &mut servers)?;
     merge_server_map(root.get("context_servers"), &mut servers)?;
+    merge_server_map(root.get("contextServers"), &mut servers)?;
 
     if let Some(lsp) = root.get("lsp") {
         merge_server_map(lsp.get("mcpServers"), &mut servers)?;
+        merge_server_map(lsp.get("mcp_servers"), &mut servers)?;
         merge_server_map(lsp.get("context_servers"), &mut servers)?;
+        merge_server_map(lsp.get("contextServers"), &mut servers)?;
     }
 
     Ok(McpConfig {
@@ -355,6 +369,33 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_snake_case_mcp_servers_and_fields() {
+        let json = r#"{
+            "mcp_servers": {
+                "filesystem": {
+                    "command": "npx",
+                    "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.7.1", "/Users/me/projects"],
+                    "allowed_tools": ["read_file", "list_files"],
+                    "allowed_directories": ["/Users/me/projects"]
+                }
+            }
+        }"#;
+
+        let config = parse_config(json).unwrap();
+        assert_eq!(config.mcp_servers.len(), 1);
+
+        let server = &config.mcp_servers["filesystem"];
+        assert_eq!(
+            server.allowed_tools.as_ref().map(|tools| tools.len()),
+            Some(2)
+        );
+        assert_eq!(
+            server.allowed_directories.as_ref().map(|dirs| dirs.len()),
+            Some(1)
+        );
+    }
+
+    #[test]
     fn test_parse_lsp_nested_mcp_servers() {
         let json = r#"{
             "lsp": {
@@ -369,6 +410,24 @@ mod tests {
         let config = parse_config(json).unwrap();
         assert_eq!(config.mcp_servers.len(), 1);
         assert!(config.mcp_servers.contains_key("nested"));
+    }
+
+    #[test]
+    fn test_parse_lsp_nested_snake_case_mcp_servers() {
+        let json = r#"{
+            "lsp": {
+                "mcp_servers": {
+                    "nested_snake": {
+                        "command": "uvx",
+                        "args": ["mcp-server"]
+                    }
+                }
+            }
+        }"#;
+
+        let config = parse_config(json).unwrap();
+        assert_eq!(config.mcp_servers.len(), 1);
+        assert!(config.mcp_servers.contains_key("nested_snake"));
     }
 
     #[test]

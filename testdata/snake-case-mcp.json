@@ -1,0 +1,10 @@
+{
+  "mcp_servers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.7.1", "/Users/me/projects/myapp"],
+      "allowed_directories": ["/Users/me/projects/myapp"],
+      "allowed_tools": ["read_file", "list_files"]
+    }
+  }
+}
