@@ -364,6 +364,27 @@ fn test_detects_missing_allowlist() {
 }
 
 #[test]
+fn test_snake_case_allowlist_and_directories_are_respected() {
+    let output = agentwise()
+        .args(["scan", "testdata/snake-case-mcp.json", "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(
+        !findings
+            .iter()
+            .any(|f| f["rule_id"] == "AW-002" || f["rule_id"] == "AW-007"),
+        "Expected no AW-002/AW-007 findings for snake_case allowlist fields, got: {}",
+        stdout
+    );
+}
+
+#[test]
 fn test_detects_pattern_wildcard_allowlist() {
     let output = agentwise()
         .args([
