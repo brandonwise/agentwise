@@ -292,6 +292,26 @@ fn test_detects_insecure_transport() {
 }
 
 #[test]
+fn test_detects_insecure_websocket_transport() {
+    let output = agentwise()
+        .args(["scan", "testdata/ws-no-auth.json", "--format", "json"])
+        .output()
+        .unwrap();
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(
+        findings
+            .iter()
+            .any(|f| f["rule_id"] == "AW-005"
+                && f["message"].as_str().is_some_and(|m| m.contains("WS"))),
+        "Expected AW-005 finding for ws:// endpoint, got: {}",
+        stdout
+    );
+}
+
+#[test]
 fn test_detects_secrets() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
