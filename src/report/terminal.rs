@@ -25,7 +25,7 @@ pub fn render(result: &ScanResult) -> String {
 
         // Individual findings
         let mut sorted = result.findings.clone();
-        sorted.sort_by(|a, b| b.severity.cmp(&a.severity));
+        sorted.sort_by_key(|finding| std::cmp::Reverse(finding.severity));
 
         for finding in &sorted {
             out.push_str(&render_finding(finding));

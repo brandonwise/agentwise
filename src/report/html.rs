@@ -326,7 +326,7 @@ pub fn render(result: &ScanResult) -> String {
     let total_findings = result.findings.len();
 
     let mut sorted = result.findings.clone();
-    sorted.sort_by(|a, b| b.severity.cmp(&a.severity));
+    sorted.sort_by_key(|finding| std::cmp::Reverse(finding.severity));
 
     let findings_html = if sorted.is_empty() {
         String::from(
