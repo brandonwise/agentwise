@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "realtime-api": {
+      "url": "ws://realtime.example.com/mcp",
+      "transport": "sse"
+    },
+    "secure-realtime": {
+      "url": "wss://secure.example.com/mcp",
+      "transport": "sse",
+      "headers": {
+        "Authorization": "Bearer redacted"
+      }
+    }
+  }
+}
