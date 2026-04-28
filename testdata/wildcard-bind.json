@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "winremote": {
+      "command": "python3",
+      "args": ["server.py", "--host", "0.0.0.0", "--port", "3000"],
+      "allowedTools": ["snapshot"]
+    }
+  }
+}

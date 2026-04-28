@@ -2,6 +2,7 @@ use crate::config::{
     extract_all_package_names, extract_package_info, has_effective_allowed_tools,
     has_global_wildcard_allowed_tools, McpServer,
 };
+use crate::rules::transport::has_wildcard_bind_exposure;
 use crate::scanner;
 use serde::Serialize;
 use std::fmt::Write;
@@ -84,6 +85,7 @@ pub fn inspect(path: &str) -> InspectResult {
         .iter()
         .filter(|s| {
             s.risk_tags.iter().any(|t| t == "remote_no_auth")
+                || s.risk_tags.iter().any(|t| t == "wildcard_bind")
                 || s.risk_tags.iter().any(|t| t == "broad_filesystem")
                 || s.risk_tags.len() >= 2
         })
@@ -105,6 +107,7 @@ fn inspect_server(server_name: &str, config_file: &str, server: &McpServer) -> I
     let auth_present = has_auth(server);
     let allowlist_present = has_effective_allowed_tools(server);
     let wildcard_allowlist = has_global_wildcard_allowed_tools(server);
+    let wildcard_bind = has_wildcard_bind_exposure(server).is_some();
 
     let network_tool = is_network_tool(server_name, server);
     let network_restricted = if network_tool {
@@ -140,6 +143,9 @@ fn inspect_server(server_name: &str, config_file: &str, server: &McpServer) -> I
     }
     if wildcard_allowlist {
         risk_tags.push("wildcard_allowlist".to_string());
+    }
+    if wildcard_bind {
+        risk_tags.push("wildcard_bind".to_string());
     }
     if !network_restricted {
         risk_tags.push("unrestricted_network".to_string());
@@ -461,5 +467,20 @@ mod tests {
             .iter()
             .any(|t| t == "wildcard_allowlist"));
         assert!(inspected.risk_tags.iter().any(|t| t == "no_allowlist"));
+    }
+
+    #[test]
+    fn test_wildcard_bind_marked_as_risk() {
+        let server = McpServer {
+            args: Some(vec![
+                "server.py".to_string(),
+                "--host".to_string(),
+                "0.0.0.0".to_string(),
+            ]),
+            ..Default::default()
+        };
+
+        let inspected = inspect_server("bridge", "test.json", &server);
+        assert!(inspected.risk_tags.iter().any(|t| t == "wildcard_bind"));
     }
 }

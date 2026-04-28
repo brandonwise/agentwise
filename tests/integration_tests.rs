@@ -312,6 +312,25 @@ fn test_detects_insecure_websocket_transport() {
 }
 
 #[test]
+fn test_detects_wildcard_bind_exposure() {
+    let output = agentwise()
+        .args(["scan", "testdata/wildcard-bind.json", "--format", "json"])
+        .output()
+        .unwrap();
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+
+    assert!(
+        findings.iter().any(|f| f["rule_id"] == "AW-005"
+            && f["title"] == "Wildcard bind address"
+            && f["message"].as_str().is_some_and(|m| m.contains("0.0.0.0"))),
+        "Expected AW-005 wildcard bind finding, got: {}",
+        stdout
+    );
+}
+
+#[test]
 fn test_detects_secrets() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])

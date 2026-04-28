@@ -100,14 +100,14 @@ From a scan of **109 MCP server entries** collected from public GitHub configs +
 - **100%** missing tool allowlists (AW-007)
 - **8.26%** had unrestricted filesystem access (AW-002)
 - **1.83%** exposed hardcoded secrets (AW-004)
-- Insecure cleartext transport (`http://` and `ws://`) still present in public configs (AW-005)
+- Insecure cleartext transport and wildcard bind exposure (`http://`, `ws://`, `0.0.0.0`, `[::]`) still show up in public configs (AW-005)
 
 Full methodology, source attribution, and raw output are in [`research/FINDINGS.md`](research/FINDINGS.md) and [`research/scan-results.json`](research/scan-results.json).
 
 ## Trust signals
 
 - **4.0 MB** release binary
-- **203/203 tests passing**
+- **255/255 tests passing**
 - **0 clippy warnings** with `-D warnings`
 - **0 known Rust dependency vulnerabilities** (`cargo audit`)
 
@@ -196,7 +196,7 @@ agentwise auto-detects and scans:
 | AW-002 | Overpermissioned filesystem access | Critical |
 | AW-003 | Unrestricted shell/exec access | Critical |
 | AW-004 | Secrets in plaintext config | High |
-| AW-005 | Insecure transport (`http://` or `ws://`) | High |
+| AW-005 | Insecure transport or wildcard bind exposure (`http://`, `ws://`, `0.0.0.0`, `[::]`) | High |
 | AW-006 | Known CVE match (embedded + OSV) | Critical/High |
 | AW-007 | Missing tool allowlist | Medium |
 | AW-008 | Write-capable tools without opt-in | Medium |

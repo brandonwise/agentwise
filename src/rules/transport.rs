@@ -1,7 +1,30 @@
 use crate::config::McpServer;
 use crate::rules::{Finding, Rule, Severity};
+use std::collections::HashMap;
 
-/// AW-005: Flag cleartext remote transport endpoints (`http://`, `ws://`).
+const BIND_FLAGS: &[&str] = &[
+    "--host",
+    "--bind",
+    "--listen",
+    "--address",
+    "--addr",
+    "--hostname",
+];
+
+const BIND_ENV_KEYS: &[&str] = &[
+    "host",
+    "bind",
+    "bind_host",
+    "bind_address",
+    "listen_host",
+    "listen_addr",
+    "listen_address",
+    "mcp_host",
+    "server_host",
+];
+
+/// AW-005: Flag cleartext remote transport endpoints (`http://`, `ws://`) and
+/// wildcard bind addresses that expose local MCP services beyond loopback.
 pub struct TransportRule;
 
 impl TransportRule {
@@ -65,6 +88,14 @@ impl TransportRule {
     }
 }
 
+pub(crate) fn has_wildcard_bind_exposure(server: &McpServer) -> Option<String> {
+    server
+        .args
+        .as_ref()
+        .and_then(|args| wildcard_bind_from_args(args))
+        .or_else(|| server.env.as_ref().and_then(wildcard_bind_from_env))
+}
+
 impl Rule for TransportRule {
     fn id(&self) -> &'static str {
         "AW-005"
@@ -87,8 +118,86 @@ impl Rule for TransportRule {
             }
         }
 
+        if let Some(bind_hint) = has_wildcard_bind_exposure(server) {
+            findings.push(Finding {
+                rule_id: self.id().to_string(),
+                severity: Severity::High,
+                title: "Wildcard bind address".to_string(),
+                message: format!(
+                    "Server '{}' binds a local MCP service to all interfaces via {}, which can expose it beyond loopback",
+                    server_name, bind_hint
+                ),
+                fix: "Bind the server to 127.0.0.1 or ::1 unless remote exposure is intentional and protected by auth + TLS".to_string(),
+                config_file: config_file.to_string(),
+                server_name: server_name.to_string(),
+                source: None,
+                epss: None,
+                sub_items: None,
+            });
+        }
+
         findings
     }
+}
+
+fn wildcard_bind_from_args(args: &[String]) -> Option<String> {
+    for (idx, arg) in args.iter().enumerate() {
+        let lowered = arg.to_lowercase();
+
+        for flag in BIND_FLAGS {
+            if lowered == *flag {
+                if let Some(next) = args.get(idx + 1) {
+                    if is_wildcard_bind_value(next) {
+                        return Some(format!("{} {}", arg, next));
+                    }
+                }
+            }
+
+            let inline_prefix = format!("{}=", flag);
+            if lowered.starts_with(&inline_prefix) {
+                let value = &arg[inline_prefix.len()..];
+                if is_wildcard_bind_value(value) {
+                    return Some(arg.clone());
+                }
+            }
+        }
+    }
+
+    None
+}
+
+fn wildcard_bind_from_env(env: &HashMap<String, String>) -> Option<String> {
+    for (key, value) in env {
+        let lowered = key.to_lowercase();
+        if BIND_ENV_KEYS.contains(&lowered.as_str()) && is_wildcard_bind_value(value) {
+            return Some(format!("{}={}", key, value));
+        }
+    }
+
+    None
+}
+
+fn is_wildcard_bind_value(value: &str) -> bool {
+    let trimmed = value
+        .trim()
+        .trim_matches(|c| c == '"' || c == '\'')
+        .to_lowercase();
+
+    if trimmed == "*" {
+        return true;
+    }
+
+    let host = trimmed
+        .split("://")
+        .nth(1)
+        .unwrap_or(trimmed.as_str())
+        .trim();
+
+    host == "0.0.0.0"
+        || host.starts_with("0.0.0.0:")
+        || host == "::"
+        || host == "[::]"
+        || host.starts_with("[::]:")
 }
 
 fn is_localhost(url: &str) -> bool {
@@ -101,6 +210,7 @@ fn is_localhost(url: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
 
     #[test]
     fn test_http_url_flagged() {
@@ -183,6 +293,60 @@ mod tests {
         let findings = rule.check("remote", &server, "test.json");
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].title, "Insecure cleartext URL in args");
+    }
+
+    #[test]
+    fn test_wildcard_bind_arg_flagged() {
+        let rule = TransportRule;
+        let server = McpServer {
+            args: Some(vec![
+                "server.py".to_string(),
+                "--host".to_string(),
+                "0.0.0.0".to_string(),
+            ]),
+            ..Default::default()
+        };
+        let findings = rule.check("remote", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].title, "Wildcard bind address");
+        assert!(findings[0].message.contains("0.0.0.0"));
+    }
+
+    #[test]
+    fn test_wildcard_bind_inline_arg_flagged() {
+        let rule = TransportRule;
+        let server = McpServer {
+            args: Some(vec!["--bind=0.0.0.0:3000".to_string()]),
+            ..Default::default()
+        };
+        let findings = rule.check("remote", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].severity, Severity::High);
+    }
+
+    #[test]
+    fn test_wildcard_bind_env_flagged() {
+        let rule = TransportRule;
+        let mut env = HashMap::new();
+        env.insert("HOST".to_string(), "0.0.0.0".to_string());
+        let server = McpServer {
+            env: Some(env),
+            ..Default::default()
+        };
+        let findings = rule.check("remote", &server, "test.json");
+        assert_eq!(findings.len(), 1);
+        assert!(findings[0].message.contains("HOST=0.0.0.0"));
+    }
+
+    #[test]
+    fn test_loopback_bind_ok() {
+        let rule = TransportRule;
+        let server = McpServer {
+            args: Some(vec!["--host".to_string(), "127.0.0.1:3000".to_string()]),
+            ..Default::default()
+        };
+        let findings = rule.check("local", &server, "test.json");
+        assert!(findings.is_empty());
     }
 
     #[test]
