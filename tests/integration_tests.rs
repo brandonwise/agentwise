@@ -159,6 +159,23 @@ fn test_scan_nested_context_servers() {
 }
 
 #[test]
+fn test_scan_codex_toml_file() {
+    let output = agentwise()
+        .args(["scan", "testdata/codex-config.toml", "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    let findings = parsed["findings"].as_array().unwrap();
+    assert_eq!(parsed["configs_scanned"], 1);
+    assert_eq!(parsed["servers_scanned"], 1);
+    assert_eq!(findings.len(), 1);
+    assert_eq!(findings[0]["rule_id"], "AW-005");
+}
+
+#[test]
 fn test_json_output() {
     let output = agentwise()
         .args(["scan", "testdata/vulnerable-mcp.json", "--format", "json"])
@@ -508,6 +525,37 @@ fn test_scan_auto_runs_discovery() {
         assert!(parsed["findings"].is_array());
         assert!(parsed["score"].is_number());
     }
+}
+
+#[test]
+fn test_scan_auto_discovers_codex_config() {
+    let home = temp_path("codex-home", "dir");
+    let codex_dir = home.join(".codex");
+    fs::create_dir_all(&codex_dir).unwrap();
+    fs::write(
+        codex_dir.join("config.toml"),
+        r#"
+[mcp_servers.github]
+url = "http://api.example.com/mcp"
+bearer_token_env_var = "GITHUB_TOKEN"
+enabled_tools = ["search_repositories"]
+"#,
+    )
+    .unwrap();
+
+    let output = agentwise()
+        .env("HOME", &home)
+        .args(["scan", "--auto", "--format", "json"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).unwrap();
+    assert!(parsed["configs_scanned"].as_u64().unwrap() >= 1);
+    assert!(parsed["servers_scanned"].as_u64().unwrap() >= 1);
+
+    fs::remove_dir_all(&home).ok();
 }
 
 // ── Nonexistent paths ───────────────────────────────────────

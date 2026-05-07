@@ -41,6 +41,15 @@ impl AuthRule {
                     || key.contains("bearer")
                     || key.contains("cookie")
             })
+        }) || server.env_http_headers.as_ref().is_some_and(|headers| {
+            headers.keys().any(|k| {
+                let key = k.to_lowercase();
+                key.contains("authorization")
+                    || key == "x-api-key"
+                    || key == "api-key"
+                    || key.contains("bearer")
+                    || key.contains("cookie")
+            })
         })
     }
 
@@ -53,6 +62,26 @@ impl AuthRule {
                 || joined.contains("authorization:")
                 || joined.contains("x-api-key:")
         })
+    }
+
+    fn has_auth_references(server: &McpServer) -> bool {
+        server
+            .bearer_token_env_var
+            .as_ref()
+            .is_some_and(|value| !value.trim().is_empty())
+            || server.env_vars.as_ref().is_some_and(|vars| {
+                vars.iter().any(|value| {
+                    let lowered = value.to_lowercase();
+                    lowered.contains("authorization")
+                        || lowered.contains("auth")
+                        || lowered.contains("token")
+                        || lowered.contains("api_key")
+                        || lowered.contains("apikey")
+                        || lowered.contains("secret")
+                        || lowered.contains("bearer")
+                        || lowered.contains("password")
+                })
+            })
     }
 }
 
@@ -70,7 +99,8 @@ impl Rule for AuthRule {
 
         let has_auth = Self::has_auth_env(server)
             || Self::has_auth_headers(server)
-            || Self::has_auth_args(server);
+            || Self::has_auth_args(server)
+            || Self::has_auth_references(server);
 
         if !has_auth {
             findings.push(Finding {
@@ -195,5 +225,32 @@ mod tests {
         };
         let findings = rule.check("test", &server, "test.json");
         assert_eq!(findings.len(), 1);
+    }
+
+    #[test]
+    fn test_remote_server_with_bearer_token_env_var_is_ok() {
+        let rule = AuthRule;
+        let server = McpServer {
+            url: Some("https://example.com/mcp".to_string()),
+            bearer_token_env_var: Some("FIGMA_OAUTH_TOKEN".to_string()),
+            ..Default::default()
+        };
+        let findings = rule.check("figma", &server, "config.toml");
+        assert!(findings.is_empty());
+    }
+
+    #[test]
+    fn test_remote_server_with_env_http_headers_is_ok() {
+        let rule = AuthRule;
+        let server = McpServer {
+            url: Some("https://example.com/mcp".to_string()),
+            env_http_headers: Some(HashMap::from([(
+                "Authorization".to_string(),
+                "FIGMA_OAUTH_TOKEN".to_string(),
+            )])),
+            ..Default::default()
+        };
+        let findings = rule.check("figma", &server, "config.toml");
+        assert!(findings.is_empty());
     }
 }

@@ -160,6 +160,9 @@ agentwise scan .
 # Scan a specific config file
 agentwise scan ~/.mcp.json
 
+# Scan a Codex MCP config
+agentwise scan ~/.codex/config.toml
+
 # Live mode: query OSV + EPSS for real-time CVE data
 agentwise scan . --live
 
@@ -177,8 +180,10 @@ agentwise auto-detects and scans:
 - `.mcp.json` — Claude Code project-level configs
 - `claude_desktop_config.json` — Claude Desktop
 - `.cursor/mcp.json` — Cursor editor
+- `~/.codex/config.toml` and `.codex/config.toml` — Codex CLI + IDE
 - `mcp.json` — Generic MCP configs
 - Any JSON file with `mcpServers` or `context_servers` passed as argument
+- Any Codex `config.toml` with `[mcp_servers.<name>]` tables passed as argument
 
 ## Threat coverage
 
