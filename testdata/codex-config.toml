@@ -1,0 +1,12 @@
+[mcp_servers.github]
+url = "http://api.example.com/mcp"
+bearer_token_env_var = "GITHUB_TOKEN"
+enabled_tools = ["search_repositories"]
+
+[mcp_servers.github.env_http_headers]
+Authorization = "GITHUB_TOKEN"
+
+[mcp_servers.local_fs]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem@0.5.0", "/"]
+enabled = false

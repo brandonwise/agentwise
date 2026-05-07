@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::path::Path;
+use toml::Value as TomlValue;
 
 /// Represents a parsed MCP configuration file.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -19,7 +20,7 @@ pub struct McpServer {
     pub args: Option<Vec<String>>,
     #[serde(default)]
     pub env: Option<HashMap<String, String>>,
-    #[serde(default)]
+    #[serde(alias = "http_headers", default)]
     pub headers: Option<HashMap<String, String>>,
     #[serde(default)]
     pub url: Option<String>,
@@ -32,11 +33,20 @@ pub struct McpServer {
         alias = "allowed_tools",
         alias = "toolAllowlist",
         alias = "tool_allowlist",
+        alias = "enabled_tools",
         default
     )]
     pub allowed_tools: Option<Vec<String>>,
     #[serde(default)]
     pub disabled: Option<bool>,
+    #[serde(default)]
+    pub enabled: Option<bool>,
+    #[serde(default)]
+    pub bearer_token_env_var: Option<String>,
+    #[serde(default)]
+    pub env_vars: Option<Vec<String>>,
+    #[serde(default)]
+    pub env_http_headers: Option<HashMap<String, String>>,
 }
 
 /// Returns true when `allowedTools` is present and provides meaningful restriction.
@@ -98,7 +108,7 @@ pub struct ParsedConfig {
     pub config: McpConfig,
 }
 
-/// Parse an MCP config from a JSON string.
+/// Parse an MCP config from a JSON or TOML string.
 ///
 /// Supports multiple common schema variants:
 /// - { "mcpServers": { ... } }
@@ -109,7 +119,21 @@ pub struct ParsedConfig {
 /// - { "lsp": { "mcp_servers": { ... } } }
 /// - { "lsp": { "context_servers": { ... } } }
 /// - { "lsp": { "contextServers": { ... } } }
-pub fn parse_config(json: &str) -> Result<McpConfig, serde_json::Error> {
+/// - [mcp_servers.<server-name>] tables (Codex `config.toml`)
+pub fn parse_config(content: &str) -> Result<McpConfig, String> {
+    match parse_json_config(content) {
+        Ok(config) => Ok(config),
+        Err(json_err) => match parse_toml_config(content) {
+            Ok(config) => Ok(config),
+            Err(toml_err) => Err(format!(
+                "not valid JSON ({}) or TOML ({})",
+                json_err, toml_err
+            )),
+        },
+    }
+}
+
+fn parse_json_config(json: &str) -> Result<McpConfig, serde_json::Error> {
     let root: Value = serde_json::from_str(json)?;
     let mut servers: HashMap<String, McpServer> = HashMap::new();
 
@@ -130,6 +154,63 @@ pub fn parse_config(json: &str) -> Result<McpConfig, serde_json::Error> {
     })
 }
 
+fn parse_toml_config(content: &str) -> Result<McpConfig, String> {
+    let root: TomlValue = toml::from_str(content).map_err(|e| e.to_string())?;
+    let Some(server_table) = root.get("mcp_servers").and_then(TomlValue::as_table) else {
+        return Ok(McpConfig {
+            mcp_servers: HashMap::new(),
+        });
+    };
+
+    let mut servers = HashMap::new();
+
+    for (name, value) in server_table {
+        let Some(table) = value.as_table() else {
+            continue;
+        };
+
+        let mut headers = string_map(table.get("headers"));
+        headers.extend(string_map(table.get("http_headers")));
+
+        let env_http_headers = string_map(table.get("env_http_headers"));
+        let env_http_headers = (!env_http_headers.is_empty()).then_some(env_http_headers);
+
+        let server = McpServer {
+            command: table.get("command").and_then(as_string),
+            args: string_array(table.get("args")),
+            env: {
+                let env = string_map(table.get("env"));
+                (!env.is_empty()).then_some(env)
+            },
+            headers: (!headers.is_empty()).then_some(headers),
+            url: table.get("url").and_then(as_string),
+            transport: table.get("transport").and_then(as_string),
+            allowed_directories: string_array(
+                table
+                    .get("allowedDirectories")
+                    .or_else(|| table.get("allowed_directories")),
+            ),
+            allowed_tools: string_array(
+                table
+                    .get("allowedTools")
+                    .or_else(|| table.get("allowed_tools"))
+                    .or_else(|| table.get("enabled_tools")),
+            ),
+            disabled: table.get("disabled").and_then(TomlValue::as_bool),
+            enabled: table.get("enabled").and_then(TomlValue::as_bool),
+            bearer_token_env_var: table.get("bearer_token_env_var").and_then(as_string),
+            env_vars: env_var_names(table.get("env_vars")),
+            env_http_headers,
+        };
+
+        servers.insert(name.clone(), server);
+    }
+
+    Ok(McpConfig {
+        mcp_servers: servers,
+    })
+}
+
 /// Load and parse an MCP config from a file path.
 pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
     let content = std::fs::read_to_string(path)
@@ -137,7 +218,7 @@ pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
 
     if content.trim().is_empty() {
         return Err(format!(
-            "Failed to parse {}: file is empty. Expected JSON like {{\"mcpServers\": {{...}}}}",
+            "Failed to parse {}: file is empty. Expected JSON like {{\"mcpServers\": {{...}}}} or TOML like [mcp_servers.example]",
             path.display()
         ));
     }
@@ -146,7 +227,7 @@ pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
         let msg = e.to_string();
         if msg.contains("EOF while parsing") || msg.contains("expected value") {
             format!(
-                "Failed to parse {}: {}. Hint: file appears empty or truncated; use valid JSON or {{}}",
+                "Failed to parse {}: {}. Hint: file appears empty or truncated; use valid JSON/TOML with MCP server entries",
                 path.display(),
                 msg
             )
@@ -159,6 +240,52 @@ pub fn load_config(path: &Path) -> Result<ParsedConfig, String> {
         file_path: path.display().to_string(),
         config,
     })
+}
+
+fn as_string(value: &TomlValue) -> Option<String> {
+    value.as_str().map(ToOwned::to_owned)
+}
+
+fn string_array(value: Option<&TomlValue>) -> Option<Vec<String>> {
+    let values = value
+        .and_then(TomlValue::as_array)
+        .map(|arr| arr.iter().filter_map(as_string).collect::<Vec<_>>())
+        .unwrap_or_default();
+
+    (!values.is_empty()).then_some(values)
+}
+
+fn string_map(value: Option<&TomlValue>) -> HashMap<String, String> {
+    value
+        .and_then(TomlValue::as_table)
+        .map(|table| {
+            table
+                .iter()
+                .filter_map(|(key, value)| as_string(value).map(|v| (key.clone(), v)))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn env_var_names(value: Option<&TomlValue>) -> Option<Vec<String>> {
+    let values = value
+        .and_then(TomlValue::as_array)
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| {
+                    if let Some(name) = item.as_str() {
+                        return Some(name.to_string());
+                    }
+
+                    item.as_table()
+                        .and_then(|table| table.get("name"))
+                        .and_then(as_string)
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    (!values.is_empty()).then_some(values)
 }
 
 fn merge_server_map(
@@ -458,6 +585,44 @@ mod tests {
         assert!(server.allowed_tools.is_some());
         assert!(server.allowed_directories.is_some());
         assert!(server.headers.is_some());
+    }
+
+    #[test]
+    fn test_parse_codex_toml_config() {
+        let toml = r#"
+[mcp_servers.github]
+url = "http://api.example.com/mcp"
+bearer_token_env_var = "GITHUB_TOKEN"
+enabled_tools = ["search_repositories"]
+
+[mcp_servers.github.env_http_headers]
+Authorization = "GITHUB_TOKEN"
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem@0.5.0", "/"]
+enabled = false
+env_vars = ["LOCAL_TOKEN", { name = "REMOTE_TOKEN", source = "remote" }]
+"#;
+
+        let config = parse_config(toml).unwrap();
+        assert_eq!(config.mcp_servers.len(), 2);
+
+        let github = &config.mcp_servers["github"];
+        assert_eq!(github.url.as_deref(), Some("http://api.example.com/mcp"));
+        assert_eq!(github.bearer_token_env_var.as_deref(), Some("GITHUB_TOKEN"));
+        assert_eq!(
+            github.allowed_tools,
+            Some(vec!["search_repositories".to_string()])
+        );
+        assert!(github.env_http_headers.is_some());
+
+        let filesystem = &config.mcp_servers["filesystem"];
+        assert_eq!(filesystem.enabled, Some(false));
+        assert_eq!(
+            filesystem.env_vars,
+            Some(vec!["LOCAL_TOKEN".to_string(), "REMOTE_TOKEN".to_string()])
+        );
     }
 
     #[test]

@@ -68,9 +68,26 @@ pub fn discover_configs() -> Vec<DiscoveredConfig> {
         add_candidate(&mut results, &mut seen, path, "VS Code Continue (global)");
     }
 
+    // Codex global
+    for path in codex_global_paths(&home) {
+        add_candidate(&mut results, &mut seen, path, "Codex (global)");
+    }
+
     // Windsurf global
     for path in windsurf_paths(&home) {
         add_candidate(&mut results, &mut seen, path, "Windsurf (global)");
+    }
+
+    // Codex project-level: walk up from cwd
+    if let Some(ref cwd) = cwd {
+        for dir in walk_up(cwd) {
+            add_candidate(
+                &mut results,
+                &mut seen,
+                dir.join(".codex").join("config.toml"),
+                "Codex (project)",
+            );
+        }
     }
 
     // Zed settings.json
@@ -414,6 +431,16 @@ fn windsurf_paths(home: &Option<PathBuf>) -> Vec<PathBuf> {
     paths
 }
 
+fn codex_global_paths(home: &Option<PathBuf>) -> Vec<PathBuf> {
+    let mut paths = Vec::new();
+
+    if let Some(ref h) = home {
+        paths.push(h.join(".codex").join("config.toml"));
+    }
+
+    paths
+}
+
 fn zed_paths(home: &Option<PathBuf>) -> Vec<PathBuf> {
     let mut paths = Vec::new();
 
@@ -547,6 +574,29 @@ mod tests {
         assert!(exists);
         assert_eq!(count, 0);
         assert!(servers.is_empty());
+        fs::remove_file(&tmp).ok();
+    }
+
+    #[test]
+    fn test_probe_config_codex_toml() {
+        let tmp = std::env::temp_dir().join("agentwise_probe_codex.toml");
+        fs::write(
+            &tmp,
+            r#"
+[mcp_servers.github]
+url = "https://api.example.com/mcp"
+enabled_tools = ["search_repositories"]
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+"#,
+        )
+        .unwrap();
+        let (exists, count, servers) = probe_config(&tmp, "Codex (project)");
+        assert!(exists);
+        assert_eq!(count, 2);
+        assert_eq!(servers, vec!["context7", "github"]);
         fs::remove_file(&tmp).ok();
     }
 
@@ -695,6 +745,21 @@ mod tests {
             assert!(
                 s.ends_with("mcp.json"),
                 "path should end with mcp.json: {}",
+                s
+            );
+        }
+    }
+
+    #[test]
+    fn test_codex_global_paths_contain_expected_segments() {
+        let home = Some(PathBuf::from("/home/testuser"));
+        let paths = codex_global_paths(&home);
+        for p in &paths {
+            let s = p.display().to_string();
+            assert!(s.contains(".codex"), "path should contain '.codex': {}", s);
+            assert!(
+                s.ends_with("config.toml"),
+                "path should end with config.toml: {}",
                 s
             );
         }

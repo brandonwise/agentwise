@@ -11,6 +11,10 @@ use walkdir::WalkDir;
 /// Known MCP config file names to search for.
 const CONFIG_FILE_NAMES: &[&str] = &[".mcp.json", "mcp.json", "claude_desktop_config.json"];
 
+fn server_is_disabled(server: &crate::config::McpServer) -> bool {
+    server.disabled == Some(true) || server.enabled == Some(false)
+}
+
 /// Statistics from a live OSV query.
 #[derive(Debug, Clone)]
 pub struct OsvStats {
@@ -60,7 +64,7 @@ pub fn scan(path: &str) -> ScanResult {
     for parsed_config in &configs {
         for (server_name, server) in &parsed_config.config.mcp_servers {
             // Skip disabled servers
-            if server.disabled == Some(true) {
+            if server_is_disabled(server) {
                 continue;
             }
             servers_scanned += 1;
@@ -100,7 +104,7 @@ pub async fn scan_with_live(path: &str) -> ScanResult {
 
     for parsed_config in &configs {
         for (server_name, server) in &parsed_config.config.mcp_servers {
-            if server.disabled == Some(true) {
+            if server_is_disabled(server) {
                 continue;
             }
             for (package, version) in extract_package_info(server) {
@@ -258,7 +262,7 @@ pub async fn scan_with_supply_chain(path: &str, live: bool) -> ScanResult {
 
     for parsed_config in &configs {
         for (server_name, server) in &parsed_config.config.mcp_servers {
-            if server.disabled == Some(true) {
+            if server_is_disabled(server) {
                 continue;
             }
 
@@ -386,7 +390,7 @@ pub fn scan_paths(paths: &[String]) -> ScanResult {
 
     for parsed_config in &configs {
         for (server_name, server) in &parsed_config.config.mcp_servers {
-            if server.disabled == Some(true) {
+            if server_is_disabled(server) {
                 continue;
             }
             servers_scanned += 1;
@@ -665,7 +669,13 @@ fn discover_configs(dir: &Path) -> Vec<ParsedConfig> {
         }
 
         let is_config = CONFIG_FILE_NAMES.iter().any(|name| file_name == *name)
-            || file_name.ends_with(".mcp.json");
+            || file_name.ends_with(".mcp.json")
+            || (file_name == "config.toml"
+                && path
+                    .parent()
+                    .and_then(|parent| parent.file_name())
+                    .and_then(|name| name.to_str())
+                    == Some(".codex"));
 
         if is_config {
             match load_config(path) {
@@ -718,6 +728,15 @@ mod tests {
         let result = scan("testdata/project/");
         assert_eq!(result.configs_scanned, 1);
         assert!(result.servers_scanned > 0);
+    }
+
+    #[test]
+    fn test_scan_codex_toml_config() {
+        let result = scan("testdata/codex-config.toml");
+        assert_eq!(result.configs_scanned, 1);
+        assert_eq!(result.servers_scanned, 1);
+        assert_eq!(result.findings.len(), 1);
+        assert_eq!(result.findings[0].rule_id, "AW-005");
     }
 
     #[test]
