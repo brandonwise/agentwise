@@ -258,7 +258,29 @@ $ agentwise scan . --supply-chain
 
 ## CI/CD Integration
 
-### GitHub Actions (manual, available now)
+### GitHub Actions
+
+Use the bundled composite action for release installs, safer argument handling, and source-mode self-tests:
+
+```yaml
+- uses: brandonwise/agentwise@v1
+  with:
+    path: ./Agent Configs/.mcp.json
+    format: sarif
+    output: ./reports/agentwise.sarif
+    fail-on: high
+
+- uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: ./reports/agentwise.sarif
+```
+
+Notes:
+- Paths and output files with spaces are supported.
+- `install-mode: source` builds the checked-out action source instead of downloading a release. Useful for testing action changes in pull requests.
+- The `--fail-on` threshold still gates the job when findings meet or exceed the selected severity.
+
+If you prefer the manual path, this still works:
 
 ```yaml
 - name: Install agentwise
@@ -271,8 +293,6 @@ $ agentwise scan . --supply-chain
   with:
     sarif_file: agentwise.sarif
 ```
-
-The `--fail-on` flag exits with code 1 when findings at or above the specified severity are found, gating your pipeline.
 
 ## Output Formats
 

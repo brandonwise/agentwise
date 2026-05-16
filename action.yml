@@ -31,37 +31,31 @@ inputs:
     required: false
     default: 'false'
   version:
-    description: 'agentwise version to install'
+    description: 'agentwise version to install when install-mode=release'
     required: false
     default: 'latest'
+  install-mode:
+    description: 'Install from a GitHub release (release) or build the checked-out action source (source)'
+    required: false
+    default: 'release'
 
 runs:
   using: 'composite'
   steps:
     - name: Install agentwise
       shell: bash
-      run: |
-        if [ "${{ inputs.version }}" = "latest" ]; then
-          curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh
-        else
-          curl -sSf https://raw.githubusercontent.com/brandonwise/agentwise/main/install.sh | sh -s -- --version ${{ inputs.version }}
-        fi
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+      env:
+        INPUT_INSTALL_MODE: ${{ inputs.install-mode }}
+        INPUT_VERSION: ${{ inputs.version }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/action-install.sh"
 
     - name: Run agentwise scan
       shell: bash
-      run: |
-        ARGS="scan ${{ inputs.path }} --format ${{ inputs.format }}"
-        if [ -n "${{ inputs.fail-on }}" ]; then
-          ARGS="$ARGS --fail-on ${{ inputs.fail-on }}"
-        fi
-        if [ -n "${{ inputs.output }}" ]; then
-          ARGS="$ARGS --output ${{ inputs.output }}"
-        fi
-        if [ "${{ inputs.live }}" = "true" ]; then
-          ARGS="$ARGS --live"
-        fi
-        if [ "${{ inputs.supply-chain }}" = "true" ]; then
-          ARGS="$ARGS --supply-chain"
-        fi
-        agentwise $ARGS
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FORMAT: ${{ inputs.format }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_OUTPUT: ${{ inputs.output }}
+        INPUT_LIVE: ${{ inputs.live }}
+        INPUT_SUPPLY_CHAIN: ${{ inputs.supply-chain }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/action-scan.sh"
